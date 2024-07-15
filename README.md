@@ -1,7 +1,7 @@
 <h1 align="center">Hola 👋, soy Xinzaýr</h1>
 <h3 align="center">Desarrollador poco convencional de alguna parte del mundo</h3>
 
-<p><img align="right" style="position:absolute; width:40%; height:0; padding-bottom:100%;" frameBorder="0" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExY29wNWZvZHk1b2gwbDdwcDZqajU0YXhwMmgyM2c2enJtb3F5Nnd2NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VbAFrrDVGAvZu/giphy.webp" alt="adam-pw" /></p>
+<p><img align="right" style="position:absolute; width:42%; height:0; padding-bottom:100%;" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExY29wNWZvZHk1b2gwbDdwcDZqajU0YXhwMmgyM2c2enJtb3F5Nnd2NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VbAFrrDVGAvZu/giphy.webp" alt="adam-pw" /></p>
 
 - 🌱 Actualmente estoy aprendiendo **Bun, HTML, CSS, Sass, Node.js, Rust, Python, Flask.**
 
