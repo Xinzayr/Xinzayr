@@ -3,8 +3,6 @@
 
 <h2 align="center" style="">🌱 Actualmente aun no domino (Comprendo buena parte de alguno de ellos)</h2>
 
-<br>
-
 <p><img align="left" style="position:relative; width:42%; height:0; top: 0px;" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExY29wNWZvZHk1b2gwbDdwcDZqajU0YXhwMmgyM2c2enJtb3F5Nnd2NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VbAFrrDVGAvZu/giphy.webp" alt="adam-pw" /></p>
 
    _**Pythom, Nim, Rust, Haskell, JavaScript, TypeScript, CoffeScript ,SQL**_
