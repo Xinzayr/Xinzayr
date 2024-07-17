@@ -1,13 +1,17 @@
-<h1 align="center">Hola 👋, soy Xinzaýr</h1>
-<h3 align="center">Desarrollador poco convencional de alguna parte del mundo</h3>
+<h1 align="center">Un Gusto 👋, Me apodo Xinzaýr</h1>
+<h3 align="center">Un desarrollador poco convencional de alguna parte del mundo</h3>
 
-<p><img align="left" style="position:absolute; width:42%; height:0; padding-bottom:100%;" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExY29wNWZvZHk1b2gwbDdwcDZqajU0YXhwMmgyM2c2enJtb3F5Nnd2NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VbAFrrDVGAvZu/giphy.webp" alt="adam-pw" /></p>
+<h2 align="center" style="">🌱 Actualmente aun no domino (Comprendo buena parte de alguno de ellos)</h2>
 
-  # 🌱 Actualmente estoy aprendiendo (Comprendo buena parte de alguno de ellos)
+<br>
+
+<p><img align="left" style="position:relative; width:42%; height:0; top: 0px;" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExY29wNWZvZHk1b2gwbDdwcDZqajU0YXhwMmgyM2c2enJtb3F5Nnd2NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VbAFrrDVGAvZu/giphy.webp" alt="adam-pw" /></p>
+
    _**Pythom, Nim, Rust, Haskell, JavaScript, TypeScript, CoffeScript ,SQL**_
-
-<h3 align="left">Conéctate conmigo:</h3>
+   
+<h3 align="left">Contact me:</h3>
 <p align="right">
+<a href="https://vk.com/xinzayr" target="blank"><img align="center" src="https://cdn1.iconfinder.com/data/icons/unicons-line-vol-6/24/vk-256.png" alt="@xinzayr"  width="40"></img></a>
 <a href="https://dev.to/@xinzayr" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/devto.svg" alt="@xinzayr" height="30" width="40" /></a>
 <a href="https://stackoverflow.com/users/xinzaýr" target="blank"><img align="center" src="https://stackoverflow.design/assets/img/logos/so/logo-stackoverflow.svg" alt="xinzaýr" height="40" width="90" /></a>
 </p>
