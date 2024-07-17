@@ -1,4 +1,4 @@
-<h1 align="center">Un Gusto 👋, Me apodo Xinzaýr</h1>
+<h1 align="center">Un Gusto 👋, Soy Xinzaýr</h1>
 <h3 align="center">Un desarrollador poco convencional de alguna parte del mundo</h3>
 
 <h2 align="center" style="">🌱 Actualmente aun no domino (Comprendo buena parte de alguno de ellos)</h2>
