@@ -4,7 +4,7 @@
 <p><img align="left" style="position:absolute; width:42%; height:0; padding-bottom:100%;" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExY29wNWZvZHk1b2gwbDdwcDZqajU0YXhwMmgyM2c2enJtb3F5Nnd2NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VbAFrrDVGAvZu/giphy.webp" alt="adam-pw" /></p>
 
   # 🌱 Actualmente estoy aprendiendo (Comprendo buena parte de alguno de ellos)
-   _**Pythom, Nim, Rust, Haskell, JavaScript, TypeScript, CoffeScript ,SQL **_
+   _**Pythom, Nim, Rust, Haskell, JavaScript, TypeScript, CoffeScript ,SQL**_
 
 <h3 align="left">Conéctate conmigo:</h3>
 <p align="right">
