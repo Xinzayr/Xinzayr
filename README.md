@@ -3,7 +3,7 @@
 
 <h2 align="center" style="">🌱 Actualmente aun no domino (Comprendo buena parte de alguno de ellos)</h2>
 
-<p><img align="left" style="position:relative; width:42%; height:0; top: 0px;" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExY29wNWZvZHk1b2gwbDdwcDZqajU0YXhwMmgyM2c2enJtb3F5Nnd2NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VbAFrrDVGAvZu/giphy.webp" alt="adam-pw" /></p>
+<a href="https://app.daily.dev/xinzayr"><img align="left" src="https://api.daily.dev/devcards/v2/k25EQKsvI8ijpnlrfKjw9.png?type=default&r=7x2" width="369" alt="Xinzayr Zylko's Dev Card"/></a>
 
    _**Pythom, Nim, Rust, Haskell, JavaScript, TypeScript, CoffeScript ,SQL**_
    
@@ -19,3 +19,4 @@
 
 <h3 align="left">Support:</h3>
 <p><a href="https://www.buymeacoffee.com/Zyko"> <img align="right" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="50" width="210" alt="Zyko" /></a><a href="https://ko-fi.com/xinzayr"> <img align="right" src="https://cdn.ko-fi.com/cdn/kofi3.png?v=3" height="50" width="210" alt="xinzayr" /></a></p><br><br>
+
