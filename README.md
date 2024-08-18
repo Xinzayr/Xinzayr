@@ -3,7 +3,7 @@
 
 <h2 align="center" style="">🌱 Actualmente aun no domino (Comprendo buena parte de alguno de ellos)</h2>
 
-<a href="https://app.daily.dev/xinzayr"><img align="left" src="https://api.daily.dev/devcards/v2/k25EQKsvI8ijpnlrfKjw9.png?type=default&r=7x2" width="369" alt="Xinzayr Zylko's Dev Card"/></a>
+<a href="https://app.daily.dev/xinzayr"><img align="left" src="https://api.daily.dev/devcards/v2/k25EQKsvI8ijpnlrfKjw9.png?type=default&r=7x2" width="234" alt="Xinzayr Zylko's Dev Card"/></a>
 
    _**Pythom, Nim, Rust, Haskell, JavaScript, TypeScript, CoffeScript ,SQL**_
    
