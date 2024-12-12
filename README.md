@@ -1,14 +1,16 @@
 <h1 align="center">Un Gusto 👋, Soy Xinzaýr</h1>
-<h3 align="center">Un desarrollador poco convencional de alguna parte del mundo</h3>
+<h3 align="center">Una persona que busca un gran cambio en lo que pequeño que es</h3>
 
 <h2 align="center">🌱 Actualmente aun no domino (Comprendo buena parte de alguno de ellos)</h2>
 
-<a href="https://app.daily.dev/xinzayr">
-  <img align="left" src="https://api.daily.dev/devcards/v2/k25EQKsvI8ijpnlrfKjw9.png?type=default&r=7x2" width="234" alt="Xinzayr Zylko's Dev Card"/>
+<a href="https://gravatar.com/xinzayr.qr?type=user&version=3">
+  <img align="left" src="https://gravatar.com/xinzayr.qr?type=user&version=3" style="border-radius: 6px 9px;" width="234" alt="Xinzayr QR Code"/>
 </a>
 
-  _**Python, Nim, Rust, JavaScript, TypeScript, CoffeeScript, SQL**_
-   
+_**Python, Nim, Rust, JavaScript, TypeScript, CoffeeScript, SQL**_
+
+<br>
+
 <h3 align="left">Contacta conmigo:</h3>
 <p align="left">
   <a href="https://vk.com/xinzayr" target="blank">
