@@ -1,0 +1,276 @@
+---
+import BaseLayout from '../layouts/BaseLayoutNew.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout title="404 - Página no encontrada - xinzayr" description="La página que buscas no existe. Regresa al inicio y explora todo lo que tengo para ofrecerte.">
+	<Header />
+
+	<main class="min-h-screen pt-16 flex items-center justify-center">
+		<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+			<!-- Animated 404 -->
+			<div class="mb-8">
+				<div class="relative">
+					<!-- Main 404 Number -->
+					<h1 class="text-[8rem] md:text-[12rem] lg:text-[16rem] font-black text-transparent bg-clip-text bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 leading-none select-none">
+						404
+					</h1>
+
+					<!-- Floating elements -->
+					<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+						<div class="relative">
+							<!-- Orbiting dots -->
+							<div class="absolute inset-0 animate-spin-slow">
+								<div class="w-3 h-3 bg-purple-400 rounded-full absolute -top-12 left-1/2 transform -translate-x-1/2"></div>
+								<div class="w-2 h-2 bg-pink-400 rounded-full absolute top-1/2 -right-12 transform -translate-y-1/2"></div>
+								<div class="w-3 h-3 bg-blue-400 rounded-full absolute -bottom-12 left-1/2 transform -translate-x-1/2"></div>
+								<div class="w-2 h-2 bg-yellow-400 rounded-full absolute top-1/2 -left-12 transform -translate-y-1/2"></div>
+							</div>
+
+							<!-- Center glitch effect -->
+							<div class="w-4 h-4 bg-white rounded-full animate-pulse opacity-80"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Error Message -->
+			<div class="mb-8">
+				<h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
+					Página no encontrada
+				</h2>
+				<p class="text-lg md:text-xl text-white/70 max-w-2xl mx-auto mb-8">
+					La página que intentas acceder no existe o ha sido movida.
+					Esto puede ocurrir cuando un enlace está roto, la URL fue escrita incorrectamente,
+					o la página fue eliminada del servidor.
+				</p>
+			</div>
+
+			<!-- Separator -->
+			<div class="mb-8">
+				<div class="flex items-center max-w-md mx-auto">
+					<div class="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+					<div class="px-4 text-white/60 text-lg font-medium">¿Te has perdido?</div>
+					<div class="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+				</div>
+			</div>
+
+			<!-- Action Buttons -->
+			<div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+				<button
+					onclick="window.history.back()"
+					class="group inline-flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl shadow-purple-500/25"
+				>
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+					</svg>
+					<span>Volver Atrás</span>
+				</button>
+
+				<a
+					href="/"
+					class="group inline-flex items-center space-x-2 px-8 py-4 glass border border-white/20 hover:border-white/30 text-white font-semibold rounded-xl transition-all duration-300 hover:bg-white/10"
+				>
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+					</svg>
+					<span>Ir al Inicio</span>
+				</a>
+
+				<a
+					href="https://github.com/xinzayr"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="group inline-flex items-center space-x-2 px-8 py-4 glass border border-white/20 hover:border-white/30 text-white font-semibold rounded-xl transition-all duration-300 hover:bg-white/10"
+				>
+					<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+						<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+					</svg>
+					<span>Te invito a visitar mi GitHub</span>
+				</a>
+			</div>
+
+			<!-- Quick Navigation -->
+			<div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+				<a
+					href="/projects"
+					class="group p-6 glass rounded-xl border border-white/10 hover:border-purple-500/50 transition-all duration-300 hover:transform hover:scale-105"
+				>
+					<div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4 mx-auto group-hover:bg-purple-500/30 transition-colors">
+						<svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+						</svg>
+					</div>
+					<h3 class="text-white font-semibold mb-2">Proyectos</h3>
+					<p class="text-white/60 text-sm">Explora mis trabajos y creaciones</p>
+				</a>
+
+				<a
+					href="/blog"
+					class="group p-6 glass rounded-xl border border-white/10 hover:border-blue-500/50 transition-all duration-300 hover:transform hover:scale-105"
+				>
+					<div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4 mx-auto group-hover:bg-blue-500/30 transition-colors">
+						<svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+						</svg>
+					</div>
+					<h3 class="text-white font-semibold mb-2">Blog</h3>
+					<p class="text-white/60 text-sm">Lee mis artículos y reflexiones</p>
+				</a>
+
+				<a
+					href="/contact"
+					class="group p-6 glass rounded-xl border border-white/10 hover:border-green-500/50 transition-all duration-300 hover:transform hover:scale-105"
+				>
+					<div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4 mx-auto group-hover:bg-green-500/30 transition-colors">
+						<svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+						</svg>
+					</div>
+					<h3 class="text-white font-semibold mb-2">Contacto</h3>
+					<p class="text-white/60 text-sm">Ponte en touch conmigo</p>
+				</a>
+			</div>
+
+			<!-- Fun Element -->
+			<div class="mt-16 text-center">
+				<p class="text-white/40 text-sm mb-4">
+					Mientras tanto, ¿sabías que...?
+				</p>
+				<div class="glass rounded-lg p-4 max-w-md mx-auto">
+					<p class="text-white/60 text-sm italic" id="fun-fact">
+						El error 404 fue nombrado por la habitación 404 en CERN donde se almacenaba el primer servidor web.
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Background Effects -->
+		<div class="fixed inset-0 pointer-events-none -z-10">
+			<!-- Animated gradient -->
+			<div class="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-transparent to-pink-900/20 animate-pulse"></div>
+
+			<!-- Floating particles -->
+			<div class="absolute top-20 left-10 w-2 h-2 bg-purple-400/50 rounded-full animate-float"></div>
+			<div class="absolute top-40 right-20 w-1 h-1 bg-pink-400/50 rounded-full animate-float-delayed"></div>
+			<div class="absolute bottom-40 left-1/4 w-3 h-3 bg-blue-400/30 rounded-full animate-float-slow"></div>
+			<div class="absolute bottom-20 right-1/3 w-1 h-1 bg-yellow-400/50 rounded-full animate-float"></div>
+			<div class="absolute top-1/2 left-1/4 w-2 h-2 bg-green-400/30 rounded-full animate-float-delayed"></div>
+			<div class="absolute top-3/4 right-1/4 w-1 h-1 bg-red-400/40 rounded-full animate-float-slow"></div>
+		</div>
+	</main>
+
+	<Footer />
+
+	<style>
+		@keyframes animate-spin-slow {
+			from {
+				transform: rotate(0deg);
+			}
+			to {
+				transform: rotate(360deg);
+			}
+		}
+
+		.animate-spin-slow {
+			animation: animate-spin-slow 10s linear infinite;
+		}
+
+		@keyframes float {
+			0%, 100% {
+				transform: translateY(0px) rotate(0deg);
+			}
+			50% {
+				transform: translateY(-20px) rotate(180deg);
+			}
+		}
+
+		@keyframes float-delayed {
+			0%, 100% {
+				transform: translateY(0px) rotate(0deg);
+			}
+			50% {
+				transform: translateY(-15px) rotate(-180deg);
+			}
+		}
+
+		@keyframes float-slow {
+			0%, 100% {
+				transform: translateY(0px) scale(1);
+			}
+			50% {
+				transform: translateY(-10px) scale(1.1);
+			}
+		}
+
+		.animate-float {
+			animation: float 3s ease-in-out infinite;
+		}
+
+		.animate-float-delayed {
+			animation: float-delayed 4s ease-in-out infinite;
+			animation-delay: 2s;
+		}
+
+		.animate-float-slow {
+			animation: float-slow 5s ease-in-out infinite;
+			animation-delay: 1s;
+		}
+	</style>
+
+	<script>
+		// Datos curiosos para mostrar aleatoriamente
+		const funFacts = [
+			"El error 404 fue nombrado por la habitación 404 en CERN donde se almacenaba el primer servidor web.",
+			"La primera página web de la historia todavía está online desde 1991.",
+			"El símbolo '@' se usaba en el siglo XVI para indicar precio por unidad.",
+			"El primer banner publicitario en internet tuvo un CTR del 44%.",
+			"La palabra 'bug' en programación viene de un insecto real encontrado en una computadora en 1947.",
+			"El protocolo HTTP fue diseñado en solo 9 días.",
+			"Google procesa más de 8.5 billones de búsquedas al día.",
+			"El primer dominio .com registrado fue symbolics.com en 1985."
+		];
+
+		// Mostrar un dato curioso aleatorio
+		function showRandomFact() {
+			const factElement = document.getElementById('fun-fact');
+			if (factElement) {
+				const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)];
+				factElement.textContent = randomFact;
+			}
+		}
+
+		// Cambiar dato cada 5 segundos
+		document.addEventListener('DOMContentLoaded', function() {
+			showRandomFact();
+			setInterval(showRandomFact, 5000);
+		});
+
+		// Añadir efecto de partículas en movimiento del mouse
+		document.addEventListener('mousemove', function(e) {
+			// Crear partícula ocasionalmente
+			if (Math.random() > 0.95) {
+				createMouseParticle(e.clientX, e.clientY);
+			}
+		});
+
+		function createMouseParticle(x: number, y: number) {
+			const particle = document.createElement('div');
+			particle.className = 'fixed w-1 h-1 bg-white/30 rounded-full pointer-events-none z-10';
+			particle.style.left = x + 'px';
+			particle.style.top = y + 'px';
+
+			document.body.appendChild(particle);
+
+			// Animar y remover
+			particle.animate([
+				{ opacity: 1, transform: 'translate(0, 0) scale(1)' },
+				{ opacity: 0, transform: `translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px) scale(0)` }
+			], {
+				duration: 1000,
+				easing: 'ease-out'
+			}).onfinish = () => particle.remove();
+		}
+	</script>
+</BaseLayout>
