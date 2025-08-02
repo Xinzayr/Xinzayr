@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import GitHubRepos from '../components/GitHubRepos.astro';
 import { getCollection } from 'astro:content';
+import { API_CONFIG } from '../consts';
 
 // Obtener todos los proyectos del contenido local
 const allProjects = await getCollection('projects');
@@ -14,6 +15,96 @@ const projects = allProjects.sort((a, b) => b.data.pubDate.valueOf() - a.data.pu
 // Obtener todas las tecnologías únicas para filtros
 const allTechnologies = [...new Set(projects.flatMap(project => project.data.stack))].sort();
 const allCategories = [...new Set(projects.map(project => project.data.category))].sort();
+
+// Obtener estadísticas reales de GitHub
+const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN || API_CONFIG.github.token;
+const GITHUB_USERNAME = API_CONFIG.github.username;
+
+let githubStats = {
+  publicRepos: 0,
+  totalLanguages: 0,
+  totalStars: 0,
+  totalForks: 0,
+  lastUpdated: '',
+  topLanguage: '',
+  activeRepos: [],
+  languageDistribution: {}
+};
+
+if (GITHUB_TOKEN && GITHUB_USERNAME) {
+  try {
+    // Obtener información del usuario
+    const userResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, {
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+
+    // Obtener repositorios del usuario
+    const reposResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?type=public&per_page=100&sort=updated`, {
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+
+    if (userResponse.ok && reposResponse.ok) {
+      const userData = await userResponse.json();
+      const reposData = await reposResponse.json();
+
+      // Filtrar repositorios públicos y no archivados
+      const activePublicRepos = reposData.filter((repo: any) => !repo.private && !repo.archived);
+
+      // Calcular estadísticas básicas
+      githubStats.publicRepos = activePublicRepos.length;
+      githubStats.totalStars = activePublicRepos.reduce((sum: number, repo: any) => sum + repo.stargazers_count, 0);
+      githubStats.totalForks = activePublicRepos.reduce((sum: number, repo: any) => sum + repo.forks_count, 0);
+
+      // Obtener información de lenguajes
+      const languageCount: Record<string, number> = {};
+      const languages = new Set();
+
+      activePublicRepos.forEach((repo: any) => {
+        if (repo.language) {
+          languages.add(repo.language);
+          languageCount[repo.language] = (languageCount[repo.language] || 0) + 1;
+        }
+      });
+
+      githubStats.totalLanguages = languages.size;
+      githubStats.languageDistribution = languageCount;
+
+      // Encontrar el lenguaje más usado
+      const sortedLanguages = Object.entries(languageCount)
+        .sort(([,a], [,b]) => (b as number) - (a as number));
+      githubStats.topLanguage = sortedLanguages.length > 0 ? sortedLanguages[0][0] : '';
+
+      // Obtener la fecha del último repositorio actualizado
+      if (activePublicRepos.length > 0) {
+        githubStats.lastUpdated = activePublicRepos[0].updated_at;
+      }
+
+      // Guardar información de los repos activos para mostrar detalles
+      githubStats.activeRepos = activePublicRepos.map((repo: any) => ({
+        name: repo.name,
+        language: repo.language,
+        stars: repo.stargazers_count,
+        updated: repo.updated_at
+      }));
+
+      console.log('📊 GitHub Stats completas:', {
+        repos: githubStats.publicRepos,
+        languages: githubStats.totalLanguages,
+        stars: githubStats.totalStars,
+        topLanguage: githubStats.topLanguage,
+        distribution: githubStats.languageDistribution
+      });
+    }
+  } catch (error) {
+    console.warn('Error fetching GitHub stats for projects page:', error);
+  }
+}
 ---
 
 <BaseLayout title="Proyectos - xinzayr" description="Explora mi portfolio de proyectos de desarrollo web, aplicaciones móviles y herramientas innovadoras.">
@@ -34,20 +125,60 @@ const allCategories = [...new Set(projects.map(project => project.data.category)
 				</div>
 
 				<!-- Stats -->
-				<div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto mb-16">
+				<div class="grid grid-cols-1 sm:grid-cols-4 gap-6 max-w-4xl mx-auto mb-16">
 					<div class="glass rounded-lg p-6 text-center">
-						<div class="text-3xl font-bold text-blue-400 mb-2">15+</div>
+						<div class="text-3xl font-bold text-blue-400 mb-2">
+							{githubStats.publicRepos || '2'}
+						</div>
 						<div class="text-white/70 text-sm">Repositorios públicos</div>
 					</div>
 					<div class="glass rounded-lg p-6 text-center">
-						<div class="text-3xl font-bold text-purple-400 mb-2">{allTechnologies.length}+</div>
-						<div class="text-white/70 text-sm">Tecnologías</div>
+						<div class="text-3xl font-bold text-purple-400 mb-2">
+							{githubStats.totalLanguages || '2'}
+						</div>
+						<div class="text-white/70 text-sm">Lenguajes de programación</div>
+						{githubStats.topLanguage && (
+							<div class="text-xs text-purple-300 mt-1">Principal: {githubStats.topLanguage}</div>
+						)}
 					</div>
 					<div class="glass rounded-lg p-6 text-center">
-						<div class="text-3xl font-bold text-green-400 mb-2">{projects.filter(p => p.data.featured).length}</div>
-						<div class="text-white/70 text-sm">Destacados locales</div>
+						<div class="text-3xl font-bold text-yellow-400 mb-2">
+							{githubStats.totalStars || '0'}
+						</div>
+						<div class="text-white/70 text-sm">Estrellas totales</div>
+					</div>
+					<div class="glass rounded-lg p-6 text-center">
+						<div class="text-3xl font-bold text-green-400 mb-2">
+							{projects.filter(p => p.data.featured).length || '1'}
+						</div>
+						<div class="text-white/70 text-sm">Proyectos destacados</div>
 					</div>
 				</div>
+
+				<!-- Distribución de lenguajes -->
+				{githubStats.languageDistribution && Object.keys(githubStats.languageDistribution).length > 0 && (
+					<div class="max-w-2xl mx-auto mb-16">
+						<h3 class="text-xl font-bold text-white mb-6 text-center">Distribución de tecnologías</h3>
+						<div class="glass rounded-lg p-6">
+							<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+								{Object.entries(githubStats.languageDistribution).map(([language, count]) => (
+									<div class="flex items-center justify-between">
+										<span class="text-white/80">{language}</span>
+										<div class="flex items-center space-x-2">
+											<div class="w-16 h-2 bg-white/10 rounded-full overflow-hidden">
+												<div
+													class="h-full bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
+													style={`width: ${(count as number / githubStats.publicRepos) * 100}%`}
+												></div>
+											</div>
+											<span class="text-white/60 text-sm">{count} repos</span>
+										</div>
+									</div>
+								))}
+							</div>
+						</div>
+					</div>
+				)}
 			</div>
 		</section>
 

@@ -9,8 +9,19 @@ interface Props {
 const { variant = 'simple', size = 'md' } = Astro.props;
 
 // Obtener Discord User ID desde variables de entorno
-const DISCORD_USER_ID = import.meta.env.DISCORD_USER_ID || '985292430758793308';
-const USE_LANYARD = import.meta.env.LANYARD_API === 'true';
+// Prioridad: PUBLIC_ variables (cliente) > variables privadas (servidor) > fallback
+const DISCORD_USER_ID =
+  import.meta.env.PUBLIC_DISCORD_USER_ID ||
+  import.meta.env.DISCORD_USER_ID ||
+  '985292430758793308';
+
+const USE_LANYARD =
+  import.meta.env.PUBLIC_LANYARD_API === 'true' ||
+  import.meta.env.LANYARD_API === 'true' ||
+  true; // Por defecto habilitado
+
+// Solo mostrar logs en desarrollo
+const isDev = import.meta.env.DEV;
 
 // Inicializar sin datos - solo se mostrarán datos reales de la API
 let discordStatus = null;
@@ -18,9 +29,13 @@ let discordStatus = null;
 // Intentar obtener datos reales de Discord si está habilitado
 if (USE_LANYARD && DISCORD_USER_ID) {
   try {
+    if (isDev) console.log(`🔮 Discord: Fetching status for ${DISCORD_USER_ID}`);
     const response = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
+
     if (response.ok) {
       const data = await response.json();
+      if (isDev) console.log(`✅ Discord: ${data.data?.discord_user?.global_name} (${data.data?.discord_status})`);
+
       if (data.success && data.data) {
         const lanyardData = data.data;
         // Procesar actividades múltiples (Spotify, juegos, etc.)
@@ -75,11 +90,18 @@ if (USE_LANYARD && DISCORD_USER_ID) {
           }
         };
       }
+    } else {
+      console.warn('Lanyard API response not OK:', response.status, response.statusText);
     }
   } catch (error) {
     console.warn('Error fetching Discord status from Lanyard:', error);
     // Mantener datos de ejemplo en caso de error
   }
+} else {
+  console.log('Discord status disabled or no User ID provided:', {
+    useLanyard: USE_LANYARD,
+    userId: DISCORD_USER_ID
+  });
 }
 
 const statusColors: Record<string, string> = {
@@ -180,7 +202,12 @@ const statusColors: Record<string, string> = {
           </div>
         </div>
         <div class="mt-2 text-white/50 text-xs">
-          Configura DISCORD_USER_ID y LANYARD_API en las variables de entorno
+          {!USE_LANYARD ? 'Discord deshabilitado en configuración' :
+           !DISCORD_USER_ID ? 'Falta DISCORD_USER_ID en variables de entorno' :
+           'Conectando con Discord...'}
+        </div>
+        <div class="mt-1 text-white/40 text-xs">
+          Variables: PUBLIC_DISCORD_USER_ID, PUBLIC_LANYARD_API
         </div>
       </div>
     )}
