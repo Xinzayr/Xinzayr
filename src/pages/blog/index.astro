@@ -76,7 +76,8 @@ const localPosts = (await getCollection('blog')).sort(
 						</div>
 
 						<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-							{localPosts.map((post) => (
+							{/* Mostrar solo los primeros 2 posts con datos */}
+							{localPosts.slice(0, 2).map((post) => (
 								<BlogCard
 									title={post.data.title}
 									description={post.data.description}
@@ -85,6 +86,27 @@ const localPosts = (await getCollection('blog')).sort(
 									tags={post.data.tags}
 									href={`/blog/${post.id}`}
 								/>
+							))}
+
+							{/* Mostrar estructuras vacías para los demás posts */}
+							{localPosts.length > 2 && localPosts.slice(2).map((_, index) => (
+								<div class="glass rounded-xl overflow-hidden group hover:border-white/30 transition-all duration-300">
+									<div class="h-48 bg-gradient-to-br from-white/5 to-white/10 animate-pulse"></div>
+									<div class="p-6">
+										<div class="h-6 bg-white/10 rounded mb-3 animate-pulse"></div>
+										<div class="space-y-2 mb-4">
+											<div class="h-4 bg-white/5 rounded animate-pulse"></div>
+											<div class="h-4 bg-white/5 rounded w-3/4 animate-pulse"></div>
+										</div>
+										<div class="flex flex-wrap gap-2 mb-4">
+											<div class="h-6 w-16 bg-white/5 rounded-full animate-pulse"></div>
+											<div class="h-6 w-20 bg-white/5 rounded-full animate-pulse"></div>
+										</div>
+										<div class="flex items-center text-xs text-white/40">
+											<div class="h-4 w-24 bg-white/5 rounded animate-pulse"></div>
+										</div>
+									</div>
+								</div>
 							))}
 						</div>
 					</div>

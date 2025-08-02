@@ -78,43 +78,86 @@ const categories = [...new Set(tools.map(tool => tool.data.category))].sort();
 				<main class="flex-1">
 					<!-- Tools Grid -->
 					<section id="tools-section">
-						<div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="tools-grid">
-							{tools.map((tool) => (
-								<div class="tool-card" data-category={tool.data.category}>
-									<ToolCard
-										title={tool.data.title}
-										shortDescription={tool.data.shortDescription}
-										tags={tool.data.tags}
-										category={tool.data.category}
-										featured={tool.data.featured}
-										href={`/tools/${tool.data.slug || tool.id}`}
-									/>
+						<!-- Mensaje de herramientas en desarrollo -->
+						<div class="text-center py-12">
+							<div class="glass rounded-xl p-8 max-w-2xl mx-auto">
+								<div class="mb-6">
+									<svg class="w-16 h-16 text-purple-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 7.172V5L8 4z"/>
+									</svg>
+									<h2 class="text-3xl font-bold text-white mb-4">Herramientas en Desarrollo</h2>
+									<p class="text-white/70 text-lg mb-6">
+										Estoy trabajando en una increíble colección de herramientas web útiles que estarán disponibles próximamente.
+									</p>
 								</div>
-							))}
-						</div>
 
-						<!-- No results -->
-						<div id="no-tools" class="text-center py-20 hidden">
-							<div class="text-white/60 text-lg">
-								No hay herramientas en esta categoría.
+								<!-- Preview de herramientas futuras -->
+								<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+									<div class="p-4 bg-white/5 rounded-lg border border-white/10">
+										<div class="flex items-center space-x-3 mb-2">
+											<div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+												<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+												</svg>
+											</div>
+											<h3 class="font-semibold text-white">Generador de Contraseñas</h3>
+										</div>
+										<p class="text-white/60 text-sm">Crea contraseñas seguras y personalizables</p>
+									</div>
+
+									<div class="p-4 bg-white/5 rounded-lg border border-white/10">
+										<div class="flex items-center space-x-3 mb-2">
+											<div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+												<svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+												</svg>
+											</div>
+											<h3 class="font-semibold text-white">Acortador de URLs</h3>
+										</div>
+										<p class="text-white/60 text-sm">Convierte enlaces largos en URLs cortas</p>
+									</div>
+
+									<div class="p-4 bg-white/5 rounded-lg border border-white/10">
+										<div class="flex items-center space-x-3 mb-2">
+											<div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+												<svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM7 3H5a2 2 0 00-2 2v12a4 4 0 004 4h2M9 3h6a2 2 0 012 2v12a4 4 0 01-2 2h-6M9 3v18"/>
+												</svg>
+											</div>
+											<h3 class="font-semibold text-white">Conversor de Archivos</h3>
+										</div>
+										<p class="text-white/60 text-sm">Convierte entre diferentes formatos de archivo</p>
+									</div>
+
+									<div class="p-4 bg-white/5 rounded-lg border border-white/10">
+										<div class="flex items-center space-x-3 mb-2">
+											<div class="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+												<svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+												</svg>
+											</div>
+											<h3 class="font-semibold text-white">Calculadora Avanzada</h3>
+										</div>
+										<p class="text-white/60 text-sm">Calculadora científica y de programador</p>
+									</div>
+								</div>
+
+								<!-- CTA -->
+								<div class="text-center">
+									<p class="text-white/60 mb-4">
+										¿Tienes alguna idea para una herramienta útil?
+									</p>
+									<a
+										href="/contact"
+										class="inline-flex items-center space-x-2 px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-lg transition-colors"
+									>
+										<span>Sugerir una herramienta</span>
+										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+										</svg>
+									</a>
+								</div>
 							</div>
-						</div>
-
-						<!-- Coming Soon Section -->
-						<div class="mt-12 p-8 glass rounded-xl text-center">
-							<h3 class="text-2xl font-bold text-white mb-4">Próximamente</h3>
-							<p class="text-white/70 mb-6">
-								Estoy trabajando en más herramientas útiles. ¿Tienes alguna sugerencia?
-							</p>
-							<a
-								href="/contact"
-								class="inline-flex items-center space-x-2 px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-lg transition-colors"
-							>
-								<span>Sugerir una herramienta</span>
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-								</svg>
-							</a>
 						</div>
 					</section>
 				</main>

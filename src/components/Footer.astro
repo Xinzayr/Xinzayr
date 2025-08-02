@@ -16,16 +16,16 @@ const currentYear = new Date().getFullYear();
 
 <footer class="border-t border-white/10 bg-black/50 backdrop-blur-sm">
 	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-		<div class="grid grid-cols-1 md:grid-cols-6 gap-8">
+		<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
 			<!-- Brand & Description -->
-			<div class="col-span-1 md:col-span-2">
+			<div class="col-span-1 md:col-span-1">
 				<div class="flex items-center space-x-2 mb-4">
 					<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
 						<span class="text-white font-mono font-bold text-sm">X</span>
 					</div>
 					<span class="font-mono font-semibold text-white text-lg">xinzayr</span>
 				</div>
-				<p class="text-white/70 text-sm mb-4 max-w-md">
+				<p class="text-white/70 text-sm mb-4">
 					Desarrollador Junior en constante aprendizaje. Apasionado por crear proyectos web
 					y explorar nuevas tecnologías en mi camino de crecimiento profesional.
 				</p>
@@ -62,25 +62,22 @@ const currentYear = new Date().getFullYear();
 				</ul>
 			</div>
 
-			<!-- World Clock -->
+			<!-- Estados: Discord & Spotify -->
 			<div>
-				<h3 class="text-white font-semibold text-sm mb-4">Zona Horaria</h3>
-				<WorldClock />
-			</div>
+				<h3 class="text-white font-semibold text-sm mb-4">Estados</h3>
 
-			<!-- Discord Status -->
-			<div>
-				<h3 class="text-white font-semibold text-sm mb-4">Estado Discord</h3>
-				<DiscordStatus variant="detailed" />
-			</div>
+				<!-- Discord -->
+				<div class="mb-6">
+					<h4 class="text-white/80 font-medium text-xs mb-3">Discord</h4>
+					<DiscordStatus variant="detailed" />
+				</div>
 
-			<!-- Spotify Now Playing -->
-			<div>
-				<h3 class="text-white font-semibold text-sm mb-4">Ahora escuchando</h3>
-				<SpotifyNowPlaying variant="detailed" showWhenNotPlaying={true} />
-			</div>
-
-			<!-- Social & Donations -->
+				<!-- Spotify -->
+				<div>
+					<h4 class="text-white/80 font-medium text-xs mb-3">Spotify</h4>
+					<SpotifyNowPlaying variant="detailed" showWhenNotPlaying={true} />
+				</div>
+			</div>			<!-- Social & Donations -->
 			<div>
 				<h3 class="text-white font-semibold text-sm mb-4">Conecta conmigo</h3>
 
@@ -202,10 +199,67 @@ const currentYear = new Date().getFullYear();
 			<p class="text-white/60 text-xs">
 				© {currentYear} xinzayr. Desarrollado con Astro y TailwindCSS.
 			</p>
-			<div class="flex items-center space-x-4 mt-4 sm:mt-0">
-				<a href="/rss.xml" class="text-white/60 hover:text-white text-xs transition-colors">RSS</a>
-				<a href="/sitemap-index.xml" class="text-white/60 hover:text-white text-xs transition-colors">Sitemap</a>
+
+			<div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 mt-4 sm:mt-0">
+				<!-- Zona Horaria Compacta -->
+				<div class="flex items-center space-x-4 text-xs">
+					<div class="flex items-center space-x-1">
+						<span class="text-blue-400 font-mono font-bold">FL, USA</span>
+						<span id="florida-compact" class="text-white/60 font-mono">--:--</span>
+					</div>
+					<div class="flex items-center space-x-1">
+						<span class="text-green-400 font-mono font-bold">EC</span>
+						<span id="guayaquil-compact" class="text-white/60 font-mono">--:--</span>
+					</div>
+				</div>
+
+				<!-- Links tradicionales -->
+				<div class="flex items-center space-x-4">
+					<a href="/rss.xml" class="text-white/60 hover:text-white text-xs transition-colors">RSS</a>
+					<a href="/sitemap-index.xml" class="text-white/60 hover:text-white text-xs transition-colors">Sitemap</a>
+				</div>
 			</div>
 		</div>
 	</div>
 </footer>
+
+<script>
+	// Relojes compactos para el footer
+	function updateCompactClocks() {
+		const now = new Date();
+
+		// Florida (Eastern Time)
+		const floridaTime = new Intl.DateTimeFormat('en-US', {
+			timeZone: 'America/New_York',
+			hour12: false,
+			hour: '2-digit',
+			minute: '2-digit'
+		}).format(now);
+
+		// Guayaquil (Ecuador Time)
+		const guayaquilTime = new Intl.DateTimeFormat('en-US', {
+			timeZone: 'America/Guayaquil',
+			hour12: false,
+			hour: '2-digit',
+			minute: '2-digit'
+		}).format(now);
+
+		// Update DOM
+		const floridaElement = document.getElementById('florida-compact');
+		const guayaquilElement = document.getElementById('guayaquil-compact');
+
+		if (floridaElement) floridaElement.textContent = floridaTime;
+		if (guayaquilElement) guayaquilElement.textContent = guayaquilTime;
+	}
+
+	// Update immediately and then every second
+	updateCompactClocks();
+	setInterval(updateCompactClocks, 1000);
+
+	// Update when page becomes visible again
+	document.addEventListener('visibilitychange', () => {
+		if (!document.hidden) {
+			updateCompactClocks();
+		}
+	});
+</script>
