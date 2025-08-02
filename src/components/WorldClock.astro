@@ -1,0 +1,115 @@
+---
+// Componente WorldClock para mostrar hora de Florida y Guayaquil
+---
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+	<!-- Florida Clock -->
+	<div class="glass rounded-lg p-4 text-center">
+		<div class="text-white/60 text-sm font-medium mb-2">Florida, USA</div>
+		<div
+			id="florida-time"
+			class="text-xl sm:text-2xl font-mono text-blue-400 font-bold tracking-wide break-all"
+			data-timezone="America/New_York"
+		>
+			--:--:--
+		</div>
+		<div class="text-white/40 text-xs mt-1">UTC-5/-4</div>
+	</div>
+
+	<!-- Guayaquil Clock -->
+	<div class="glass rounded-lg p-4 text-center">
+		<div class="text-white/60 text-sm font-medium mb-2">Guayaquil, Ecuador</div>
+		<div
+			id="guayaquil-time"
+			class="text-xl sm:text-2xl font-mono text-green-400 font-bold tracking-wide break-all"
+			data-timezone="America/Guayaquil"
+		>
+			--:--:--
+		</div>
+		<div class="text-white/40 text-xs mt-1">UTC-5</div>
+	</div>
+</div>
+
+<script>
+	function updateClocks() {
+		const now = new Date();
+
+		// Florida (Eastern Time)
+		const floridaTime = new Intl.DateTimeFormat('en-US', {
+			timeZone: 'America/New_York',
+			hour12: false,
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit'
+		}).format(now);
+
+		// Guayaquil (Ecuador Time)
+		const guayaquilTime = new Intl.DateTimeFormat('en-US', {
+			timeZone: 'America/Guayaquil',
+			hour12: false,
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit'
+		}).format(now);
+
+		// Update DOM
+		const floridaElement = document.getElementById('florida-time');
+		const guayaquilElement = document.getElementById('guayaquil-time');
+
+		if (floridaElement) floridaElement.textContent = floridaTime;
+		if (guayaquilElement) guayaquilElement.textContent = guayaquilTime;
+	}
+
+	// Update immediately and then every second
+	updateClocks();
+	setInterval(updateClocks, 1000);
+
+	// Update when page becomes visible again
+	document.addEventListener('visibilitychange', () => {
+		if (!document.hidden) {
+			updateClocks();
+		}
+	});
+</script>
+
+<style>
+	/* Retro font styling con mejor responsividad */
+	#florida-time,
+	#guayaquil-time {
+		font-family: 'Courier New', 'Lucida Console', Monaco, monospace;
+		text-shadow: 0 0 8px currentColor;
+		letter-spacing: 0.05em;
+		font-variant-numeric: tabular-nums;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		min-width: 0;
+	}
+
+	#florida-time {
+		color: #60a5fa;
+		text-shadow: 0 0 8px #3b82f6;
+	}
+
+	#guayaquil-time {
+		color: #4ade80;
+		text-shadow: 0 0 8px #22c55e;
+	}
+
+	/* Responsividad para pantallas pequeñas */
+	@media (max-width: 640px) {
+		#florida-time,
+		#guayaquil-time {
+			font-size: 1.25rem;
+			letter-spacing: 0.025em;
+		}
+	}
+
+	@media (max-width: 480px) {
+		#florida-time,
+		#guayaquil-time {
+			font-size: 1.125rem;
+			letter-spacing: 0;
+		}
+	}
+</style>

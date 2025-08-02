@@ -1,0 +1,192 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	return posts.map((post) => ({
+		params: { slug: post.id },
+		props: post,
+	}));
+}
+
+type Props = CollectionEntry<'blog'>;
+
+const post = Astro.props;
+const { Content } = await render(post);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+	<Header />
+
+	<main class="min-h-screen pt-16">
+		<article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+			<!-- Hero Image -->
+			{post.data.heroImage && (
+				<div class="mb-12">
+					<div class="relative aspect-video rounded-2xl overflow-hidden glass">
+						<img
+							src={post.data.heroImage.src}
+							alt={post.data.title}
+							class="w-full h-full object-cover"
+						/>
+						<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+					</div>
+				</div>
+			)}
+
+			<!-- Header -->
+			<header class="mb-12 text-center">
+				<h1 class="text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
+					{post.data.title}
+				</h1>
+
+				<div class="flex flex-wrap items-center justify-center gap-4 text-white/70">
+					<div class="flex items-center space-x-2">
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+						</svg>
+						<FormattedDate date={post.data.pubDate} />
+					</div>
+
+					{post.data.updatedDate && (
+						<div class="flex items-center space-x-2">
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+							</svg>
+							<span class="text-sm">Actualizado: <FormattedDate date={post.data.updatedDate} /></span>
+						</div>
+					)}
+
+					{post.data.tags && (
+						<div class="flex flex-wrap gap-2">
+							{post.data.tags.map((tag) => (
+								<span class="px-3 py-1 text-xs bg-blue-500/20 text-blue-300 rounded-full font-mono">
+									#{tag}
+								</span>
+							))}
+						</div>
+					)}
+				</div>
+			</header>
+
+			<!-- Content -->
+			<div class="prose prose-invert prose-lg max-w-none">
+				<div class="glass rounded-xl p-8 lg:p-12">
+					<Content />
+				</div>
+			</div>
+
+			<!-- Navigation -->
+			<nav class="mt-16 pt-8 border-t border-white/10">
+				<div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+					<a
+						href="/blog"
+						class="inline-flex items-center space-x-2 px-4 py-2 glass border border-white/20 text-white rounded-lg glass-hover"
+					>
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+						</svg>
+						<span>Volver al Blog</span>
+					</a>
+
+					<div class="flex items-center space-x-4">
+						<!-- Social sharing buttons -->
+						<button
+							onclick="navigator.share && navigator.share({title: document.title, url: window.location.href}) || (navigator.clipboard.writeText(window.location.href) && alert('URL copiada al portapapeles'))"
+							class="p-2 glass border border-white/20 text-white rounded-lg glass-hover"
+							title="Compartir"
+						>
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
+							</svg>
+						</button>
+					</div>
+				</div>
+			</nav>
+		</article>
+	</main>
+
+	<Footer />
+</BaseLayout>
+
+<style>
+	/* Custom prose styles for the glass theme */
+	.prose {
+		@apply text-white/90;
+	}
+
+	.prose h1,
+	.prose h2,
+	.prose h3,
+	.prose h4,
+	.prose h5,
+	.prose h6 {
+		@apply text-white font-bold;
+	}
+
+	.prose h2 {
+		@apply text-2xl lg:text-3xl mt-8 mb-4;
+	}
+
+	.prose h3 {
+		@apply text-xl lg:text-2xl mt-6 mb-3;
+	}
+
+	.prose p {
+		@apply text-white/80 leading-relaxed mb-4;
+	}
+
+	.prose a {
+		@apply text-blue-400 hover:text-blue-300 underline;
+	}
+
+	.prose code {
+		@apply bg-white/10 text-blue-300 px-2 py-1 rounded font-mono text-sm;
+	}
+
+	.prose pre {
+		@apply bg-white/5 border border-white/10 rounded-lg p-4 overflow-x-auto;
+	}
+
+	.prose pre code {
+		@apply bg-transparent p-0;
+	}
+
+	.prose blockquote {
+		@apply border-l-4 border-blue-500 pl-4 italic text-white/70;
+	}
+
+	.prose ul,
+	.prose ol {
+		@apply text-white/80;
+	}
+
+	.prose li {
+		@apply mb-2;
+	}
+
+	.prose strong {
+		@apply text-white font-semibold;
+	}
+
+	.prose table {
+		@apply w-full border-collapse;
+	}
+
+	.prose th,
+	.prose td {
+		@apply border border-white/20 px-4 py-2;
+	}
+
+	.prose th {
+		@apply bg-white/5 font-semibold text-white;
+	}
+
+	.prose td {
+		@apply text-white/80;
+	}
+</style>

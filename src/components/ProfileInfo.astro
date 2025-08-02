@@ -1,0 +1,233 @@
+---
+// Componente para mostrar información de perfil con múltiples fuentes
+import { EXTERNAL_RESOURCES, PERSONAL_INFO } from '../consts';
+
+interface Props {
+  variant?: 'minimal' | 'complete';
+  showQR?: boolean;
+}
+
+const { variant = 'complete', showQR = false } = Astro.props;
+
+// URLs de perfil y recursos
+const GRAVATAR_BASE = `${EXTERNAL_RESOURCES.GRAVATAR_BASE}/${PERSONAL_INFO.gravatar}`;
+const GRAVATAR_QR = `${EXTERNAL_RESOURCES.GRAVATAR_BASE}/${PERSONAL_INFO.gravatar}.qr`;
+const GITHUB_AVATAR = `https://github.com/${PERSONAL_INFO.username}.png`;
+
+// Información básica del perfil
+const profileInfo = {
+  name: PERSONAL_INFO.name,
+  title: 'Desarrollador Junior',
+  location: PERSONAL_INFO.location,
+  email: PERSONAL_INFO.email,
+  websites: [
+    { name: 'GitHub', url: PERSONAL_INFO.github, icon: 'github' },
+    { name: 'Portfolio', url: 'https://xinzayr.vercel.app', icon: 'globe' },
+    { name: 'Email', url: `mailto:${PERSONAL_INFO.email}`, icon: 'mail' }
+  ],
+  skills: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 'Astro'],
+  interests: ['Desarrollo Web', 'UI/UX', 'Open Source', 'Aprendizaje Continuo']
+};
+
+// Iconos SVG
+const icons = {
+  github: `<path fill="currentColor" d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>`,
+  globe: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>`,
+  mail: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>`,
+  location: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>`,
+  qr: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>`
+};
+---
+
+{variant === 'minimal' ? (
+  <!-- Vista mínima para header/navbar -->
+  <div class="flex items-center space-x-3">
+    <div class="relative">
+      <img
+        src={GITHUB_AVATAR}
+        alt={profileInfo.name}
+        class="w-8 h-8 rounded-full border-2 border-white/20"
+        loading="lazy"
+        onerror={`this.src='${GRAVATAR_BASE}.jpg?s=64&d=mp'`}
+      />
+      <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-black"></div>
+    </div>
+    <div>
+      <div class="text-white font-medium text-sm">{profileInfo.name}</div>
+      <div class="text-white/60 text-xs">{profileInfo.title}</div>
+    </div>
+  </div>
+) : (
+  <!-- Vista completa para páginas internas -->
+  <div class="space-y-6">
+    <!-- Perfil principal -->
+    <div class="glass rounded-xl p-6">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
+        <!-- Avatar con múltiples fuentes -->
+        <div class="relative flex-shrink-0">
+          <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 p-1">
+            <div class="w-full h-full rounded-2xl bg-black flex items-center justify-center overflow-hidden">
+              <img
+                src={GITHUB_AVATAR}
+                alt={profileInfo.name}
+                class="w-full h-full object-cover rounded-xl"
+                loading="lazy"
+                onerror={`this.src='${GRAVATAR_BASE}.jpg?s=400&d=mp'`}
+              />
+            </div>
+          </div>
+          <!-- Indicador de estado online -->
+          <div class="absolute -bottom-2 -right-2 w-6 h-6 bg-green-400 rounded-full border-4 border-black flex items-center justify-center">
+            <div class="w-2 h-2 bg-green-600 rounded-full animate-pulse"></div>
+          </div>
+        </div>
+
+        <!-- Información básica -->
+        <div class="flex-1 text-center sm:text-left">
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">{profileInfo.name}</h2>
+          <p class="text-lg text-blue-400 mb-3">{profileInfo.title}</p>
+
+          <div class="flex flex-wrap justify-center sm:justify-start items-center gap-4 text-sm text-white/70">
+            <div class="flex items-center space-x-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path set:html={icons.location}></path>
+              </svg>
+              <span>{profileInfo.location}</span>
+            </div>
+            <div class="flex items-center space-x-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path set:html={icons.mail}></path>
+              </svg>
+              <a href={`mailto:${profileInfo.email}`} class="hover:text-white transition-colors">
+                {profileInfo.email}
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- QR Code (si está habilitado) -->
+        {showQR && (
+          <div class="flex-shrink-0">
+            <div class="glass rounded-lg p-3 text-center">
+              <img
+                src={GRAVATAR_QR}
+                alt="QR Code - Perfil Gravatar"
+                class="w-20 h-20 rounded-lg mx-auto mb-2"
+                loading="lazy"
+              />
+              <p class="text-white/60 text-xs">Perfil Gravatar</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <!-- Enlaces sociales -->
+      <div class="mt-6 pt-6 border-t border-white/10">
+        <div class="flex flex-wrap justify-center sm:justify-start gap-3">
+          {profileInfo.websites.map((site) => (
+            <a
+              href={site.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center space-x-2 px-3 py-2 glass rounded-lg hover:bg-white/10 transition-colors group"
+            >
+              <svg class="w-4 h-4 text-white/60 group-hover:text-white transition-colors" fill={site.icon === 'github' ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                <path set:html={icons[site.icon as keyof typeof icons]}></path>
+              </svg>
+              <span class="text-white/80 text-sm group-hover:text-white transition-colors">{site.name}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Habilidades técnicas -->
+    <div class="glass rounded-xl p-6">
+      <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+        <svg class="w-5 h-5 text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+        </svg>
+        Tecnologías Principales
+      </h3>
+      <div class="flex flex-wrap gap-2">
+        {profileInfo.skills.map((skill) => (
+          <span class="px-3 py-1 text-sm bg-white/10 text-white/80 rounded-full font-mono hover:bg-white/20 transition-colors">
+            {skill}
+          </span>
+        ))}
+      </div>
+    </div>
+
+    <!-- Intereses -->
+    <div class="glass rounded-xl p-6">
+      <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+        <svg class="w-5 h-5 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+        </svg>
+        Intereses y Pasiones
+      </h3>
+      <div class="flex flex-wrap gap-2">
+        {profileInfo.interests.map((interest) => (
+          <span class="px-3 py-1 text-sm bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-white/80 rounded-full border border-purple-500/30 hover:from-purple-500/30 hover:to-pink-500/30 transition-colors">
+            {interest}
+          </span>
+        ))}
+      </div>
+    </div>
+
+    <!-- Gravatar QR como sección separada si no se muestra arriba -->
+    {!showQR && (
+      <div class="glass rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <svg class="w-5 h-5 text-purple-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path set:html={icons.qr}></path>
+          </svg>
+          Código QR - Perfil Gravatar
+        </h3>
+        <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
+          <img
+            src={GRAVATAR_QR}
+            alt="QR Code - Perfil Gravatar"
+            class="w-32 h-32 rounded-lg border border-white/20"
+            loading="lazy"
+          />
+          <div class="text-center sm:text-left">
+            <p class="text-white/80 mb-2">Escanea para acceder a mi perfil completo de Gravatar</p>
+            <a
+              href={GRAVATAR_BASE}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center space-x-2 text-purple-400 hover:text-purple-300 transition-colors text-sm"
+            >
+              <span>Ver perfil en Gravatar</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+)}
+
+<style>
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+</style>

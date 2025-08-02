@@ -1,0 +1,186 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ToolCard from '../components/ToolCard.astro';
+import { getCollection } from 'astro:content';
+
+// Obtener todas las herramientas
+const allTools = await getCollection('tools');
+
+// Ordenar por fecha de publicación (más recientes primero)
+const tools = allTools.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Obtener categorías únicas
+const categories = [...new Set(tools.map(tool => tool.data.category))].sort();
+---
+
+<BaseLayout title="Herramientas - xinzayr" description="Colección de herramientas web útiles y aplicaciones desarrolladas para facilitar tareas cotidianas.">
+	<Header />
+
+	<main class="min-h-screen pt-16">
+		<!-- Hero Section -->
+		<section class="py-20">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-12">
+					<h1 class="text-4xl lg:text-5xl font-bold text-white mb-6">
+						Herramientas Útiles
+					</h1>
+					<p class="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+						Una colección de herramientas web que he desarrollado para resolver problemas comunes
+						y hacer la vida más fácil. Todas son gratuitas y fáciles de usar.
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- Navigation Sidebar -->
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="flex flex-col lg:flex-row gap-8 pb-20">
+				<!-- Sidebar -->
+				<aside class="lg:w-64 lg:sticky lg:top-24 lg:h-fit">
+					<nav class="glass rounded-xl p-6">
+						<h2 class="text-white font-semibold mb-4">Categorías</h2>
+						<ul class="space-y-2">
+							<li>
+								<a
+									href="#all"
+									class="nav-link active block px-3 py-2 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+									data-category="all"
+								>
+									Todas las herramientas
+								</a>
+							</li>
+							{categories.map((category) => (
+								<li>
+									<a
+										href={`#${category.toLowerCase().replace(/\s+/g, '-')}`}
+										class="nav-link block px-3 py-2 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+										data-category={category}
+									>
+										{category}
+									</a>
+								</li>
+							))}
+						</ul>
+
+						<!-- Quick Stats -->
+						<div class="mt-8 p-4 bg-white/5 rounded-lg">
+							<div class="text-center">
+								<div class="text-2xl font-bold text-purple-400">{tools.length}</div>
+								<div class="text-xs text-white/60">Herramientas disponibles</div>
+							</div>
+						</div>
+					</nav>
+				</aside>
+
+				<!-- Main Content -->
+				<main class="flex-1">
+					<!-- Tools Grid -->
+					<section id="tools-section">
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="tools-grid">
+							{tools.map((tool) => (
+								<div class="tool-card" data-category={tool.data.category}>
+									<ToolCard
+										title={tool.data.title}
+										shortDescription={tool.data.shortDescription}
+										tags={tool.data.tags}
+										category={tool.data.category}
+										featured={tool.data.featured}
+										href={`/tools/${tool.data.slug || tool.id}`}
+									/>
+								</div>
+							))}
+						</div>
+
+						<!-- No results -->
+						<div id="no-tools" class="text-center py-20 hidden">
+							<div class="text-white/60 text-lg">
+								No hay herramientas en esta categoría.
+							</div>
+						</div>
+
+						<!-- Coming Soon Section -->
+						<div class="mt-12 p-8 glass rounded-xl text-center">
+							<h3 class="text-2xl font-bold text-white mb-4">Próximamente</h3>
+							<p class="text-white/70 mb-6">
+								Estoy trabajando en más herramientas útiles. ¿Tienes alguna sugerencia?
+							</p>
+							<a
+								href="/contact"
+								class="inline-flex items-center space-x-2 px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-lg transition-colors"
+							>
+								<span>Sugerir una herramienta</span>
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+								</svg>
+							</a>
+						</div>
+					</section>
+				</main>
+			</div>
+		</div>
+	</main>
+
+	<Footer />
+
+	<style>
+		.nav-link.active {
+			@apply bg-purple-500/20 text-purple-300;
+		}
+
+		.tool-card {
+			@apply transition-all duration-300;
+		}
+
+		.tool-card.hidden {
+			@apply opacity-0 transform scale-95 pointer-events-none;
+		}
+	</style>
+
+	<script>
+		// Funcionalidad de navegación y filtros
+		document.addEventListener('DOMContentLoaded', function() {
+			const navLinks = document.querySelectorAll('.nav-link') as NodeListOf<HTMLElement>;
+			const toolCards = document.querySelectorAll('.tool-card') as NodeListOf<HTMLElement>;
+			const noTools = document.getElementById('no-tools') as HTMLElement;
+
+			navLinks.forEach((link: HTMLElement) => {
+				link.addEventListener('click', function(e: Event) {
+					e.preventDefault();
+
+					const category = (this as HTMLElement).dataset.category as string;
+
+					// Update active state
+					navLinks.forEach((l: HTMLElement) => l.classList.remove('active'));
+					(this as HTMLElement).classList.add('active');
+
+					// Filter tools
+					filterTools(category);
+				});
+			});
+
+			function filterTools(category: string) {
+				let visibleCount = 0;
+
+				toolCards.forEach((card: HTMLElement) => {
+					const cardCategory = card.dataset.category;
+
+					if (category === 'all' || cardCategory === category) {
+						card.classList.remove('hidden');
+						visibleCount++;
+					} else {
+						card.classList.add('hidden');
+					}
+				});
+
+				// Show/hide no results message
+				if (visibleCount === 0) {
+					noTools.classList.remove('hidden');
+				} else {
+					noTools.classList.add('hidden');
+				}
+			}
+		});
+	</script>
+</BaseLayout>

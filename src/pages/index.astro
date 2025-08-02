@@ -1,0 +1,167 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ProfileAvatar from '../components/ProfileAvatar.astro';
+import GitHubRepos from '../components/GitHubRepos.astro';
+import DiscordStatus from '../components/DiscordStatus.astro';
+import BlogCard from '../components/BlogCard.astro';
+import BloggerPosts from '../components/BloggerPosts.astro';
+import { getCollection } from 'astro:content';
+
+// Obtener contenido local como fallback
+const allBlogPosts = await getCollection('blog');
+
+// Últimas entradas del blog local (máximo 3)
+const latestBlogPosts = allBlogPosts
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 3);
+---
+
+<BaseLayout title="xinzayr - Desarrollador Junior">
+	<Header />
+
+	<main class="min-h-screen pt-16">
+		<!-- Hero Section -->
+		<section class="relative overflow-hidden">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+					<!-- Content -->
+					<div class="space-y-8">
+						<div class="space-y-4">
+							<h1 class="text-4xl lg:text-6xl font-bold text-white leading-tight">
+								Hola, soy
+								<span class="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+									xinzayr
+								</span>
+							</h1>
+							<p class="text-xl text-white/80 leading-relaxed">
+								Desarrollador Junior apasionado por aprender y crear proyectos web.
+								Estudiante en constante crecimiento, explorando tecnologías modernas y mejores prácticas.
+							</p>
+						</div>
+
+						<!-- CTA Buttons -->
+						<div class="flex flex-col sm:flex-row gap-4">
+							<a
+								href="/projects"
+								class="inline-flex items-center justify-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors"
+							>
+								Ver mis proyectos
+							</a>
+							<a
+								href="/contact"
+								class="inline-flex items-center justify-center px-6 py-3 glass border border-white/20 text-white font-medium rounded-lg glass-hover"
+							>
+								Conectar conmigo
+							</a>
+						</div>
+
+						<!-- Status Indicators -->
+						<div class="flex flex-wrap gap-4 pt-4">
+							<DiscordStatus variant="simple" size="md" />
+							<div class="flex items-center space-x-2 glass px-3 py-2 rounded-lg">
+								<div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+								<span class="text-sm text-white/80">Activo en GitHub</span>
+							</div>
+						</div>
+					</div>
+
+					<!-- Avatar/Visual -->
+					<div class="relative">
+						<ProfileAvatar username="xinzayr" size="lg" showGradient={true} showFloatingElements={true} />
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- GitHub Repositories Section -->
+		<section class="py-20">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-12">
+					<h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">
+						Mis Proyectos en GitHub
+					</h2>
+					<p class="text-white/70 text-lg max-w-2xl mx-auto">
+						Proyectos que he estado desarrollando para aprender y practicar
+					</p>
+				</div>
+
+				<GitHubRepos variant="featured" limit={6} />
+
+				<div class="text-center mt-12">
+					<a
+						href="/projects"
+						class="inline-flex items-center space-x-2 text-blue-400 hover:text-blue-300 font-medium transition-colors"
+					>
+						<span>Ver todos los proyectos</span>
+						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+						</svg>
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<!-- Latest Blog Posts Section -->
+		<section class="py-20 bg-white/5 backdrop-blur-sm">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-12">
+					<h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">
+						Últimas Entradas del Blog
+					</h2>
+					<p class="text-white/70 text-lg max-w-2xl mx-auto">
+						Comparto mis conocimientos y experiencias en desarrollo, sincronizado automáticamente desde mi blog
+					</p>
+				</div>
+
+				<!-- Posts del Blog de Blogger -->
+				<BloggerPosts variant="grid" maxPosts={3} showFeatured={false} />
+
+				<div class="text-center mt-12">
+					<a
+						href="/blog"
+						class="inline-flex items-center space-x-2 text-blue-400 hover:text-blue-300 font-medium transition-colors"
+					>
+						<span>Ver todas las entradas</span>
+						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+						</svg>
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<!-- Tech Stack Section -->
+		<section class="py-20">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-12">
+					<h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">
+						Tecnologías que estoy aprendiendo
+					</h2>
+					<p class="text-white/70 text-lg max-w-2xl mx-auto">
+						Stack tecnológico que estoy estudiando y usando en mis proyectos
+					</p>
+				</div>
+
+				<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+					{[
+						{ name: 'TypeScript', icon: '🔷' },
+						{ name: 'React', icon: '⚛️' },
+						{ name: 'Node.js', icon: '🟢' },
+						{ name: 'Python', icon: '🐍' },
+						{ name: 'Astro', icon: '🚀' },
+						{ name: 'TailwindCSS', icon: '🎨' },
+					].map((tech) => (
+						<div class="glass rounded-lg p-4 text-center glass-hover">
+							<div class="text-3xl mb-2">{tech.icon}</div>
+							<div class="text-white text-sm font-medium">{tech.name}</div>
+						</div>
+					))}
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<Footer />
+</BaseLayout>

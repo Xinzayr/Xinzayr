@@ -1,0 +1,189 @@
+---
+// Componente para mostrar la música actual de Spotify
+// Usa los tokens de Spotify configurados
+interface Props {
+  variant?: 'simple' | 'detailed';
+  showWhenNotPlaying?: boolean;
+}
+
+const { variant = 'simple', showWhenNotPlaying = false } = Astro.props;
+
+// Obtener configuración de Spotify desde variables de entorno
+const SPOTIFY_CLIENT_ID = import.meta.env.SPOTIFY_CLIENT_ID;
+const SPOTIFY_CLIENT_SECRET = import.meta.env.SPOTIFY_CLIENT_SECRET;
+const SPOTIFY_REFRESH_TOKEN = import.meta.env.SPOTIFY_REFRESH_TOKEN;
+
+let spotifyData = null;
+let isPlaying = false;
+
+// Función para obtener nuevo access token
+async function getAccessToken() {
+  if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET || !SPOTIFY_REFRESH_TOKEN) {
+    return null;
+  }
+
+  try {
+    const response = await fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${btoa(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`)}`
+      },
+      body: new URLSearchParams({
+        grant_type: 'refresh_token',
+        refresh_token: SPOTIFY_REFRESH_TOKEN
+      })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.access_token;
+    }
+  } catch (error) {
+    console.warn('Error getting Spotify access token:', error);
+  }
+  return null;
+}
+
+// Obtener datos de reproducción actual
+if (SPOTIFY_CLIENT_ID && SPOTIFY_CLIENT_SECRET && SPOTIFY_REFRESH_TOKEN) {
+  try {
+    const accessToken = await getAccessToken();
+    if (accessToken) {
+      const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+
+      if (response.status === 200) {
+        const data = await response.json();
+        if (data && data.item) {
+          spotifyData = {
+            isPlaying: data.is_playing,
+            track: {
+              name: data.item.name,
+              artist: data.item.artists.map((artist: any) => artist.name).join(', '),
+              album: data.item.album.name,
+              image: data.item.album.images[0]?.url,
+              external_url: data.item.external_urls.spotify,
+              duration: data.item.duration_ms,
+              progress: data.progress_ms
+            }
+          };
+          isPlaying = data.is_playing;
+        }
+      } else if (response.status === 204) {
+        // No hay nada reproduciéndose
+        isPlaying = false;
+      }
+    }
+  } catch (error) {
+    console.warn('Error fetching Spotify data:', error);
+  }
+}
+
+// Función para formatear duración
+function formatDuration(ms: number) {
+  const minutes = Math.floor(ms / 60000);
+  const seconds = Math.floor((ms % 60000) / 1000);
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+---
+
+{(spotifyData && isPlaying) || showWhenNotPlaying ? (
+  <>
+    {variant === 'simple' ? (
+      <!-- Vista simple para navbar/header -->
+      <div class="flex items-center space-x-2">
+        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+        <span class="text-sm text-white/80">
+          {spotifyData && isPlaying ? 'Escuchando música' : 'Spotify'}
+        </span>
+      </div>
+    ) : (
+      <!-- Vista detallada -->
+      <div class="glass rounded-lg p-4 max-w-xs">
+        {spotifyData && isPlaying ? (
+          <div class="flex items-center space-x-3">
+            <div class="relative">
+              <img
+                src={spotifyData.track.image}
+                alt={spotifyData.track.album}
+                class="w-12 h-12 rounded-lg object-cover"
+                loading="lazy"
+              />
+              <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full flex items-center justify-center">
+                <svg class="w-2 h-2 text-black" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-white font-medium text-sm truncate">
+                {spotifyData.track.name}
+              </div>
+              <div class="text-white/60 text-xs truncate">
+                {spotifyData.track.artist}
+              </div>
+              <div class="flex items-center space-x-2 mt-1">
+                <div class="flex-1 bg-white/20 rounded-full h-1">
+                  <div
+                    class="bg-green-400 h-1 rounded-full transition-all duration-1000"
+                    style={`width: ${(spotifyData.track.progress / spotifyData.track.duration) * 100}%`}
+                  ></div>
+                </div>
+                <span class="text-white/40 text-xs">
+                  {formatDuration(spotifyData.track.progress)}
+                </span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="text-white font-medium text-sm">No reproduciendo</div>
+              <div class="text-white/60 text-xs">Spotify</div>
+            </div>
+          </div>
+        )}
+
+        {spotifyData && isPlaying && (
+          <div class="mt-3">
+            <a
+              href={spotifyData.track.external_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center space-x-1 text-xs text-green-400 hover:text-green-300 transition-colors"
+            >
+              <span>Abrir en Spotify</span>
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+          </div>
+        )}
+      </div>
+    )}
+  </>
+) : null}
+
+<style>
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+</style>

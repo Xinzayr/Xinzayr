@@ -1,0 +1,396 @@
+---
+// Componente para obtener y mostrar posts del blog de Blogger
+import { API_CONFIG } from '../consts';
+
+interface Props {
+	variant?: 'featured' | 'grid' | 'compact';
+	maxPosts?: number;
+	showFeatured?: boolean;
+}
+
+const { variant = 'grid', maxPosts = 6, showFeatured = true } = Astro.props;
+
+interface BlogPost {
+	id: string;
+	title: string;
+	content: string;
+	excerpt: string;
+	url: string;
+	published: string;
+	updated: string;
+	labels?: string[];
+	author: {
+		displayName: string;
+		url?: string;
+		image?: {
+			url: string;
+		};
+	};
+	images?: string[];
+	thumbnail?: string;
+}
+
+let posts: BlogPost[] = [];
+let error: string | null = null;
+
+try {
+	// Intentar obtener posts del feed JSON de Blogger
+	const response = await fetch(API_CONFIG.blogger.feedUrl, {
+		headers: {
+			'Accept': 'application/json',
+			'User-Agent': 'Mozilla/5.0 (compatible; Xinzayr-Portfolio/1.0)'
+		}
+	});
+
+	if (response.ok) {
+		const data = await response.json();
+
+		if (data.feed && data.feed.entry) {
+			posts = data.feed.entry.slice(0, maxPosts).map((entry: any) => {
+				// Extraer imagen del contenido si existe
+				let thumbnail = '';
+				let images: string[] = [];
+
+				if (entry.content && entry.content.$t) {
+					const imgRegex = /<img[^>]+src="([^">]+)"/g;
+					let match;
+					while ((match = imgRegex.exec(entry.content.$t)) !== null) {
+						images.push(match[1]);
+					}
+					if (images.length > 0) {
+						thumbnail = images[0];
+					}
+				}
+
+				// Crear excerpt del contenido
+				let excerpt = '';
+				if (entry.summary && entry.summary.$t) {
+					excerpt = entry.summary.$t;
+				} else if (entry.content && entry.content.$t) {
+					// Remover HTML tags y limitar a 200 caracteres
+					excerpt = entry.content.$t
+						.replace(/<[^>]*>/g, '')
+						.replace(/\s+/g, ' ')
+						.trim()
+						.substring(0, 200) + '...';
+				}
+
+				return {
+					id: entry.id.$t.split('.post-')[1] || entry.id.$t,
+					title: entry.title.$t || 'Sin título',
+					content: entry.content?.$t || '',
+					excerpt,
+					url: entry.link?.find((link: any) => link.rel === 'alternate')?.href || '#',
+					published: entry.published.$t,
+					updated: entry.updated.$t,
+					labels: entry.category?.map((cat: any) => cat.term) || [],
+					author: {
+						displayName: entry.author?.[0]?.name?.$t || 'xinzayr',
+						url: entry.author?.[0]?.uri?.$t,
+						image: entry.author?.[0]?.gd$image ? {
+							url: entry.author[0].gd$image.src
+						} : undefined
+					},
+					images,
+					thumbnail
+				};
+			});
+		}
+	} else {
+		error = `Error al obtener posts: ${response.status}`;
+	}
+} catch (e) {
+	error = `Error de conexión: ${e instanceof Error ? e.message : 'Error desconocido'}`;
+	console.warn('Error fetching Blogger posts:', e);
+}
+
+// Función para formatear fecha
+function formatDate(dateString: string): string {
+	try {
+		const date = new Date(dateString);
+		return date.toLocaleDateString('es-ES', {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		});
+	} catch {
+		return 'Fecha no disponible';
+	}
+}
+
+// Función para calcular tiempo de lectura estimado
+function getReadingTime(content: string): string {
+	const wordsPerMinute = 200;
+	const wordCount = content.replace(/<[^>]*>/g, '').split(/\s+/).length;
+	const minutes = Math.ceil(wordCount / wordsPerMinute);
+	return `${minutes} min de lectura`;
+}
+---
+
+{error ? (
+	<!-- Error State -->
+	<div class="glass rounded-xl p-8 text-center">
+		<svg class="w-12 h-12 text-yellow-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.664-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+		</svg>
+		<h3 class="text-lg font-semibold text-white mb-2">Error al cargar posts</h3>
+		<p class="text-white/60 text-sm mb-4">{error}</p>
+		<a
+			href={API_CONFIG.blogger.blogUrl}
+			target="_blank"
+			rel="noopener noreferrer"
+			class="inline-flex items-center space-x-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors"
+		>
+			<span>Ver blog completo</span>
+			<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+			</svg>
+		</a>
+	</div>
+) : posts.length === 0 ? (
+	<!-- Empty State -->
+	<div class="glass rounded-xl p-8 text-center">
+		<svg class="w-12 h-12 text-white/40 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+		</svg>
+		<h3 class="text-lg font-semibold text-white mb-2">No hay posts disponibles</h3>
+		<p class="text-white/60 text-sm mb-4">Aún no hay contenido publicado en el blog.</p>
+		<a
+			href={API_CONFIG.blogger.blogUrl}
+			target="_blank"
+			rel="noopener noreferrer"
+			class="inline-flex items-center space-x-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors"
+		>
+			<span>Visitar blog</span>
+			<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+			</svg>
+		</a>
+	</div>
+) : (
+	<div>
+		{variant === 'featured' && showFeatured && posts.length > 0 && (
+			<!-- Featured Post -->
+			<div class="mb-12">
+				<h2 class="text-2xl font-bold text-white mb-6">Último Post del Blog</h2>
+				<div class="glass rounded-2xl overflow-hidden">
+					<div class="grid grid-cols-1 lg:grid-cols-2 gap-0">
+						<!-- Image -->
+						<div class="relative aspect-video lg:aspect-square">
+							{posts[0].thumbnail ? (
+								<img
+									src={posts[0].thumbnail}
+									alt={posts[0].title}
+									class="w-full h-full object-cover"
+									loading="lazy"
+								/>
+							) : (
+								<div class="w-full h-full bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 flex items-center justify-center">
+									<svg class="w-16 h-16 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+									</svg>
+								</div>
+							)}
+							<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+						</div>
+
+						<!-- Content -->
+						<div class="p-8 lg:p-12 flex flex-col justify-center">
+							{posts[0].labels && posts[0].labels.length > 0 && (
+								<div class="flex flex-wrap gap-2 mb-4">
+									{posts[0].labels.slice(0, 3).map((label) => (
+										<span class="px-2 py-1 text-xs bg-blue-500/20 text-blue-300 rounded-md font-mono">
+											#{label}
+										</span>
+									))}
+								</div>
+							)}
+
+							<h3 class="text-2xl lg:text-3xl font-bold text-white mb-4 leading-tight">
+								{posts[0].title}
+							</h3>
+
+							<p class="text-white/70 mb-6 leading-relaxed">
+								{posts[0].excerpt}
+							</p>
+
+							<div class="flex items-center justify-between flex-wrap gap-4">
+								<div class="flex items-center space-x-4 text-white/60 text-sm">
+									<div class="flex items-center space-x-2">
+										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+										</svg>
+										<span>{formatDate(posts[0].published)}</span>
+									</div>
+									<div class="flex items-center space-x-2">
+										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+										</svg>
+										<span>{getReadingTime(posts[0].content)}</span>
+									</div>
+								</div>
+
+								<a
+									href={posts[0].url}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="inline-flex items-center space-x-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors"
+								>
+									<span>Leer en blog</span>
+									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+									</svg>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		)}
+
+		{variant === 'grid' && (
+			<!-- Grid Posts -->
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+				{posts.slice(0).map((post) => (
+					<article class="glass rounded-xl overflow-hidden glass-hover">
+						<!-- Post Image -->
+						<div class="relative aspect-video">
+							{post.thumbnail ? (
+								<img
+									src={post.thumbnail}
+									alt={post.title}
+									class="w-full h-full object-cover"
+									loading="lazy"
+								/>
+							) : (
+								<div class="w-full h-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center">
+									<svg class="w-12 h-12 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+									</svg>
+								</div>
+							)}
+							<div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+						</div>
+
+						<!-- Post Content -->
+						<div class="p-6">
+							{post.labels && post.labels.length > 0 && (
+								<div class="flex flex-wrap gap-1 mb-3">
+									{post.labels.slice(0, 2).map((label) => (
+										<span class="px-2 py-1 text-xs bg-blue-500/20 text-blue-300 rounded font-mono">
+											#{label}
+										</span>
+									))}
+								</div>
+							)}
+
+							<h3 class="text-lg font-bold text-white mb-3 leading-tight line-clamp-2">
+								{post.title}
+							</h3>
+
+							<p class="text-white/70 text-sm mb-4 leading-relaxed line-clamp-3">
+								{post.excerpt}
+							</p>
+
+							<div class="flex items-center justify-between text-xs text-white/60 mb-4">
+								<span>{formatDate(post.published)}</span>
+								<span>{getReadingTime(post.content)}</span>
+							</div>
+
+							<a
+								href={post.url}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="inline-flex items-center space-x-2 text-blue-400 hover:text-blue-300 font-medium text-sm transition-colors"
+							>
+								<span>Leer más</span>
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+								</svg>
+							</a>
+						</div>
+					</article>
+				))}
+			</div>
+		)}
+
+		{variant === 'compact' && (
+			<!-- Compact List -->
+			<div class="space-y-4">
+				{posts.map((post) => (
+					<article class="glass rounded-lg p-4 glass-hover">
+						<div class="flex items-start space-x-4">
+							{post.thumbnail && (
+								<div class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden">
+									<img
+										src={post.thumbnail}
+										alt={post.title}
+										class="w-full h-full object-cover"
+										loading="lazy"
+									/>
+								</div>
+							)}
+							<div class="flex-1 min-w-0">
+								<h3 class="text-white font-medium mb-1 line-clamp-1">
+									{post.title}
+								</h3>
+								<p class="text-white/70 text-sm mb-2 line-clamp-2">
+									{post.excerpt}
+								</p>
+								<div class="flex items-center justify-between text-xs text-white/60">
+									<span>{formatDate(post.published)}</span>
+									<a
+										href={post.url}
+										target="_blank"
+										rel="noopener noreferrer"
+										class="text-blue-400 hover:text-blue-300 transition-colors"
+									>
+										Leer →
+									</a>
+								</div>
+							</div>
+						</div>
+					</article>
+				))}
+			</div>
+		)}
+
+		<!-- View All Link -->
+		<div class="text-center mt-8">
+			<a
+				href={API_CONFIG.blogger.blogUrl}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="inline-flex items-center space-x-2 px-6 py-3 glass border border-white/20 text-white font-medium rounded-lg glass-hover"
+			>
+				<span>Ver todos los posts</span>
+				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+				</svg>
+			</a>
+		</div>
+	</div>
+)}
+
+<style>
+	.line-clamp-1 {
+		display: -webkit-box;
+		-webkit-line-clamp: 1;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.line-clamp-2 {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.line-clamp-3 {
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+</style>
