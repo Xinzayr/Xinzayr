@@ -38,7 +38,7 @@ export const PERSONAL_INFO = {
 	gravatar: 'xinzayr',
 	location: 'Ecuador',
 	timezone: 'America/Guayaquil',
-	bio: 'Desarrollador Junior aprendiendo React, Node.js y otros lenguajes.',
+	bio: 'Desarrollador Junior aprendiendo de todo y todos.',
 	github: 'https://github.com/xinzayr',
 	linkedin: 'https://linkedin.com/in/johnny-bryan-alvarez-veliz-565544282',
 	twitter: 'https://x.com/xinzayr',
