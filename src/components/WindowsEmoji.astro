@@ -1,0 +1,43 @@
+---
+// Componente para forzar el uso de emojis de Windows/Microsoft
+interface Props {
+  emoji: string;
+  class?: string;
+  title?: string;
+}
+
+const { emoji, class: className = '', title } = Astro.props;
+---
+
+<span
+  class={`windows-emoji ${className}`}
+  title={title}
+  style="font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Twemoji Mozilla', 'Apple Color Emoji', 'Segoe UI Symbol', sans-serif !important; font-variant-emoji: emoji;"
+>
+  {emoji}
+</span>
+
+<style>
+  .windows-emoji {
+    font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Twemoji Mozilla', 'Apple Color Emoji',
+      'Segoe UI Symbol', sans-serif !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant-emoji: emoji;
+    display: inline-block;
+  }
+
+  /* Forzar emojis específicos de Windows en diferentes navegadores */
+  @supports (font-variation-settings: normal) {
+    .windows-emoji {
+      font-family: 'Segoe UI Emoji', 'Segoe UI', sans-serif !important;
+    }
+  }
+
+  /* Para Safari que puede mostrar emojis de Apple por defecto */
+  @supports (-webkit-appearance: none) {
+    .windows-emoji {
+      font-family: 'Segoe UI Emoji', 'Segoe UI Symbol', 'Helvetica', sans-serif !important;
+    }
+  }
+</style>

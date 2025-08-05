@@ -1,0 +1,313 @@
+---
+// Componente para mostrar cards dinámicas que combinan repos de GitHub con contenido local
+import { getCollection } from 'astro:content';
+
+interface Props {
+  limit?: number;
+  showPrivate?: boolean;
+  excludeRepos?: string[]; // Repos a excluir si ya están en la sección destacada
+}
+
+const { limit = 12, showPrivate = false, excludeRepos = [] } = Astro.props;
+
+// Obtener configuración desde variables de entorno
+const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN;
+const GITHUB_USERNAME = import.meta.env.GITHUB_USERNAME || 'xinzayr';
+
+// Obtener todos los proyectos del contenido local
+const allProjects = await getCollection('projects');
+const projectSlugs = allProjects.map(p => p.id); // Obtener los IDs/slugs de los proyectos
+
+let githubRepos: any[] = [];
+
+// Obtener repositorios de GitHub
+if (GITHUB_TOKEN && GITHUB_USERNAME) {
+  try {
+    const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`, {
+      headers: {
+        'Authorization': `Bearer ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'xinzayr-portfolio'
+      }
+    });
+
+    if (response.ok) {
+      const repos = await response.json();
+      githubRepos = repos
+        .filter((repo: any) => showPrivate || !repo.private) // Filtrar privados
+        .filter((repo: any) => !repo.archived) // Excluir archivados
+        .filter((repo: any) => !excludeRepos.includes(repo.name)) // Excluir repos específicos
+        .map((repo: any) => ({
+          id: repo.id,
+          name: repo.name,
+          full_name: repo.full_name,
+          description: repo.description || 'Sin descripción disponible',
+          html_url: repo.html_url,
+          homepage: repo.homepage,
+          topics: repo.topics || [],
+          language: repo.language,
+          stargazers_count: repo.stargazers_count,
+          forks_count: repo.forks_count,
+          updated_at: repo.updated_at,
+          created_at: repo.created_at,
+          // Verificar si existe contenido local para este repo con mejor matching
+          hasLocalContent: projectSlugs.some(slug => {
+            const repoNameLower = repo.name.toLowerCase().replace(/[-_]/g, '');
+            const slugLower = slug.toLowerCase().replace(/[-_]/g, '');
+            return repoNameLower.includes(slugLower) ||
+                   slugLower.includes(repoNameLower) ||
+                   slug.toLowerCase() === repo.name.toLowerCase();
+          }),
+          // Encontrar el proyecto local correspondiente con mejor matching
+          localProject: allProjects.find(p => {
+            const repoNameLower = repo.name.toLowerCase().replace(/[-_]/g, '');
+            const idLower = p.id.toLowerCase().replace(/[-_]/g, '');
+            return repoNameLower.includes(idLower) ||
+                   idLower.includes(repoNameLower) ||
+                   p.id.toLowerCase() === repo.name.toLowerCase();
+          })
+        }))
+        .slice(0, limit);
+    }
+  } catch (error) {
+    console.warn('Error fetching GitHub repositories for dynamic cards:', error);
+    githubRepos = [];
+  }
+}
+
+const languageColors: Record<string, string> = {
+  'TypeScript': '#3178c6',
+  'JavaScript': '#f7df1e',
+  'Python': '#3776ab',
+  'Dart': '#0175c2',
+  'Solidity': '#363636',
+  'HTML': '#e34f26',
+  'CSS': '#1572b6',
+  'Java': '#f89820',
+  'C#': '#239120',
+  'C++': '#00599c',
+  'Go': '#00add8',
+  'Rust': '#000000',
+  'PHP': '#777bb4',
+  'Ruby': '#cc342d',
+  'Swift': '#fa7343',
+  'Kotlin': '#7f52ff',
+  'Vue': '#4fc08d',
+  'React': '#61dafb',
+  'Svelte': '#ff3e00',
+  'Astro': '#ff5d01',
+  'Node.js': '#339933',
+  'Bun': '#fbf0df',
+  'Deno': '#000000',
+  'Lua': '#2c2d72',
+  'Shell': '#89e051',
+  'PowerShell': '#5391fe',
+  'Dockerfile': '#2496ed',
+  'JSON': '#292929',
+  'YAML': '#cb171e',
+  'Markdown': '#083fa1',
+  'XML': '#0060ac',
+  'SCSS': '#c6538c',
+  'Less': '#1d365d',
+  'Tailwind': '#06b6d4'
+};
+
+function getTimeAgo(dateString: string) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - date.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 1) return 'hace 1 día';
+  if (diffDays < 7) return `hace ${diffDays} días`;
+  if (diffDays < 30) return `hace ${Math.ceil(diffDays / 7)} semana${Math.ceil(diffDays / 7) > 1 ? 's' : ''}`;
+  return `hace ${Math.ceil(diffDays / 30)} mes${Math.ceil(diffDays / 30) > 1 ? 'es' : ''}`;
+}
+
+// Obtener categorías de tecnologías para clasificación visual
+function getTechCategory(language: string): string {
+  const categories: Record<string, string> = {
+    'TypeScript': 'Frontend',
+    'JavaScript': 'Frontend',
+    'HTML': 'Frontend',
+    'CSS': 'Frontend',
+    'Vue': 'Frontend',
+    'React': 'Frontend',
+    'Svelte': 'Frontend',
+    'Astro': 'Frontend',
+    'Python': 'Backend',
+    'Java': 'Backend',
+    'C#': 'Backend',
+    'Go': 'Backend',
+    'PHP': 'Backend',
+    'Ruby': 'Backend',
+    'Dart': 'Mobile',
+    'Swift': 'Mobile',
+    'Kotlin': 'Mobile',
+    'Solidity': 'Blockchain',
+    'Rust': 'Sistemas',
+    'C++': 'Sistemas'
+  };
+  return categories[language] || 'Otros';
+}
+---
+
+<div class="dynamic-project-cards">
+  {githubRepos.length === 0 ? (
+    <!-- Mensaje cuando no hay datos -->
+    <div class="text-center py-12">
+      <div class="glass rounded-lg p-8 max-w-md mx-auto">
+        <svg class="w-12 h-12 text-white/40 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        <h3 class="text-white font-medium mb-2">Proyectos no disponibles</h3>
+        <p class="text-white/60 text-sm">
+          Los proyectos se mostrarán cuando las variables de entorno estén configuradas.
+        </p>
+      </div>
+    </div>
+  ) : (
+    <!-- Grid de proyectos dinámicos -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {githubRepos.map((repo) => (
+        <div class="glass rounded-xl p-6 group relative overflow-hidden">
+          <!-- Header del proyecto con enlace a GitHub -->
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex-1">
+              <h3 class="text-white font-semibold text-lg group-hover:text-blue-400 transition-colors">
+                {repo.name}
+              </h3>
+              <p class="text-white/60 text-sm mt-1 line-clamp-3">
+                {repo.description}
+              </p>
+            </div>
+            <!-- Enlaces de GitHub y indicador de documentación -->
+            <div class="flex items-center space-x-2 ml-3">
+              <a
+                href={repo.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="p-2 text-blue-400 hover:text-blue-300 transition-colors bg-blue-400/10 rounded-md hover:bg-blue-400/20"
+                title="Ver en GitHub"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.30 3.297-1.30.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+              </a>
+              <!-- Indicador visual de documentación (sin enlace) -->
+              {repo.hasLocalContent && repo.localProject ? (
+                <div class="px-2 py-1 bg-green-400/20 border border-green-400/30 text-green-400 text-xs rounded-md flex items-center space-x-1">
+                  <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span>Con docs</span>
+                </div>
+              ) : (
+                <div class="px-2 py-1 bg-gray-400/10 border border-gray-400/20 text-gray-400 text-xs rounded-md flex items-center space-x-1">
+                  <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                  <span>Sin docs</span>
+                </div>
+              )}
+              <!-- Indicador de categoría por tecnología -->
+              {repo.language && (
+                <span class="px-2 py-1 bg-white/10 text-white/70 text-xs rounded-md">
+                  {getTechCategory(repo.language)}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <!-- Tecnologías y estadísticas -->
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-4 text-xs text-white/50">
+              {repo.language && (
+                <div class="flex items-center space-x-1">
+                  <div
+                    class="w-2 h-2 rounded-full"
+                    style={`background-color: ${languageColors[repo.language] || '#888'}`}
+                  ></div>
+                  <span>{repo.language}</span>
+                </div>
+              )}
+              <div class="flex items-center space-x-1">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+                <span>{repo.stargazers_count}</span>
+              </div>
+              <div class="flex items-center space-x-1">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                <span>{repo.forks_count}</span>
+              </div>
+            </div>
+            <span class="text-xs text-white/40">
+              {getTimeAgo(repo.updated_at)}
+            </span>
+          </div>
+
+          <!-- Topics/Tags -->
+          {repo.topics && repo.topics.length > 0 && (
+            <div class="flex flex-wrap gap-1 mb-4">
+              {repo.topics.slice(0, 3).map((topic: string) => (
+                <span class="px-2 py-1 bg-white/10 text-white/70 text-xs rounded-md">
+                  {topic}
+                </span>
+              ))}
+              {repo.topics.length > 3 && (
+                <span class="px-2 py-1 bg-white/10 text-white/70 text-xs rounded-md">
+                  +{repo.topics.length - 3}
+                </span>
+              )}
+            </div>
+          )}
+
+          <!-- Enlaces de acción -->
+          <div class="pt-4 border-t border-white/10">
+            <!-- Solo mostrar enlace a documentación cuando esté disponible -->
+            {repo.hasLocalContent && repo.localProject ? (
+              <a
+                href={`/projects/${repo.localProject.id}`}
+                class="flex items-center justify-center space-x-2 w-full py-2 rounded-md bg-green-400/10 hover:bg-green-400/20 text-green-400 hover:text-green-300 font-medium transition-colors"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.832 18.477 19.246 18 17.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+                <span class="text-sm">Leer documentación</span>
+              </a>
+            ) : (
+              <!-- Indicador de sin documentación -->
+              <div class="flex items-center justify-center space-x-2 w-full py-2 rounded-md bg-gray-400/10 text-gray-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="text-sm">Documentación no disponible</span>
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
+<style>
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .glass:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+</style>
