@@ -7,96 +7,184 @@ import { getDeploymentInfo } from '../utils/env-detection';
 const deploymentInfo = getDeploymentInfo();
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 border-b border-white/10">
-	<div class="glass backdrop-blur-md">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="flex items-center justify-between h-16">
-				<!-- Logo/Brand -->
-				<div class="flex items-center">
-					<a href="/" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-						<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-							<span class="text-white font-mono font-bold text-sm">X</span>
-						</div>
-						<span class="font-mono font-semibold text-white">xinzayr</span>
-					</a>
-				</div>
+<header class="fixed top-0 left-0 right-0 z-50 border-b border-gold-400/15">
+  <div class="acrylic-dark backdrop-blur-xl shadow-2xl shadow-black/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo/Brand -->
+        <div class="flex items-center">
+          <a
+            href="/"
+            class="flex items-center space-x-3 hover:opacity-90 transition-all duration-300 group"
+          >
+            <div
+              class="relative w-10 h-10 rounded-xl border-2 border-gold-400 shadow-lg shadow-gold-400/40 group-hover:shadow-gold-400/60 transition-all duration-300 overflow-hidden"
+            >
+              <img
+                src="https://www.gravatar.com/avatar/977ea9a49bad6103d6cf96df4ace2cdf?s=40&d=identicon"
+                alt="xinzayr profile"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <div class="flex flex-col">
+              <span class="font-display font-bold text-xl text-white tracking-wide">xinzayr</span>
+              <span class="text-gold-300/80 text-xs font-mono tracking-wider">dev.portfolio</span>
+            </div>
+          </a>
+        </div>
 
-				<!-- Desktop Navigation -->
-				<nav class="hidden md:flex items-center space-x-1">
-					<HeaderLink href="/">Inicio</HeaderLink>
-					<HeaderLink href="/projects">Proyectos</HeaderLink>
-					<HeaderLink href="/blog">Blog</HeaderLink>
-					<HeaderLink href="/tools">Herramientas</HeaderLink>
-					<HeaderLink href="/cv">CV</HeaderLink>
-					<HeaderLink href="/contact">Contacto</HeaderLink>
-					<HeaderLink href="/about">Acerca</HeaderLink>
-				</nav>
+        <!-- Desktop Navigation -->
+        <nav class="hidden lg:flex items-center space-x-1">
+          <HeaderLink href="/">Inicio</HeaderLink>
+          <HeaderLink href="/projects">Proyectos</HeaderLink>
+          <HeaderLink href="/blog">Blog</HeaderLink>
+          <HeaderLink href="/cv">CV</HeaderLink>
+          <HeaderLink href="/contact">Contacto</HeaderLink>
+          <HeaderLink href="/about">Acerca</HeaderLink>
 
-				<!-- Environment indicator -->
-				<div class="hidden lg:flex items-center space-x-4">
-					<DiscordStatus variant="simple" size="sm" />
-					<SpotifyNowPlaying variant="simple" />
-					<div class="px-3 py-1 rounded-full text-xs font-mono bg-white/5 border border-white/10 text-white/70">
-						{deploymentInfo.displayName}
-					</div>
-				</div>
+          <!-- Dropdown para Extras -->
+          <div class="relative group">
+            <button
+              class="px-3 py-2 rounded-lg text-sm font-body-medium text-white/85 hover:text-white cursor-glow border border-transparent hover:border-gold-400/30 transition-all duration-300 flex items-center space-x-1"
+            >
+              <span>Extras</span>
+              <svg
+                class="w-4 h-4 transition-transform duration-300 group-hover:rotate-180"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div
+              class="absolute top-full left-0 mt-2 w-48 acrylic-dark rounded-xl border border-gold-400/20 shadow-2xl shadow-black/60 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50"
+            >
+              <div class="p-2">
+                <a
+                  href="/tools"
+                  class="block px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 text-sm"
+                >
+                  🔧 Herramientas
+                </a>
+              </div>
+            </div>
+          </div>
+        </nav>
 
-				<!-- Mobile menu button -->
-				<div class="md:hidden">
-					<button id="mobile-menu-button" type="button" class="glass p-2 rounded-lg hover:bg-white/20 transition-colors" aria-label="Abrir menú móvil">
-						<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-						</svg>
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
+        <!-- Mobile menu button -->
+        <div class="lg:hidden">
+          <button
+            id="mobile-menu-button"
+            type="button"
+            class="acrylic-pearl p-3 rounded-xl hover:bg-gold-400/10 transition-all duration-300 border border-gold-400/20 hover:border-gold-400/40 hover:shadow-lg hover:shadow-gold-400/20"
+            aria-label="Abrir menú móvil"
+          >
+            <svg
+              class="w-6 h-6 text-gold-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-	<!-- Mobile Navigation Menu -->
-	<div id="mobile-menu" class="md:hidden fixed inset-x-0 top-16 z-40 hidden">
-		<div class="glass backdrop-blur-md border-b border-white/10">
-			<div class="px-4 py-4 space-y-2">
-				<HeaderLink href="/" class="block px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors">Inicio</HeaderLink>
-				<HeaderLink href="/projects" class="block px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors">Proyectos</HeaderLink>
-				<HeaderLink href="/blog" class="block px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors">Blog</HeaderLink>
-				<HeaderLink href="/tools" class="block px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors">Herramientas</HeaderLink>
-				<HeaderLink href="/cv" class="block px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors">CV</HeaderLink>
-				<HeaderLink href="/contact" class="block px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors">Contacto</HeaderLink>
-				<HeaderLink href="/about" class="block px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors">Acerca</HeaderLink>
+  <!-- Mobile Navigation Menu -->
+  <div id="mobile-menu" class="lg:hidden fixed inset-x-0 top-20 z-40 hidden">
+    <div
+      class="acrylic-dark backdrop-blur-xl border-b border-gold-400/20 shadow-2xl shadow-black/60"
+    >
+      <div class="px-6 py-8 space-y-4">
+        <HeaderLink
+          href="/"
+          class="block px-5 py-4 rounded-xl text-white hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 hover:shadow-lg"
+          >Inicio</HeaderLink
+        >
+        <HeaderLink
+          href="/projects"
+          class="block px-5 py-4 rounded-xl text-white hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 hover:shadow-lg"
+          >Proyectos</HeaderLink
+        >
+        <HeaderLink
+          href="/blog"
+          class="block px-5 py-4 rounded-xl text-white hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 hover:shadow-lg"
+          >Blog</HeaderLink
+        >
+        <HeaderLink
+          href="/cv"
+          class="block px-5 py-4 rounded-xl text-white hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 hover:shadow-lg"
+          >CV</HeaderLink
+        >
+        <HeaderLink
+          href="/contact"
+          class="block px-5 py-4 rounded-xl text-white hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 hover:shadow-lg"
+          >Contacto</HeaderLink
+        >
+        <HeaderLink
+          href="/about"
+          class="block px-5 py-4 rounded-xl text-white hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 hover:shadow-lg"
+          >Acerca</HeaderLink
+        >
 
-				<div class="px-3 py-2">
-					<div class="px-3 py-1 rounded-full text-xs font-mono bg-white/5 border border-white/10 text-white/70 inline-block">
-						{deploymentInfo.displayName}
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+        <!-- Extras submenu in mobile -->
+        <div class="border-t border-gold-400/20 pt-4">
+          <div class="text-gold-300 text-sm font-semibold mb-3 px-5">Extras</div>
+          <HeaderLink
+            href="/tools"
+            class="block px-5 py-3 rounded-xl text-white/80 hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 hover:shadow-lg"
+            >🔧 Herramientas</HeaderLink
+          >
+        </div>
+      </div>
+    </div>
+  </div>
 </header>
 
 <script>
-	// Mobile menu toggle functionality
-	const mobileMenuButton = document.getElementById('mobile-menu-button');
-	const mobileMenu = document.getElementById('mobile-menu');
+  // Mobile menu toggle functionality
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
 
-	if (mobileMenuButton && mobileMenu) {
-		mobileMenuButton.addEventListener('click', () => {
-			mobileMenu.classList.toggle('hidden');
-		});
+  if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
 
-		// Close mobile menu when clicking outside
-		document.addEventListener('click', (event) => {
-			if (!mobileMenuButton.contains(event.target as Node) && !mobileMenu.contains(event.target as Node)) {
-				mobileMenu.classList.add('hidden');
-			}
-		});
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (event) => {
+      if (
+        !mobileMenuButton.contains(event.target as Node) &&
+        !mobileMenu.contains(event.target as Node)
+      ) {
+        mobileMenu.classList.add('hidden');
+      }
+    });
 
-		// Close mobile menu when pressing escape
-		document.addEventListener('keydown', (event) => {
-			if (event.key === 'Escape') {
-				mobileMenu.classList.add('hidden');
-			}
-		});
-	}
+    // Close mobile menu when pressing escape
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        mobileMenu.classList.add('hidden');
+      }
+    });
+
+    // Close mobile menu when resizing to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 1024) {
+        mobileMenu.classList.add('hidden');
+      }
+    });
+  }
 </script>

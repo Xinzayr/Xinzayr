@@ -1,3 +1,6 @@
+/* Fuentes redondeadas y modernas */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=Comfortaa:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+
 /* TailwindCSS Base Styles */
 @tailwind base;
 @tailwind components;
@@ -22,28 +25,239 @@
 
 /* Base Styles */
 html {
-	font-family: "Inter", "Atkinson", system-ui, sans-serif;
+	font-family: "Inter", "Nunito", "Atkinson", system-ui, sans-serif;
 	background: #000000;
 	min-height: 100vh;
 	scroll-behavior: smooth;
+	/* Gradiente base ópalo negro más oscuro */
+	background: radial-gradient(ellipse at top, #050510 0%, #000000 50%, #000000 100%);
+	background-attachment: fixed;
+	/* Prevent layout shift */
+	width: 100%;
+	overflow-x: auto;
 }
 
 body {
 	margin: 0;
 	padding: 0;
 	color: #ffffff;
-	overflow-x: hidden;
-	background: #000000;
+	/* Fondo más oscuro con sutiles tonos ópalo */
+	background: linear-gradient(135deg, #000000 0%, #050508 25%, #0a0a0f 50%, #050508 75%, #000000 100%);
+	background-attachment: fixed;
 	line-height: 1.6;
+	/* Fuentes redondeadas optimizadas */
+	font-family: "Inter", "Nunito", "Atkinson", "Segoe UI Emoji", "Noto Color Emoji", system-ui, sans-serif;
+	/* Subtle texture overlay */
+	position: relative;
+	/* Prevent horizontal overflow issues */
+	min-width: 320px;
+	overflow-x: auto;
 }
 
-/* Enhanced responsive base */
+body::before {
+	content: '';
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background:
+		radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.02) 0%, transparent 50%),
+		radial-gradient(circle at 80% 20%, rgba(240, 240, 255, 0.01) 0%, transparent 50%),
+		radial-gradient(circle at 40% 40%, rgba(0, 0, 0, 0.95) 0%, transparent 50%);
+	pointer-events: none;
+	z-index: -1;
+}
+
+/* Forzar emojis de Windows/Microsoft en todos los elementos */
 * {
 	box-sizing: border-box;
+	/* Aplicar fuente de emojis de Windows a todos los elementos */
+	font-family: inherit, "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif;
 }
 
-/* Glass Morphism Utility Classes */
+/* Clase específica para emojis que garantiza uso de emojis de Windows */
+.emoji, .windows-emoji {
+	font-family: "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", "Apple Color Emoji", "Segoe UI Symbol", sans-serif !important;
+	font-style: normal;
+	font-weight: normal;
+	/* Forzar renderizado de color en todos los navegadores */
+	font-variant-emoji: emoji;
+}
+
+/* Forzar emojis de Windows en navegadores específicos */
+@supports (font-variation-settings: normal) {
+	.emoji, .windows-emoji, * {
+		font-family: "Segoe UI Emoji", "Segoe UI", "Tahoma", "Geneva", "Verdana", sans-serif;
+	}
+}
+
+/* Para navegadores que soportan CSS Font Loading API */
+@font-face {
+	font-family: 'Windows-Emoji';
+	src: local('Segoe UI Emoji'), local('Segoe UI Symbol');
+	unicode-range: U+1F000-1F9FF, U+2600-26FF, U+2700-27BF;
+}
+
+/* Clases de tipografía personalizadas */
+.font-display {
+	font-family: "Comfortaa", "Inter", system-ui, sans-serif;
+	font-weight: 600;
+}
+
+.font-heading {
+	font-family: "Nunito", "Inter", system-ui, sans-serif;
+	font-weight: 700;
+}
+
+.font-body {
+	font-family: "Inter", system-ui, sans-serif;
+	font-weight: 400;
+}
+
+.font-body-medium {
+	font-family: "Inter", system-ui, sans-serif;
+	font-weight: 500;
+}
+
+.font-body-semibold {
+	font-family: "Inter", system-ui, sans-serif;
+	font-weight: 600;
+}
+
+.font-mono {
+	font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+	font-weight: 400;
+}
+
+.font-mono-medium {
+	font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+	font-weight: 500;
+}
+
+/* Efectos de cursor glow - sin animaciones de elevación */
+.cursor-glow {
+	position: relative;
+	overflow: hidden;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cursor-glow::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+		rgba(217, 158, 43, 0.1) 0%,
+		rgba(234, 222, 175, 0.05) 40%,
+		transparent 70%);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.3s ease;
+	border-radius: inherit;
+}
+
+.cursor-glow:hover::before {
+	opacity: 1;
+}
+
+/* Botones sin hover scale - solo glow */
+.btn-glow {
+	position: relative;
+	overflow: hidden;
+	transition: all 0.2s ease;
+	/* Eliminar cualquier transform scale */
+	transform: none !important;
+}
+
+.btn-glow:hover {
+	/* Sin escalado, solo brillo */
+	transform: none !important;
+	box-shadow: 0 0 20px rgba(217, 158, 43, 0.3);
+}
+
+.btn-glow::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+		rgba(217, 158, 43, 0.15) 0%,
+		rgba(234, 222, 175, 0.08) 30%,
+		transparent 60%);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.2s ease;
+	border-radius: inherit;
+}
+
+.btn-glow:hover::before {
+	opacity: 1;
+}
+
+/* Glass Morphism & Acrylic Utility Classes */
 @layer components {
+	/* Efecto acrílico estilo Windows 11 */
+	.acrylic {
+		background: rgba(255, 255, 255, 0.05);
+		backdrop-filter: blur(20px) saturate(180%);
+		-webkit-backdrop-filter: blur(20px) saturate(180%);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 12px;
+		box-shadow:
+			0 8px 32px rgba(0, 0, 0, 0.3),
+			0 0 0 1px rgba(255, 255, 255, 0.05),
+			inset 0 1px 0 rgba(255, 255, 255, 0.1);
+	}
+
+	.acrylic-dark {
+		background: rgba(0, 0, 0, 0.65);
+		backdrop-filter: blur(20px) saturate(180%);
+		-webkit-backdrop-filter: blur(20px) saturate(180%);
+		border: 1px solid rgba(212, 175, 55, 0.12);
+		border-radius: 12px;
+		box-shadow:
+			0 8px 32px rgba(0, 0, 0, 0.7),
+			0 0 0 1px rgba(212, 175, 55, 0.05),
+			inset 0 1px 0 rgba(212, 175, 55, 0.1);
+	}
+
+	.acrylic-pearl {
+		background: linear-gradient(135deg,
+			rgba(240, 240, 255, 0.06) 0%,
+			rgba(230, 230, 245, 0.08) 25%,
+			rgba(220, 220, 235, 0.04) 50%,
+			rgba(200, 200, 225, 0.07) 100%);
+		backdrop-filter: blur(25px) saturate(200%);
+		-webkit-backdrop-filter: blur(25px) saturate(200%);
+		border: 1px solid rgba(240, 240, 255, 0.12);
+		border-radius: 16px;
+		box-shadow:
+			0 12px 40px rgba(0, 0, 0, 0.5),
+			0 0 0 1px rgba(240, 240, 255, 0.06),
+			inset 0 2px 0 rgba(240, 240, 255, 0.1);
+	}
+
+	.acrylic-gold {
+		background: linear-gradient(135deg,
+			rgba(255, 215, 0, 0.1) 0%,
+			rgba(255, 193, 7, 0.08) 25%,
+			rgba(255, 235, 59, 0.06) 50%,
+			rgba(255, 223, 0, 0.12) 100%);
+		backdrop-filter: blur(20px) saturate(180%);
+		-webkit-backdrop-filter: blur(20px) saturate(180%);
+		border: 1px solid rgba(255, 215, 0, 0.3);
+		border-radius: 12px;
+		box-shadow:
+			0 8px 32px rgba(255, 215, 0, 0.2),
+			0 0 0 1px rgba(255, 215, 0, 0.1),
+			inset 0 1px 0 rgba(255, 215, 0, 0.2);
+	}
+
 	.glass {
 		background: rgba(255, 255, 255, 0.1);
 		backdrop-filter: blur(10px);
@@ -58,9 +272,23 @@ body {
 
 	.glass-hover:hover {
 		background: rgba(255, 255, 255, 0.15);
-		transform: translateY(-2px);
-		box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.5);
-		border-color: rgba(255, 255, 255, 0.3);
+		box-shadow:
+			0 12px 40px 0 rgba(31, 38, 135, 0.5),
+			0 0 20px rgba(255, 215, 0, 0.3);
+		border-color: rgba(255, 215, 0, 0.4);
+	}
+
+	.acrylic-hover {
+		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.acrylic-hover:hover {
+		background: rgba(255, 255, 255, 0.08);
+		box-shadow:
+			0 16px 50px rgba(0, 0, 0, 0.4),
+			0 0 30px rgba(255, 215, 0, 0.3),
+			inset 0 2px 0 rgba(255, 255, 255, 0.15);
+		border-color: rgba(255, 215, 0, 0.5);
 	}
 
 	.glass-card {
@@ -366,6 +594,7 @@ img[width][height] {
 .line-clamp-1 {
 	display: -webkit-box;
 	-webkit-line-clamp: 1;
+	line-clamp: 1;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
 }
@@ -373,6 +602,7 @@ img[width][height] {
 .line-clamp-2 {
 	display: -webkit-box;
 	-webkit-line-clamp: 2;
+	line-clamp: 2;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
 }
@@ -380,6 +610,7 @@ img[width][height] {
 .line-clamp-3 {
 	display: -webkit-box;
 	-webkit-line-clamp: 3;
+	line-clamp: 3;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
 }
@@ -479,3 +710,137 @@ img[width][height] {
 .animate-ping {
 	animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
+
+/* Responsive Design Fixes - Prevent layout deformation */
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	width: 100%;
+	min-width: 320px; /* Prevent collapse on very small screens */
+	position: relative;
+}
+
+/* Container overflow management */
+.container, .max-w-7xl {
+	max-width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+
+/* Prevent horizontal scrolling issues */
+body {
+	overflow-x: auto; /* Allow horizontal scroll when needed */
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: rgba(0, 0, 0, 0.3);
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: linear-gradient(45deg, rgba(217, 158, 43, 0.6), rgba(234, 222, 175, 0.4));
+	border-radius: 4px;
+	border: 1px solid rgba(217, 158, 43, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: linear-gradient(45deg, rgba(217, 158, 43, 0.8), rgba(234, 222, 175, 0.6));
+}
+
+/* Grid and flexbox responsive fixes */
+.grid {
+	min-width: 0; /* Prevent grid items from expanding beyond container */
+}
+
+.flex {
+	min-width: 0; /* Prevent flex items from expanding beyond container */
+}
+
+/* Text overflow handling */
+.text-responsive {
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	hyphens: auto;
+}
+
+/* Responsive images and media */
+img, video, iframe {
+	max-width: 100%;
+	height: auto;
+}
+
+/* Mobile-first responsive utilities */
+@media (max-width: 640px) {
+	.container {
+		padding-left: 0.75rem;
+		padding-right: 0.75rem;
+	}
+
+	/* Ensure proper spacing on mobile */
+	.space-y-4 > * + * {
+		margin-top: 1rem;
+	}
+
+	.space-y-6 > * + * {
+		margin-top: 1.5rem;
+	}
+}
+
+@media (max-width: 480px) {
+	/* Extra small screens adjustments */
+	.grid-cols-1 {
+		grid-template-columns: 1fr;
+	}
+
+	.text-xl {
+		font-size: 1.125rem;
+		line-height: 1.75rem;
+	}
+
+	.text-lg {
+		font-size: 1rem;
+		line-height: 1.5rem;
+	}
+}
+
+/* Prevent text selection on UI elements */
+.select-none {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+/* Ensure proper z-index stacking */
+.dropdown-menu {
+	z-index: 50;
+}
+
+.navbar {
+	z-index: 40;
+}
+
+.footer {
+	z-index: 10;
+}
+
+/* Animation performance optimization */
+@media (prefers-reduced-motion: reduce) {
+	* {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}
+
+/* Script para tracking del cursor - se ejecuta inline */

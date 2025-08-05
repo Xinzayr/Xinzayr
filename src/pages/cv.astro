@@ -1,482 +1,806 @@
 ---
-import BaseLayout from '../layouts/BaseLayoutNew.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<BaseLayout title="CV - xinzayr" description="Currículum Vitae profesional de xinzayr - Desarrollador Full Stack con experiencia en tecnologías modernas.">
-	<Header />
+<BaseLayout
+  title="CV - xinzayr"
+  description="Currículum Vitae profesional de xinzayr - Desarrollador Full Stack con experiencia en tecnologías modernas."
+>
+  <Header />
 
-	<main class="min-h-screen pt-16">
-		<!-- Print Styles -->
-		<style>
-			@media print {
-				body {
-					background: white !important;
-					-webkit-print-color-adjust: exact;
-					color-adjust: exact;
-				}
-				.no-print { display: none !important; }
-				.print-only { display: block !important; }
-				.glass {
-					background: white !important;
-					border: 1px solid #e5e7eb !important;
-					backdrop-filter: none !important;
-				}
-				.print-break { page-break-before: always; }
-				.text-white { color: #1f2937 !important; }
-				.text-white\/70 { color: #6b7280 !important; }
-				.text-white\/60 { color: #9ca3af !important; }
-				.bg-gradient-to-r { background: #8b5cf6 !important; }
-			}
-		</style>
+  <main class="min-h-screen pt-16">
+    <!-- Print Styles -->
+    <style>
+      @media print {
+        body {
+          background: white !important;
+          -webkit-print-color-adjust: exact;
+          color-adjust: exact;
+        }
+        .no-print {
+          display: none !important;
+        }
+        .print-only {
+          display: block !important;
+        }
+        .glass {
+          background: white !important;
+          border: 1px solid #e5e7eb !important;
+          backdrop-filter: none !important;
+        }
+        .print-break {
+          page-break-before: always;
+        }
+        .text-white {
+          color: #1f2937 !important;
+        }
+        .text-white\/70 {
+          color: #6b7280 !important;
+        }
+        .text-white\/60 {
+          color: #9ca3af !important;
+        }
+        .bg-gradient-to-r {
+          background: #8b5cf6 !important;
+        }
+      }
+    </style>
 
-		<!-- CV Header -->
-		<section class="py-12 bg-gradient-to-br from-purple-900/20 via-transparent to-pink-900/20">
-			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-				<!-- Print Button -->
-				<div class="no-print flex justify-end mb-6">
-					<button
-						onclick="window.print()"
-						class="inline-flex items-center space-x-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-lg transition-colors"
-					>
-						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-						</svg>
-						<span>Descargar PDF</span>
-					</button>
-				</div>
+    <!-- CV Header -->
+    <section class="py-12 bg-gradient-to-br from-purple-900/20 via-transparent to-pink-900/20">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Print Button -->
+        <div class="no-print flex justify-end mb-6">
+          <button
+            onclick="window.print()"
+            class="inline-flex items-center space-x-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-lg transition-colors"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+              ></path>
+            </svg>
+            <span>Descargar PDF</span>
+          </button>
+        </div>
 
-				<!-- Personal Info Header -->
-				<div class="glass rounded-2xl p-8 mb-8">
-					<div class="flex flex-col lg:flex-row items-center lg:items-start gap-8">
-						<!-- Profile Photo -->
-						<div class="flex-shrink-0">
-							<div class="w-32 h-32 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 p-1">
-								<div class="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden">
-									<!-- Replace with actual photo -->
-									<img
-										src="https://github.com/xinzayr.png"
-										alt="xinzayr"
-										class="w-full h-full object-cover rounded-full"
-										onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
-									>
-									<div class="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-2xl font-bold" style="display:none;">
-										X
-									</div>
-								</div>
-							</div>
-						</div>
+        <!-- Personal Info Header -->
+        <div class="glass rounded-2xl p-8 mb-8">
+          <div class="flex flex-col lg:flex-row items-center lg:items-start gap-8">
+            <!-- Profile Photo -->
+            <div class="flex-shrink-0">
+              <div class="w-32 h-32 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 p-1">
+                <div
+                  class="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden"
+                >
+                  <!-- Replace with actual photo -->
+                  <img
+                    src="https://github.com/xinzayr.png"
+                    alt="xinzayr"
+                    class="w-full h-full object-cover rounded-full"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+                  />
+                  <div
+                    class="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-2xl font-bold"
+                    style="display:none;"
+                  >
+                    X
+                  </div>
+                </div>
+              </div>
+            </div>
 
-						<!-- Personal Details -->
-						<div class="flex-1 text-center lg:text-left">
-							<h1 class="text-4xl lg:text-5xl font-bold text-white mb-2">
-								Johnny Alvarez
-							</h1>
-							<h2 class="text-xl lg:text-2xl text-purple-300 font-medium mb-4">
-								Desarrollador Junior
-							</h2>
-							<p class="text-white/70 text-lg mb-6 max-w-2xl">
-								Desarrollador con ideas fuera de lo común,
-								soy un autodidacta al que le gusta entender cómo funcionan las cosas y ver hasta que punto se puede llegar realmente.
-							</p>
+            <!-- Personal Details -->
+            <div class="flex-1 text-center lg:text-left">
+              <h1 class="text-4xl lg:text-5xl font-bold text-white mb-2">Johnny Alvarez</h1>
+              <h2 class="text-xl lg:text-2xl text-purple-300 font-medium mb-4">
+                Desarrollador Junior
+              </h2>
+              <p class="text-white/70 text-lg mb-6 max-w-2xl">
+                Desarrollador con ideas fuera de lo común y enfoque en seguridad digital, soy un
+                autodidacta al que le gusta entender cómo funcionan las cosas y ver hasta que punto
+                se puede llegar realmente. Especializado en desarrollo de herramientas que respetan
+                la privacidad del usuario.
+              </p>
 
-							<!-- Contact Info -->
-							<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-								<div class="flex items-center space-x-2 text-white/80">
-									<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-									</svg>
-									<span>contact@xinzayr.xyz</span>
-								</div>
-								<div class="flex items-center space-x-2 text-white/80">
-									<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-									</svg>
-									<span>+593 (000) 000-5959</span>
-								</div>
-								<div class="flex items-center space-x-2 text-white/80">
-									<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-									</svg>
-									<span>Guayaquil, Ecuador</span>
-								</div>
-								<div class="flex items-center space-x-2 text-white/80">
-									<svg class="w-4 h-4 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
-										<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-									</svg>
-									<span>github.com/xinzayr</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
+              <!-- Contact Info -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                <div class="flex items-center space-x-2 text-white/80">
+                  <svg
+                    class="w-4 h-4 text-purple-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    ></path>
+                  </svg>
+                  <span>contact@xinzayr.xyz</span>
+                </div>
+                <div class="flex items-center space-x-2 text-white/80">
+                  <svg
+                    class="w-4 h-4 text-purple-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                    ></path>
+                  </svg>
+                  <span>+593 (000) 000-5959</span>
+                </div>
+                <div class="flex items-center space-x-2 text-white/80">
+                  <svg
+                    class="w-4 h-4 text-purple-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  </svg>
+                  <span>Guayaquil, Ecuador</span>
+                </div>
+                <div class="flex items-center space-x-2 text-white/80">
+                  <svg class="w-4 h-4 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                    ></path>
+                  </svg>
+                  <span>github.com/xinzayr</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-		<!-- Main CV Content -->
-		<section class="py-12">
-			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Main CV Content -->
+    <section class="py-12">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Left Column -->
+          <div class="lg:col-span-1 space-y-8">
+            <!-- Skills -->
+            <div class="glass rounded-xl p-6">
+              <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                <svg
+                  class="w-5 h-5 text-purple-400 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                  ></path>
+                </svg>
+                Habilidades Técnicas
+              </h3>
 
-					<!-- Left Column -->
-					<div class="lg:col-span-1 space-y-8">
+              <div class="space-y-4">
+                <!-- Lenguajes de Programación -->
+                <div>
+                  <h4 class="text-white/80 font-medium mb-2">Lenguajes de Programación</h4>
+                  <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                      <span class="text-white/70 text-sm">Python</span>
+                      <div class="flex space-x-1">
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-white/30 rounded-full"></div>
+                      </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-white/70 text-sm">TypeScript</span>
+                      <div class="flex space-x-1">
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-white/30 rounded-full"></div>
+                      </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-white/70 text-sm">JavaScript</span>
+                      <div class="flex space-x-1">
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-white/30 rounded-full"></div>
+                      </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-white/70 text-sm">Rust</span>
+                      <div class="flex space-x-1">
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-white/30 rounded-full"></div>
+                        <div class="w-2 h-2 bg-white/30 rounded-full"></div>
+                      </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-white/70 text-sm">Java</span>
+                      <div class="flex space-x-1">
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-white/30 rounded-full"></div>
+                        <div class="w-2 h-2 bg-white/30 rounded-full"></div>
+                      </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-white/70 text-sm">PowerShell</span>
+                      <div class="flex space-x-1">
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-white/30 rounded-full"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-						<!-- Skills -->
-						<div class="glass rounded-xl p-6">
-							<h3 class="text-xl font-bold text-white mb-4 flex items-center">
-								<svg class="w-5 h-5 text-purple-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-								</svg>
-								Habilidades Técnicas
-							</h3>
+                <!-- Herramientas -->
+                <div>
+                  <h4 class="text-white/80 font-medium mb-2">Herramientas & Tecnologías</h4>
+                  <div class="flex flex-wrap gap-2">
+                    <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-md"
+                      >Git</span
+                    >
+                    <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-md"
+                      >VS Code</span
+                    >
+                    <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-md"
+                      >Terminal</span
+                    >
+                    <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-md"
+                      >Docker</span
+                    >
+                    <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-md"
+                      >Linux</span
+                    >
+                    <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-md"
+                      >Windows</span
+                    >
+                    <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-md"
+                      >Tor</span
+                    >
+                    <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-md"
+                      >Astro</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
 
-							<div class="space-y-4">
-								<!-- Lenguajes de Programación -->
-								<div>
-									<h4 class="text-white/80 font-medium mb-2">Lenguajes de Programación</h4>
-									<div class="space-y-2">
-										<div class="flex justify-between items-center">
-											<span class="text-white/70 text-sm">Python</span>
-											<div class="flex space-x-1">
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-white/30 rounded-full"></div>
-											</div>
-										</div>
-										<div class="flex justify-between items-center">
-											<span class="text-white/70 text-sm">TypeScript</span>
-											<div class="flex space-x-1">
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-white/30 rounded-full"></div>
-											</div>
-										</div>
-										<div class="flex justify-between items-center">
-											<span class="text-white/70 text-sm">JavaScript</span>
-											<div class="flex space-x-1">
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-white/30 rounded-full"></div>
-											</div>
-										</div>
-										<div class="flex justify-between items-center">
-											<span class="text-white/70 text-sm">Rust</span>
-											<div class="flex space-x-1">
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-white/30 rounded-full"></div>
-												<div class="w-2 h-2 bg-white/30 rounded-full"></div>
-												<div class="w-2 h-2 bg-white/30 rounded-full"></div>
-											</div>
-										</div>
-										<div class="flex justify-between items-center">
-											<span class="text-white/70 text-sm">Java</span>
-											<div class="flex space-x-1">
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-												<div class="w-2 h-2 bg-white/30 rounded-full"></div>
-												<div class="w-2 h-2 bg-white/30 rounded-full"></div>
-												<div class="w-2 h-2 bg-white/30 rounded-full"></div>
-											</div>
-										</div>
-									</div>
-								</div>
+            <!-- Languages -->
+            <div class="glass rounded-xl p-6">
+              <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                <svg
+                  class="w-5 h-5 text-purple-400 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
+                  ></path>
+                </svg>
+                Idiomas
+              </h3>
 
-								<!-- Herramientas -->
-								<div>
-									<h4 class="text-white/80 font-medium mb-2">Herramientas</h4>
-									<div class="flex flex-wrap gap-2">
-										<span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-md">Git</span>
-										<span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-md">VS Code</span>
-										<span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-md">Terminal</span>
-									</div>
-								</div>
-							</div>
-						</div>
+              <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-white/80">Español</span>
+                  <span class="text-purple-300 text-sm">Nativo</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-white/80">Inglés</span>
+                  <span class="text-purple-300 text-sm">Medio</span>
+                </div>
+              </div>
+            </div>
 
-						<!-- Languages -->
-						<div class="glass rounded-xl p-6">
-							<h3 class="text-xl font-bold text-white mb-4 flex items-center">
-								<svg class="w-5 h-5 text-purple-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
-								</svg>
-								Idiomas
-							</h3>
+            <!-- Interests -->
+            <div class="glass rounded-xl p-6">
+              <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                <svg
+                  class="w-5 h-5 text-purple-400 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  ></path>
+                </svg>
+                Intereses
+              </h3>
 
-							<div class="space-y-3">
-								<div class="flex justify-between items-center">
-									<span class="text-white/80">Español</span>
-									<span class="text-purple-300 text-sm">Nativo</span>
-								</div>
-								<div class="flex justify-between items-center">
-									<span class="text-white/80">Inglés</span>
-									<span class="text-purple-300 text-sm">Medio</span>
-								</div>
-							</div>
-						</div>
+              <div class="space-y-2">
+                <div class="flex items-center space-x-2 text-white/70">
+                  <svg
+                    class="w-4 h-4 text-purple-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                  </svg>
+                  <span>Nuevas tecnologías</span>
+                </div>
+                <div class="flex items-center space-x-2 text-white/70">
+                  <svg
+                    class="w-4 h-4 text-purple-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    ></path>
+                  </svg>
+                  <span>Seguridad y anonimato</span>
+                </div>
+                <div class="flex items-center space-x-2 text-white/70">
+                  <svg
+                    class="w-4 h-4 text-purple-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  <span>Criptomonedas</span>
+                </div>
+                <div class="flex items-center space-x-2 text-white/70">
+                  <svg
+                    class="w-4 h-4 text-purple-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                    ></path>
+                  </svg>
+                  <span>DAO y medios descentralizados</span>
+                </div>
+                <div class="flex items-center space-x-2 text-white/70">
+                  <svg
+                    class="w-4 h-4 text-purple-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  <span>Open Source</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-						<!-- Interests -->
-						<div class="glass rounded-xl p-6">
-							<h3 class="text-xl font-bold text-white mb-4 flex items-center">
-								<svg class="w-5 h-5 text-purple-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-								</svg>
-								Intereses
-							</h3>
+          <!-- Right Column -->
+          <div class="lg:col-span-2 space-y-8">
+            <!-- Experience -->
+            <div class="glass rounded-xl p-6">
+              <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                <svg
+                  class="w-6 h-6 text-purple-400 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0H8m8 0v2a2 2 0 01-2 2H10a2 2 0 01-2-2V6"
+                  ></path>
+                </svg>
+                Experiencia Profesional
+              </h3>
 
-							<div class="space-y-2">
-								<div class="flex items-center space-x-2 text-white/70">
-									<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-									</svg>
-									<span>Nuevas tecnologías</span>
-								</div>
-								<div class="flex items-center space-x-2 text-white/70">
-									<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-									</svg>
-									<span>Seguridad y anonimato</span>
-								</div>
-								<div class="flex items-center space-x-2 text-white/70">
-									<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-									</svg>
-									<span>Criptomonedas</span>
-								</div>
-								<div class="flex items-center space-x-2 text-white/70">
-									<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-									</svg>
-									<span>DAO y medios descentralizados</span>
-								</div>
-								<div class="flex items-center space-x-2 text-white/70">
-									<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-									</svg>
-									<span>Open Source</span>
-								</div>
-							</div>
-						</div>
-					</div>
+              <div class="space-y-6">
+                <!-- Job 1 -->
+                <div class="relative pl-8 border-l-2 border-purple-500/30">
+                  <div class="absolute -left-2 top-0 w-4 h-4 bg-purple-500 rounded-full"></div>
+                  <div class="mb-4">
+                    <h4 class="text-lg font-semibold text-white">Programador Asistente</h4>
+                    <p class="text-purple-300 font-medium">
+                      Seguridad Digital Johnny Alvarez · 2023 - Actual
+                    </p>
+                    <p class="text-white/60 text-sm mt-1">Presencial, Guayaquil</p>
+                  </div>
+                  <ul class="text-white/70 space-y-1 text-sm">
+                    <li>
+                      • Soy Asistente de programación de equipos de seguridad como Camaras IP,
+                      Grabadores NVR y sistemas de alarmas
+                    </li>
+                    <li>
+                      • Trabajo en la implementación de soluciones de seguridad para clientes
+                      residenciales y comerciales
+                    </li>
+                    <li>• Realizo mantenimiento preventivo y correctivo de equipos de seguridad</li>
+                    <li>• Asisto y superviso la instalación de sistemas de seguridad</li>
+                  </ul>
+                </div>
 
-					<!-- Right Column -->
-					<div class="lg:col-span-2 space-y-8">
+                <!-- Job 2 (Emprendimiento personal) -->
+                <div class="relative pl-8 border-l-2 border-purple-500/30">
+                  <div class="absolute -left-2 top-0 w-4 h-4 bg-purple-500/60 rounded-full"></div>
+                  <div class="mb-4">
+                    <h4 class="text-lg font-semibold text-white">Desarrollador Junior</h4>
+                    <p class="text-purple-300 font-medium">Emprendimiento · 2023 - 2025</p>
+                    <p class="text-white/60 text-sm mt-1">Híbrido, Guayaquil</p>
+                  </div>
+                  <ul class="text-white/70 space-y-1 text-sm">
+                    <li>
+                      • Desarrollo e implemento soluciones tecnológicas personalizadas para
+                      clientes, adaptadas a sus necesidades específicas.
+                    </li>
+                    <li>
+                      • Brindo servicios de asistencia técnica y soporte remoto, asegurando una
+                      atención eficiente y oportuna.
+                    </li>
+                    <li>
+                      • Configuro y optimizo entornos Windows, Linux y MacOS; gestiono licencias de
+                      software, recupero información eliminada (hasta 19 días) y realizo desbloqueo
+                      de sistemas Windows sin pérdida de datos en caso de extravío de credenciales.
+                    </li>
+                    <li>
+                      • Implemento medidas de control parental y políticas de control en entornos
+                      empresariales y de oficina para mejorar la seguridad y productividad.
+                    </li>
+                  </ul>
+                </div>
 
-						<!-- Experience -->
-						<div class="glass rounded-xl p-6">
-							<h3 class="text-2xl font-bold text-white mb-6 flex items-center">
-								<svg class="w-6 h-6 text-purple-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0H8m8 0v2a2 2 0 01-2 2H10a2 2 0 01-2-2V6"/>
-								</svg>
-								Experiencia Profesional
-							</h3>
+                <!-- Job 3 -->
+                <div class="relative pl-8">
+                  <div class="absolute -left-2 top-0 w-4 h-4 bg-purple-500/30 rounded-full"></div>
+                  <div class="mb-4">
+                    <h4 class="text-lg font-semibold text-white">
+                      Desarrollo Proyectos por y para la Comunidad
+                    </h4>
+                    <p class="text-purple-300 font-medium">Kerozeyn · 2023 - 2XXX</p>
+                    <p class="text-white/60 text-sm mt-1">Virtual</p>
+                  </div>
+                  <ul class="text-white/70 space-y-1 text-sm">
+                    <li>
+                      • Diseño e impulso proyectos y movimientos comunitarios inspirados en
+                      situaciones cotidianas y acontecimientos actuales, con el objetivo de generar
+                      un impacto positivo.
+                    </li>
+                    <li>
+                      • Actualmente trabajo en la creación de bases para la descentralización del
+                      poder, la libertad de expresión y el acceso al conocimiento, motivado por
+                      sucesos que afectan estos derechos fundamentales y la privacidad de los datos.
+                    </li>
+                    <li>
+                      • Kerozeyn busca empoderar a las personas, promoviendo el derecho al voto, la
+                      libre expresión y el acceso a información veraz, sin sesgos políticos ni
+                      personales. Creo firmemente en el valor de la crítica constructiva y en el
+                      respeto a la diversidad de opiniones.
+                    </li>
+                    <li>
+                      • Defiendo la idea de que todos tenemos derechos, especialmente el de la
+                      libertad de expresión. Considero que cada persona es libre de expresar sus
+                      pensamientos, aunque puedan ser erróneos, y que el diálogo abierto nos permite
+                      aprender, reflexionar y mejorar continuamente.
+                    </li>
+                    <li>
+                      • Estoy comprometido con la mejora continua y la innovación en todos mis
+                      proyectos, valorando la retroalimentación y el aprendizaje constante. Invito a
+                      quienes interactúan conmigo a compartir sus experiencias y perspectivas, ya
+                      que el crecimiento personal y profesional se enriquece con la diversidad de
+                      ideas y el intercambio respetuoso.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
 
-							<div class="space-y-6">
-								<!-- Job 1 -->
-								<div class="relative pl-8 border-l-2 border-purple-500/30">
-									<div class="absolute -left-2 top-0 w-4 h-4 bg-purple-500 rounded-full"></div>
-									<div class="mb-4">
-										<h4 class="text-lg font-semibold text-white">Programador Asistente</h4>
-										<p class="text-purple-300 font-medium">Seguridad Digital Johnny Alvarez · 2023 - Actual</p>
-										<p class="text-white/60 text-sm mt-1">Presencial, Guayaquil</p>
-									</div>
-									<ul class="text-white/70 space-y-1 text-sm">
-										<li>• Soy Asistente de programación de equipos de seguridad como Camaras IP, Grabadores NVR y sistemas de alarmas</li>
-										<li>• Trabajo en la implementación de soluciones de seguridad para clientes residenciales y comerciales</li>
-										<li>• Realizo mantenimiento preventivo y correctivo de equipos de seguridad</li>
-										<li>• Asisto y superviso la instalación de sistemas de seguridad</li>
-									</ul>
-								</div>
+            <!-- Education -->
+            <div class="glass rounded-xl p-6">
+              <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                <svg
+                  class="w-6 h-6 text-purple-400 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
+                  ></path>
+                </svg>
+                Educación
+              </h3>
 
-								<!-- Job 2 (Emprendimiento personal) -->
-								<div class="relative pl-8 border-l-2 border-purple-500/30">
-									<div class="absolute -left-2 top-0 w-4 h-4 bg-purple-500/60 rounded-full"></div>
-									<div class="mb-4">
-										<h4 class="text-lg font-semibold text-white">Desarrollador Junior</h4>
-										<p class="text-purple-300 font-medium">Emprendimiento · 2023 - 2025</p>
-										<p class="text-white/60 text-sm mt-1">Híbrido, Guayaquil</p>
-									</div>
-									<ul class="text-white/70 space-y-1 text-sm">
-                                        <li>• Desarrollo e implemento soluciones tecnológicas personalizadas para clientes, adaptadas a sus necesidades específicas.</li>
-                                        <li>• Brindo servicios de asistencia técnica y soporte remoto, asegurando una atención eficiente y oportuna.</li>
-                                        <li>• Configuro y optimizo entornos Windows, Linux y MacOS; gestiono licencias de software, recupero información eliminada (hasta 19 días) y realizo desbloqueo de sistemas Windows sin pérdida de datos en caso de extravío de credenciales.</li>
-                                        <li>• Implemento medidas de control parental y políticas de control en entornos empresariales y de oficina para mejorar la seguridad y productividad.</li>
-									</ul>
-								</div>
+              <div class="space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h4 class="text-lg font-semibold text-white">
+                      Academia Naval Almirante Illingworth
+                    </h4>
+                    <p class="text-purple-300">Colegio Militar</p>
+                    <p class="text-white/60 text-sm">Bachillerato técnico</p>
+                  </div>
+                  <div class="text-right mt-2 sm:mt-0">
+                    <p class="text-white/70 font-medium">2020 - 2023</p>
+                    <p class="text-purple-300 text-sm">GPA: 3.8/4.0</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-								<!-- Job 3 -->
-								<div class="relative pl-8">
-									<div class="absolute -left-2 top-0 w-4 h-4 bg-purple-500/30 rounded-full"></div>
-									<div class="mb-4">
-										<h4 class="text-lg font-semibold text-white">Desarrollo Proyectos por y para la Comunidad</h4>
-										<p class="text-purple-300 font-medium">Kerozeyn · 2023 - 2XXX</p>
-										<p class="text-white/60 text-sm mt-1">Virtual</p>
-									</div>
-									<ul class="text-white/70 space-y-1 text-sm">
-                                        <li>• Diseño e impulso proyectos y movimientos comunitarios inspirados en situaciones cotidianas y acontecimientos actuales, con el objetivo de generar un impacto positivo.</li>
-                                        <li>• Actualmente trabajo en la creación de bases para la descentralización del poder, la libertad de expresión y el acceso al conocimiento, motivado por sucesos que afectan estos derechos fundamentales y la privacidad de los datos.</li>
-                                        <li>• Kerozeyn busca empoderar a las personas, promoviendo el derecho al voto, la libre expresión y el acceso a información veraz, sin sesgos políticos ni personales. Creo firmemente en el valor de la crítica constructiva y en el respeto a la diversidad de opiniones.</li>
-                                        <li>• Defiendo la idea de que todos tenemos derechos, especialmente el de la libertad de expresión. Considero que cada persona es libre de expresar sus pensamientos, aunque puedan ser erróneos, y que el diálogo abierto nos permite aprender, reflexionar y mejorar continuamente.</li>
-                                        <li>• Estoy comprometido con la mejora continua y la innovación en todos mis proyectos, valorando la retroalimentación y el aprendizaje constante. Invito a quienes interactúan conmigo a compartir sus experiencias y perspectivas, ya que el crecimiento personal y profesional se enriquece con la diversidad de ideas y el intercambio respetuoso.</li></ul>
-								</div>
-							</div>
-						</div>
+            <!-- Projects -->
+            <div class="glass rounded-xl p-6">
+              <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                <svg
+                  class="w-6 h-6 text-purple-400 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                  ></path>
+                </svg>
+                Proyectos Destacados
+              </h3>
 
-						<!-- Education -->
-						<div class="glass rounded-xl p-6">
-							<h3 class="text-2xl font-bold text-white mb-6 flex items-center">
-								<svg class="w-6 h-6 text-purple-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
-								</svg>
-								Educación
-							</h3>
+              <div class="space-y-6">
+                <!-- Project 1 -->
+                <div class="border border-white/10 rounded-lg p-4">
+                  <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
+                    <h4 class="text-lg font-semibold text-white">Kerozeyn</h4>
+                    <div class="flex space-x-2 mt-2 sm:mt-0">
+                      <a
+                        href="https://github.com/Kerozeyn"
+                        class="text-purple-400 hover:text-purple-300 transition-colors"
+                      >
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                          ></path>
+                        </svg>
+                      </a>
+                      <a
+                        href="https://github.com/Kerozeyn"
+                        class="text-purple-400 hover:text-purple-300 transition-colors"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                          ></path>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                  <p class="text-white/70 text-sm mb-3">
+                    Proyecto que busca liberar y reunir para todos el conocimiento promover la
+                    libertad de expresion, el acceso a la información y evitar la censura.
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded"
+                      >AGPLv3</span
+                    >
+                    <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded"
+                      >Privacy</span
+                    >
+                    <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded"
+                      >Open Source</span
+                    >
+                  </div>
+                </div>
 
-							<div class="space-y-4">
-								<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-									<div>
-										<h4 class="text-lg font-semibold text-white">Academia Naval Almirante Illingworth</h4>
-										<p class="text-purple-300">Colegio Militar</p>
-										<p class="text-white/60 text-sm">Bachillerato técnico</p>
-									</div>
-									<div class="text-right mt-2 sm:mt-0">
-										<p class="text-white/70 font-medium">2020 - 2023</p>
-										<p class="text-purple-300 text-sm">GPA: 3.8/4.0</p>
-									</div>
-								</div>
-							</div>
-						</div>
+                <!-- Project 2 -->
+                <div class="border border-white/10 rounded-lg p-4">
+                  <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
+                    <h4 class="text-lg font-semibold text-white">OpenTorRouter</h4>
+                    <div class="flex space-x-2 mt-2 sm:mt-0">
+                      <a
+                        href="https://github.com/Xinzayr/"
+                        class="text-purple-400 hover:text-purple-300 transition-colors"
+                      >
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                          ></path>
+                        </svg>
+                      </a>
+                      <a
+                        href="https://github.com/Xinzayr/OpenTorRouter"
+                        class="text-purple-400 hover:text-purple-300 transition-colors"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                          ></path>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                  <p class="text-white/70 text-sm mb-3">
+                    Advanced Anonymous Network Router for Windows.
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded"
+                      >Rust</span
+                    >
+                    <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded"
+                      >PowerShell</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
 
-						<!-- Projects -->
-						<div class="glass rounded-xl p-6">
-							<h3 class="text-2xl font-bold text-white mb-6 flex items-center">
-								<svg class="w-6 h-6 text-purple-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-								</svg>
-								Proyectos Destacados
-							</h3>
+            <!-- Certifications -->
+            <div class="glass rounded-xl p-6">
+              <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                <svg
+                  class="w-6 h-6 text-purple-400 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                  ></path>
+                </svg>
+                Certificaciones
+              </h3>
 
-							<div class="space-y-6">
-								<!-- Project 1 -->
-								<div class="border border-white/10 rounded-lg p-4">
-									<div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
-										<h4 class="text-lg font-semibold text-white">Kerozeyn</h4>
-										<div class="flex space-x-2 mt-2 sm:mt-0">
-											<a href="https://github.com/Kerozeyn" class="text-purple-400 hover:text-purple-300 transition-colors">
-												<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-													<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-												</svg>
-											</a>
-											<a href="https://github.com/Kerozeyn" class="text-purple-400 hover:text-purple-300 transition-colors">
-												<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-												</svg>
-											</a>
-										</div>
-									</div>
-									<p class="text-white/70 text-sm mb-3">
-										Proyecto que busca liberar y reunir para todos el conocimiento promover la libertad de expresion, el acceso a la información y evitar la censura.
-									</p>
-									<div class="flex flex-wrap gap-2">
-										<span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded">AGPLv3</span>
-										<span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded">Privacy</span>
-										<span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded">Open Source</span>
-									</div>
-								</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
+                  <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <svg
+                      class="w-4 h-4 text-purple-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 class="text-white font-medium text-sm"></h4>
+                    <p class="text-white/60 text-xs"></p>
+                  </div>
+                </div>
 
-								<!-- Project 2 -->
-								<div class="border border-white/10 rounded-lg p-4">
-									<div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
-										<h4 class="text-lg font-semibold text-white">OpenTorRouter</h4>
-										<div class="flex space-x-2 mt-2 sm:mt-0">
-											<a href="https://github.com/Xinzayr/" class="text-purple-400 hover:text-purple-300 transition-colors">
-												<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-													<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-												</svg>
-											</a>
-											<a href="https://github.com/Xinzayr/OpenTorRouter" class="text-purple-400 hover:text-purple-300 transition-colors">
-												<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-												</svg>
-											</a>
-										</div>
-									</div>
-									<p class="text-white/70 text-sm mb-3">
-										Advanced Anonymous Network Router for Windows.
-									</p>
-									<div class="flex flex-wrap gap-2">
-										<span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded">Rust</span>
-										<span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded">PowerShell</span>
-									</div>
-								</div>
-							</div>
-						</div>
+                <div class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
+                  <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <svg
+                      class="w-4 h-4 text-purple-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 class="text-white font-medium text-sm"></h4>
+                    <p class="text-white/60 text-xs"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-						<!-- Certifications -->
-						<div class="glass rounded-xl p-6">
-							<h3 class="text-2xl font-bold text-white mb-6 flex items-center">
-								<svg class="w-6 h-6 text-purple-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
-								</svg>
-								Certificaciones
-							</h3>
+  <Footer />
 
-							<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-								<div class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
-									<div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-										<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-										</svg>
-									</div>
-									<div>
-										<h4 class="text-white font-medium text-sm"></h4>
-										<p class="text-white/60 text-xs"></p>
-									</div>
-								</div>
-
-								<div class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
-									<div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-										<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-										</svg>
-									</div>
-									<div>
-										<h4 class="text-white font-medium text-sm"></h4>
-										<p class="text-white/60 text-xs"></p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	</main>
-
-	<Footer />
-
-	<script>
-		// Smooth scrolling for print
-		document.addEventListener('DOMContentLoaded', function() {
-			// Add print functionality
-			const printButton = document.querySelector('button[onclick="window.print()"]');
-			if (printButton) {
-				printButton.addEventListener('click', function() {
-					// Small delay to ensure styles are applied
-					setTimeout(() => {
-						window.print();
-					}, 100);
-				});
-			}
-		});
-	</script>
+  <script>
+    // Smooth scrolling for print
+    document.addEventListener('DOMContentLoaded', function () {
+      // Add print functionality
+      const printButton = document.querySelector('button[onclick="window.print()"]');
+      if (printButton) {
+        printButton.addEventListener('click', function () {
+          // Small delay to ensure styles are applied
+          setTimeout(() => {
+            window.print();
+          }, 100);
+        });
+      }
+    });
+  </script>
 </BaseLayout>

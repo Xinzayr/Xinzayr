@@ -24,51 +24,68 @@ const latestBlogPosts = allBlogPosts
 	<main class="min-h-screen pt-16">
 		<!-- Hero Section -->
 		<section class="relative overflow-hidden">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+			<!-- Fondo con gradiente animado -->
+			<div class="absolute inset-0 bg-gradient-opal animate-gradient bg-[400%_400%]"></div>
+			<div class="absolute inset-0 bg-gradient-to-r from-black-pure/80 via-transparent to-black-opal/60"></div>
+
+			<!-- Partículas flotantes -->
+			<div class="absolute inset-0 overflow-hidden pointer-events-none">
+				<div class="absolute top-20 left-10 w-1 h-1 bg-gold-400 rounded-full animate-pulse"></div>
+				<div class="absolute top-40 right-20 w-2 h-2 bg-neon-blue rounded-full animate-ping"></div>
+				<div class="absolute bottom-20 left-1/3 w-1 h-1 bg-pastel-purple rounded-full animate-pulse"></div>
+			</div>
+
+			<div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
 				<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 					<!-- Content -->
 					<div class="space-y-8">
-						<div class="space-y-4">
-							<h1 class="text-4xl lg:text-6xl font-bold text-white leading-tight">
-								Hola, soy
-								<span class="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+						<div class="space-y-6">
+							<h1 class="text-4xl lg:text-7xl font-display font-bold leading-tight">
+								<span class="text-white">Hola, soy</span>
+								<br>
+								<span class="bg-gradient-to-r from-gold-400 via-gold-300 to-pearl-400 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
 									xinzayr
 								</span>
 							</h1>
-							<p class="text-xl text-white/80 leading-relaxed">
-								Desarrollador Junior apasionado por aprender y crear proyectos.
-								Estudiante con hambre de conocimiento, explorando nuevas ideas y hechos que marcan la actualidad sin dejarse sesgar.
+							<p class="text-xl lg:text-2xl text-white/90 leading-relaxed font-body">
+								<span class="text-pastel-blue font-medium">Desarrollador Junior</span> apasionado por aprender y crear proyectos.
+								<br>
+								<span class="text-pearl-300">Estudiante</span> con hambre de conocimiento, explorando nuevas ideas.
 							</p>
 						</div>
 
 						<!-- CTA Buttons -->
-						<div class="flex flex-col sm:flex-row gap-4">
+						<div class="flex flex-col sm:flex-row gap-6">
 							<a
 								href="/projects"
-								class="inline-flex items-center justify-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors"
+								class="acrylic-gold acrylic-hover px-8 py-4 font-serif font-semibold text-lg text-white rounded-2xl
+								       shadow-lg shadow-gold-500/20 hover:shadow-gold-400/40 transition-all duration-300
+								       border border-gold-400/30 hover:border-gold-300/50"
 							>
-								Ver mis proyectos
+								✨ Ver mis proyectos
 							</a>
 							<a
 								href="/contact"
-								class="inline-flex items-center justify-center px-6 py-3 glass border border-white/20 text-white font-medium rounded-lg glass-hover"
+								class="acrylic-pearl acrylic-hover px-8 py-4 font-body font-medium text-lg text-white rounded-2xl
+								       border border-pearl-300/20 hover:border-pearl-200/40 transition-all duration-300"
 							>
-								Conectar conmigo
+								💬 Conectar conmigo
 							</a>
 						</div>
 
 						<!-- Status Indicators -->
-						<div class="flex flex-wrap gap-4 pt-4">
+						<div class="flex flex-wrap gap-4 pt-6">
 							<DiscordStatus variant="simple" size="md" />
-							<div class="flex items-center space-x-2 glass px-3 py-2 rounded-lg">
-								<div class="w-2 h-2 bg-blue-400 rounded-full"></div>
-								<span class="text-sm text-white/80">Usualmente activo en GitHub</span>
+							<div class="acrylic flex items-center space-x-3 px-4 py-3 rounded-xl border border-neon-blue/20">
+								<div class="w-3 h-3 bg-neon-blue rounded-full animate-pulse shadow-lg shadow-neon-blue/50"></div>
+								<span class="text-sm text-white/90 font-body">Usualmente activo en GitHub</span>
 							</div>
 						</div>
 					</div>
 
 					<!-- Avatar/Visual -->
 					<div class="relative">
+						<div class="absolute inset-0 bg-gradient-to-r from-gold-400/20 to-pearl-400/20 rounded-full blur-3xl animate-pulse"></div>
 						<ProfileAvatar username="xinzayr" size="lg" showGradient={true} showFloatingElements={true} />
 					</div>
 				</div>
@@ -76,26 +93,36 @@ const latestBlogPosts = allBlogPosts
 		</section>
 
 		<!-- GitHub Repositories Section -->
-		<section class="py-20">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="text-center mb-12">
-					<h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">
-						Mis Proyectos en GitHub
+		<section class="py-24 relative">
+			<!-- Fondo sutil -->
+			<div class="absolute inset-0 bg-gradient-to-b from-black-opal/30 to-black-pure/50"></div>
+
+			<div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-16">
+					<h2 class="text-4xl lg:text-5xl font-display font-bold text-white mb-6">
+						Mis Proyectos en
+						<span class="bg-gradient-to-r from-neon-purple to-neon-blue bg-clip-text text-transparent">
+							GitHub
+						</span>
 					</h2>
-					<p class="text-white/70 text-lg max-w-2xl mx-auto">
-						Proyectos que he estado desarrollando para aprender y practicar
+					<p class="text-white/80 text-xl max-w-3xl mx-auto font-body leading-relaxed">
+						Proyectos que he estado desarrollando para aprender y practicar mis habilidades
 					</p>
 				</div>
 
-				<GitHubRepos variant="featured" limit={6} />
+				<div class="acrylic-dark rounded-3xl p-8 lg:p-12 border border-pearl-200/10">
+					<GitHubRepos variant="featured" limit={6} />
+				</div>
 
 				<div class="text-center mt-12">
 					<a
 						href="/projects"
-						class="inline-flex items-center space-x-2 text-blue-400 hover:text-blue-300 font-medium transition-colors"
+						class="inline-flex items-center space-x-3 acrylic-pearl px-6 py-4 rounded-xl font-body font-medium
+						       transition-all duration-300 hover:transform hover:scale-105 text-lg
+						       border border-pearl-300/20 hover:border-pearl-200/40"
 					>
-						<span>Ver todos los proyectos</span>
-						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<span class="text-white">Ver todos los proyectos</span>
+						<svg class="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
 						</svg>
 					</a>
@@ -104,27 +131,41 @@ const latestBlogPosts = allBlogPosts
 		</section>
 
 		<!-- Latest Blog Posts Section -->
-		<section class="py-20 bg-white/5 backdrop-blur-sm">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="text-center mb-12">
-					<h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">
-						Últimas Entradas del Blog
+		<section class="py-24 relative">
+			<!-- Fondo con gradiente perla -->
+			<div class="absolute inset-0 bg-gradient-pearl opacity-20"></div>
+			<div class="absolute inset-0 backdrop-blur-3xl"></div>
+
+			<div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-16">
+					<h2 class="text-4xl lg:text-5xl font-display font-bold mb-6">
+						<span class="text-white">Últimas Entradas del</span>
+						<br>
+						<span class="bg-gradient-to-r from-pastel-pink to-pastel-purple bg-clip-text text-transparent">
+							Blog
+						</span>
 					</h2>
-					<p class="text-white/70 text-lg max-w-2xl mx-auto">
-						Comparto mis ideas y recibido opiniones de ellas, sincronizado automáticamente desde mi blog
+					<p class="text-white/80 text-xl max-w-3xl mx-auto font-body leading-relaxed">
+						Comparto mis ideas y reflexiones, sincronizado automáticamente desde mi blog personal
 					</p>
 				</div>
 
-				<!-- Posts del Blog de Blogger -->
-				<BloggerPosts variant="grid" maxPosts={3} showFeatured={false} />
+				<div class="acrylic-pearl rounded-3xl p-8 lg:p-12 border border-gold-400/20
+				           shadow-2xl shadow-gold-400/10 hover:shadow-gold-400/20 transition-all duration-500">
+					<!-- Posts del Blog de Blogger -->
+					<BloggerPosts variant="grid" maxPosts={3} showFeatured={false} />
+				</div>
 
 				<div class="text-center mt-12">
 					<a
 						href="/blog"
-						class="inline-flex items-center space-x-2 text-blue-400 hover:text-blue-300 font-medium transition-colors"
+						class="inline-flex items-center space-x-3 acrylic-gold px-8 py-4 rounded-xl font-serif font-semibold text-lg
+						       transition-all duration-300 hover:transform hover:scale-105
+						       border border-gold-400/30 hover:border-gold-300/50
+						       shadow-lg shadow-gold-500/20 hover:shadow-gold-400/40"
 					>
-						<span>Ver todas las entradas</span>
-						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<span class="text-white">Ver todas las entradas</span>
+						<svg class="w-6 h-6 text-gold-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
 						</svg>
 					</a>
@@ -133,31 +174,75 @@ const latestBlogPosts = allBlogPosts
 		</section>
 
 		<!-- Tech Stack Section -->
-		<section class="py-20">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="text-center mb-12">
-					<h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">
-						Tecnologías que estoy aprendiendo
+		<section class="py-24 relative">
+			<!-- Fondo con partículas -->
+			<div class="absolute inset-0 bg-gradient-to-br from-black-opal to-black-pure"></div>
+			<div class="absolute inset-0 overflow-hidden pointer-events-none">
+				<div class="absolute top-1/4 left-1/4 w-32 h-32 bg-neon-purple/10 rounded-full blur-3xl animate-pulse"></div>
+				<div class="absolute bottom-1/3 right-1/4 w-40 h-40 bg-neon-blue/10 rounded-full blur-3xl animate-pulse"></div>
+			</div>
+
+			<div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-16">
+					<h2 class="text-4xl lg:text-5xl font-display font-bold mb-6">
+						<span class="text-white">Tecnologías que estoy</span>
+						<br>
+						<span class="bg-gradient-neon bg-clip-text text-transparent animate-gradient bg-[400%_400%]">
+							aprendiendo
+						</span>
 					</h2>
-					<p class="text-white/70 text-lg max-w-2xl mx-auto">
-						Lenguajes que estoy estudiando y usando en mis proyectos
+					<p class="text-white/80 text-xl max-w-3xl mx-auto font-body leading-relaxed">
+						Lenguajes y frameworks que estoy estudiando y usando en mis proyectos
 					</p>
 				</div>
 
-				<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+				<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
 					{[
-						{ name: 'Astro', icon: '🚀' },
-                        { name: 'Node.js', icon: '🟢' },
-                        { name: 'JavaScript', icon: '🟡' },
-						{ name: 'TypeScript', icon: '🔷' },
-						{ name: 'Rust', icon: '🦀' },
-						{ name: 'Python', icon: '🐍' },
+						{ name: 'Astro', icon: '🚀', color: 'neon-orange' },
+                        { name: 'Node.js', icon: '🟢', color: 'neon-green' },
+                        { name: 'JavaScript', icon: '🟡', color: 'neon-yellow' },
+						{ name: 'TypeScript', icon: '🔷', color: 'neon-blue' },
+						{ name: 'Rust', icon: '🦀', color: 'neon-orange' },
+						{ name: 'Python', icon: '🐍', color: 'neon-green' },
 					].map((tech) => (
-						<div class="glass rounded-lg p-4 text-center glass-hover">
-							<div class="text-3xl mb-2">{tech.icon}</div>
-							<div class="text-white text-sm font-medium">{tech.name}</div>
+						<div class={`acrylic-dark acrylic-hover rounded-2xl p-6 text-center border border-${tech.color}/20
+						            hover:border-${tech.color}/40 group relative overflow-hidden`}>
+							<!-- Efecto de brillo hover -->
+							<div class={`absolute inset-0 bg-gradient-to-br from-${tech.color}/5 to-transparent opacity-0
+							            group-hover:opacity-100 transition-opacity duration-300`}></div>
+
+							<div class="relative z-10">
+								<div class="text-4xl mb-3 animate-float" style="animation-delay: 0.5s;">{tech.icon}</div>
+								<div class="text-white font-body font-medium text-sm">{tech.name}</div>
+							</div>
 						</div>
 					))}
+				</div>
+
+				<!-- Sección adicional de habilidades -->
+				<div class="mt-16 text-center">
+					<div class="acrylic-pearl rounded-2xl p-8 border border-pearl-300/20 max-w-4xl mx-auto">
+						<h3 class="text-2xl font-serif font-semibold text-white mb-4">
+							🎯 Enfoque actual de aprendizaje
+						</h3>
+						<div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+							<div class="space-y-2">
+								<div class="text-3xl">🔧</div>
+								<div class="text-white font-body font-medium">Desarrollo Web</div>
+								<div class="text-white/70 text-sm">Frontend & Backend</div>
+							</div>
+							<div class="space-y-2">
+								<div class="text-3xl">🤖</div>
+								<div class="text-white font-body font-medium">Automatización</div>
+								<div class="text-white/70 text-sm">Scripts & Bots</div>
+							</div>
+							<div class="space-y-2">
+								<div class="text-3xl">📊</div>
+								<div class="text-white font-body font-medium">Análisis</div>
+								<div class="text-white/70 text-sm">Datos & Tendencias</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</section>

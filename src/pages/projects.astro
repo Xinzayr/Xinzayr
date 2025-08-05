@@ -3,6 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import GitHubRepos from '../components/GitHubRepos.astro';
+import DynamicProjectCards from '../components/DynamicProjectCards.astro';
+import GitHubRepoCards from '../components/GitHubRepoCards.astro';
 import { getCollection } from 'astro:content';
 import { API_CONFIG } from '../consts';
 
@@ -13,8 +15,8 @@ const allProjects = await getCollection('projects');
 const projects = allProjects.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 // Obtener todas las tecnologías únicas para filtros
-const allTechnologies = [...new Set(projects.flatMap(project => project.data.stack))].sort();
-const allCategories = [...new Set(projects.map(project => project.data.category))].sort();
+const allTechnologies = [...new Set(projects.flatMap((project) => project.data.stack))].sort();
+const allCategories = [...new Set(projects.map((project) => project.data.category))].sort();
 
 // Obtener estadísticas reales de GitHub
 const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN || API_CONFIG.github.token;
@@ -28,7 +30,7 @@ let githubStats = {
   lastUpdated: '',
   topLanguage: '',
   activeRepos: [],
-  languageDistribution: {}
+  languageDistribution: {},
 };
 
 if (GITHUB_TOKEN && GITHUB_USERNAME) {
@@ -36,18 +38,21 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
     // Obtener información del usuario
     const userResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, {
       headers: {
-        'Authorization': `token ${GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json'
-      }
+        Authorization: `token ${GITHUB_TOKEN}`,
+        Accept: 'application/vnd.github.v3+json',
+      },
     });
 
     // Obtener repositorios del usuario
-    const reposResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?type=public&per_page=100&sort=updated`, {
-      headers: {
-        'Authorization': `token ${GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json'
-      }
-    });
+    const reposResponse = await fetch(
+      `https://api.github.com/users/${GITHUB_USERNAME}/repos?type=public&per_page=100&sort=updated`,
+      {
+        headers: {
+          Authorization: `token ${GITHUB_TOKEN}`,
+          Accept: 'application/vnd.github.v3+json',
+        },
+      },
+    );
 
     if (userResponse.ok && reposResponse.ok) {
       const userData = await userResponse.json();
@@ -58,8 +63,14 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
 
       // Calcular estadísticas básicas
       githubStats.publicRepos = activePublicRepos.length;
-      githubStats.totalStars = activePublicRepos.reduce((sum: number, repo: any) => sum + repo.stargazers_count, 0);
-      githubStats.totalForks = activePublicRepos.reduce((sum: number, repo: any) => sum + repo.forks_count, 0);
+      githubStats.totalStars = activePublicRepos.reduce(
+        (sum: number, repo: any) => sum + repo.stargazers_count,
+        0,
+      );
+      githubStats.totalForks = activePublicRepos.reduce(
+        (sum: number, repo: any) => sum + repo.forks_count,
+        0,
+      );
 
       // Obtener información de lenguajes
       const languageCount: Record<string, number> = {};
@@ -76,8 +87,9 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
       githubStats.languageDistribution = languageCount;
 
       // Encontrar el lenguaje más usado
-      const sortedLanguages = Object.entries(languageCount)
-        .sort(([,a], [,b]) => (b as number) - (a as number));
+      const sortedLanguages = Object.entries(languageCount).sort(
+        ([, a], [, b]) => (b as number) - (a as number),
+      );
       githubStats.topLanguage = sortedLanguages.length > 0 ? sortedLanguages[0][0] : '';
 
       // Obtener la fecha del último repositorio actualizado
@@ -90,7 +102,7 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
         name: repo.name,
         language: repo.language,
         stars: repo.stargazers_count,
-        updated: repo.updated_at
+        updated: repo.updated_at,
       }));
 
       console.log('📊 GitHub Stats completas:', {
@@ -98,7 +110,7 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
         languages: githubStats.totalLanguages,
         stars: githubStats.totalStars,
         topLanguage: githubStats.topLanguage,
-        distribution: githubStats.languageDistribution
+        distribution: githubStats.languageDistribution,
       });
     }
   } catch (error) {
@@ -107,184 +119,149 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
 }
 ---
 
-<BaseLayout title="Proyectos - xinzayr" description="Explora mi portfolio de proyectos de desarrollo web, aplicaciones móviles y herramientas innovadoras.">
-	<Header />
+<BaseLayout
+  title="Proyectos - xinzayr"
+  description="Explora mi portfolio de proyectos de desarrollo web, aplicaciones móviles y herramientas innovadoras."
+>
+  <Header />
 
-	<main class="min-h-screen pt-16">
-		<!-- Hero Section -->
-		<section class="py-20">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="text-center mb-12">
-					<h1 class="text-4xl lg:text-5xl font-bold text-white mb-6">
-						Mis Proyectos
-					</h1>
-					<p class="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-						Una colección de proyectos que demuestran mi experiencia en desarrollo,
-						desde aplicaciones modernas, herramientas e ideas innovadoras.
-					</p>
-				</div>
+  <main class="min-h-screen pt-16">
+    <!-- Hero Section -->
+    <section class="py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h1 class="text-4xl lg:text-5xl font-bold text-white mb-6">Mis Proyectos</h1>
+          <p class="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+            Una colección de proyectos que demuestran mi experiencia en desarrollo, desde
+            aplicaciones modernas, herramientas e ideas innovadoras.
+          </p>
+        </div>
 
-				<!-- Stats -->
-				<div class="grid grid-cols-1 sm:grid-cols-4 gap-6 max-w-4xl mx-auto mb-16">
-					<div class="glass rounded-lg p-6 text-center">
-						<div class="text-3xl font-bold text-blue-400 mb-2">
-							{githubStats.publicRepos || '2'}
-						</div>
-						<div class="text-white/70 text-sm">Repositorios públicos</div>
-					</div>
-					<div class="glass rounded-lg p-6 text-center">
-						<div class="text-3xl font-bold text-purple-400 mb-2">
-							{githubStats.totalLanguages || '2'}
-						</div>
-						<div class="text-white/70 text-sm">Lenguajes de programación</div>
-						{githubStats.topLanguage && (
-							<div class="text-xs text-purple-300 mt-1">Principal: {githubStats.topLanguage}</div>
-						)}
-					</div>
-					<div class="glass rounded-lg p-6 text-center">
-						<div class="text-3xl font-bold text-yellow-400 mb-2">
-							{githubStats.totalStars || '0'}
-						</div>
-						<div class="text-white/70 text-sm">Estrellas totales</div>
-					</div>
-					<div class="glass rounded-lg p-6 text-center">
-						<div class="text-3xl font-bold text-green-400 mb-2">
-							{projects.filter(p => p.data.featured).length || '1'}
-						</div>
-						<div class="text-white/70 text-sm">Proyectos destacados</div>
-					</div>
-				</div>
+        <!-- Stats -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-6 max-w-4xl mx-auto mb-16">
+          <div class="glass rounded-lg p-6 text-center">
+            <div class="text-3xl font-bold text-blue-400 mb-2">
+              {githubStats.publicRepos || '2'}
+            </div>
+            <div class="text-white/70 text-sm">Repositorios públicos</div>
+          </div>
+          <div class="glass rounded-lg p-6 text-center">
+            <div class="text-3xl font-bold text-purple-400 mb-2">
+              {githubStats.totalLanguages || '2'}
+            </div>
+            <div class="text-white/70 text-sm">Lenguajes de programación</div>
+            {
+              githubStats.topLanguage && (
+                <div class="text-xs text-purple-300 mt-1">Principal: {githubStats.topLanguage}</div>
+              )
+            }
+          </div>
+          <div class="glass rounded-lg p-6 text-center">
+            <div class="text-3xl font-bold text-yellow-400 mb-2">
+              {githubStats.totalStars || '0'}
+            </div>
+            <div class="text-white/70 text-sm">Estrellas totales</div>
+          </div>
+          <div class="glass rounded-lg p-6 text-center">
+            <div class="text-3xl font-bold text-green-400 mb-2">
+              {projects.filter((p) => p.data.featured).length || '1'}
+            </div>
+            <div class="text-white/70 text-sm">Proyectos destacados</div>
+          </div>
+        </div>
 
-				<!-- Distribución de lenguajes -->
-				{githubStats.languageDistribution && Object.keys(githubStats.languageDistribution).length > 0 && (
-					<div class="max-w-2xl mx-auto mb-16">
-						<h3 class="text-xl font-bold text-white mb-6 text-center">Distribución de tecnologías</h3>
-						<div class="glass rounded-lg p-6">
-							<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-								{Object.entries(githubStats.languageDistribution).map(([language, count]) => (
-									<div class="flex items-center justify-between">
-										<span class="text-white/80">{language}</span>
-										<div class="flex items-center space-x-2">
-											<div class="w-16 h-2 bg-white/10 rounded-full overflow-hidden">
-												<div
-													class="h-full bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
-													style={`width: ${(count as number / githubStats.publicRepos) * 100}%`}
-												></div>
-											</div>
-											<span class="text-white/60 text-sm">{count} repos</span>
-										</div>
-									</div>
-								))}
-							</div>
-						</div>
-					</div>
-				)}
-			</div>
-		</section>
+        <!-- Distribución de lenguajes -->
+        {
+          githubStats.languageDistribution &&
+            Object.keys(githubStats.languageDistribution).length > 0 && (
+              <div class="max-w-2xl mx-auto mb-16">
+                <h3 class="text-xl font-bold text-white mb-6 text-center">
+                  Distribución de tecnologías
+                </h3>
+                <div class="glass rounded-lg p-6">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {Object.entries(githubStats.languageDistribution).map(([language, count]) => (
+                      <div class="flex items-center justify-between">
+                        <span class="text-white/80">{language}</span>
+                        <div class="flex items-center space-x-2">
+                          <div class="w-16 h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div
+                              class="h-full bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
+                              style={`width: ${((count as number) / githubStats.publicRepos) * 100}%`}
+                            />
+                          </div>
+                          <span class="text-white/60 text-sm">{count} repos</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )
+        }
+      </div>
+    </section>
 
-		<!-- GitHub Repositories Section -->
-		<section class="py-20">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="text-center mb-12">
-					<h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">
-						Repositorios de GitHub
-					</h2>
-					<p class="text-white/70 text-lg max-w-2xl mx-auto">
-						Mis proyectos más recientes y activos en GitHub
-					</p>
-				</div>
+    <!-- Dynamic Projects Section -->
+    <section class="py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">Todos mis Proyectos</h2>
+          <p class="text-white/70 text-lg max-w-2xl mx-auto mb-8">
+            Proyectos dinámicos actualizados automáticamente desde GitHub con enlaces a repositorios
+            y documentación detallada cuando está disponible
+          </p>
 
-				<GitHubRepos variant="grid" limit={12} />
+          <!-- Explicación de estados movida aquí -->
+          <div class="glass rounded-lg p-4 max-w-xl mx-auto mb-8">
+            <div class="flex items-center justify-center space-x-6 text-sm text-white/70">
+              <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                <span>Con documentación</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                <span>Sin documentación</span>
+              </div>
+            </div>
+            <p class="text-white/60 text-xs mt-2">
+              Los repositorios con documentación incluyen enlaces a contenido detallado
+            </p>
+          </div>
+        </div>
 
-				<div class="text-center mt-12">
-					<a
-						href="https://github.com/xinzayr"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="inline-flex items-center space-x-2 text-blue-400 hover:text-blue-300 font-medium transition-colors"
-					>
-						<span>Ver más en GitHub</span>
-						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-						</svg>
-					</a>
-				</div>
-			</div>
-		</section>
+        <DynamicProjectCards limit={24} />
 
-		<!-- Categorized Projects Section -->
-		{projects.length > 0 && (
-			<section class="py-20 bg-white/5 backdrop-blur-sm">
-				<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-					<div class="text-center mb-12">
-						<h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">
-							Proyectos Destacados
-						</h2>
-						<p class="text-white/70 text-lg max-w-2xl mx-auto">
-							Información detallada de proyectos seleccionados
-						</p>
-					</div>
+        <div class="text-center mt-12">
+          <a
+            href="https://github.com/xinzayr"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center space-x-2 text-blue-400 hover:text-blue-300 font-medium transition-colors"
+          >
+            <span>Ver más en GitHub</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+              ></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
 
-					<!-- Categories -->
-					<div class="space-y-16">
-						{allCategories.map((category) => {
-							const categoryProjects = projects.filter(p => p.data.category === category);
-							return categoryProjects.length > 0 && (
-								<div>
-									<h3 class="text-2xl font-bold text-white mb-8 text-center">
-										{category}
-									</h3>
-									<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-										{categoryProjects.map((project) => (
-											<a
-												href={`/projects/${project.id}`}
-												class="block glass rounded-xl p-6 glass-hover group"
-											>
-												<div class="flex items-start justify-between mb-4">
-													<h4 class="text-white font-semibold text-lg group-hover:text-blue-400 transition-colors">
-														{project.data.title}
-													</h4>
-													<div class="ml-4">
-														<svg class="w-5 h-5 text-white/40 group-hover:text-white/60 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-															<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-														</svg>
-													</div>
-												</div>
-												<p class="text-white/60 text-sm mb-4 line-clamp-3">
-													{project.data.shortDescription}
-												</p>
-												<div class="flex flex-wrap gap-2">
-													{project.data.stack.slice(0, 4).map((tech) => (
-														<span class="px-2 py-1 bg-white/10 text-white/70 text-xs rounded-md">
-															{tech}
-														</span>
-													))}
-													{project.data.stack.length > 4 && (
-														<span class="px-2 py-1 bg-white/10 text-white/70 text-xs rounded-md">
-															+{project.data.stack.length - 4}
-														</span>
-													)}
-												</div>
-											</a>
-										))}
-									</div>
-								</div>
-							);
-						})}
-					</div>
-				</div>
-			</section>
-		)}
-	</main>
+  <Footer />
 
-	<Footer />
-
-	<style>
-		.line-clamp-3 {
-			display: -webkit-box;
-			-webkit-line-clamp: 3;
-			-webkit-box-orient: vertical;
-			overflow: hidden;
-		}
-	</style>
+  <style>
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
 </BaseLayout>
