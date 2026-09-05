@@ -1,0 +1,83 @@
+---
+title: 'Digital Garden: La Filosofía de Notas Interconectadas e Inspirada en Obsidian'
+description: 'Descubre cómo funciona este sistema de notas vivas en el portafolio: sintaxis de WikiLinks [[slug]], tarjetas flotantes Hover Preview estilo cristal y clasificación dinámica por hashtags.'
+pubDate: 2026-09-05
+updatedDate: 2026-09-05
+tags: ['obsidian', 'mdx', 'astro', 'digital-garden', 'antigravity', 'diseño']
+category: 'Arquitectura'
+author: 'Xinzaýr & Antigravity AI'
+readingTime: '5 min lectura'
+---
+
+# 🌿 ¿Qué es un Digital Garden?
+
+A diferencia de un blog tradicional donde los artículos se ordenan cronológicamente y quedan en el olvido, un **Digital Garden (Jardín Digital)** es un espacio de conocimiento vivo e interconectado. Las ideas se plantan, se relacionan entre sí y crecen continuamente a lo largo del tiempo.
+
+Este portafolio toma inspiración directa de herramientas como **Obsidian** y **Roam Research**, permitiendo navegar entre notas mediante **enlaces bidireccionales (WikiLinks)** y **tarjetas de vista previa flotantes**.
+
+---
+
+## 🔮 Demostración Interactiva de WikiLinks
+
+En este blog, puedes citar cualquier nota simplemente usando la sintaxis de corchetes dobles `[[slug]]` o `[[slug|Texto Personalizado]]`.
+
+Prueba **pasar el cursor** sobre cualquiera de los siguientes hipervínculos para experimentar el sistema de **Hover Preview estilo Liquid Glass**:
+
+1. 🤖 **Desarrollo de IA**: Conoce la experiencia de pair-programming con [[el-agente-antigravity-y-la-era-agentica|El Agente Antigravity de Google DeepMind]].
+2. 💻 **Arquitectura del Sitio**: Descubre los detalles técnicos en [[portfolio-moderno-astro-tailwind|Construyendo un Portafolio Moderno con Astro y Tailwind]].
+3. 👤 **Perfil Personal**: Explora la trayectoria del autor en [[quien-soy|¿Quién es Xinzaýr?]].
+4. 📝 **Formato de Texto**: Revisa la [[markdown-style-guide|Guía Completa de Estilos en Markdown]] para redactar tus propios artículos.
+
+---
+
+## ⚙️ ¿Cómo funciona técnicamente?
+
+El sistema combina tres piezas principales desarrolladas en **Astro y MDX**:
+
+### 1. El Plugin de Remark (`remark-wikilinks.mjs`)
+Analiza el árbol de sintaxis abstracta (AST) de cada archivo Markdown/MDX al compilar y transforma `[[slug]]` en una etiqueta HTML `<a class="wikilink" data-wikilink="slug">` sin generar el tooltip nativo del navegador.
+
+```javascript
+// Transformación AST de [[quien-soy|Perfil]]
+<a href="/blog/quien-soy" data-wikilink="quien-soy" class="wikilink">
+  Perfil
+</a>
+```
+
+### 2. Metadatos Inyectados en Tiempo de Servidor
+Todos los metadatos de las notas (título, descripción, fecha, miniatura, tags y tiempo de lectura) se inyectan en un bloque JSON durante el renderizado en servidor. Esto garantiza **0ms de latencia** al pasar el cursor.
+
+### 3. Tarjeta Flotante con Portaling (`LinkPreview.astro`)
+El elemento de vista previa se traslada automáticamente al `document.body` raíz con un z-index de `z-[99999]`. Esto evita que la tarjeta quede recortada por contenedores con `backdrop-blur` y se ajusta dinámicamente a la posición del puntero.
+
+---
+
+## 🏷️ Clasificación por Hashtags (#tags)
+
+Cada nota puede incluir etiquetas en su frontmatter o dentro del cuerpo del texto:
+
+- `#obsidian` - Inspiración y estructura de grafos.
+- `#digital-garden` - Metodología de conocimiento personal.
+- `#astro` - Framework de alto rendimiento.
+- `#antigravity` - Asistencia agentica en tiempo real.
+
+Al hacer clic en cualquier etiqueta en el catálogo del blog, el sistema filtrará los artículos relacionados de forma instantánea.
+
+---
+
+## 💡 ¿Cómo agregar una nueva nota?
+
+¡Es extremadamente fácil! Simplemente crea un nuevo archivo `.md` o `.mdx` en `src/content/blog/mi-nueva-nota.mdx`:
+
+```yaml
+---
+title: 'Mi Nueva Nota'
+description: 'Resumen para la tarjeta de previsualización'
+pubDate: 2026-09-05
+tags: ['ideas', 'desarrollo']
+category: 'Notas'
+author: 'Xinzaýr'
+---
+```
+
+Astro la detectará automáticamente y podrás vincularla en otros artículos usando `[[mi-nueva-nota]]`.

@@ -1,0 +1,151 @@
+---
+title: 'Guía Completa de Markdown, MDX y Funciones del Digital Garden'
+description: 'La guía definitiva para redactar artículos en el portafolio: sintaxis de Markdown, componentes MDX, WikiLinks estilo Obsidian [[slug]], tarjetas flotantes Hover Preview y buenas prácticas.'
+pubDate: '2026-09-05'
+updatedDate: '2026-09-05'
+heroImage: '../../assets/blog-placeholder-1.jpg'
+tags: ['Markdown', 'MDX', 'Guia', 'Digital-Garden', 'Obsidian', 'Astro']
+category: 'Documentación'
+author: 'Xinzaýr & Antigravity AI'
+readingTime: '7 min lectura'
+---
+
+# 📖 Guía Completa de Redacción para el Digital Garden
+
+Esta guía contiene la documentación técnica y visual de todas las sintaxis y funciones soportadas dentro del sistema de contenidos del portafolio. Cualquier archivo creado en `src/content/blog/` en formato `.md` o `.mdx` puede utilizar estas herramientas.
+
+---
+
+## 1. Encabezado de la Nota (Frontmatter YAML)
+
+Todas las notas deben comenzar con un bloque YAML delimitado por `---` en las tres primeras líneas. Este bloque define los metadatos que alimentan las tarjetas del catálogo y las vistas previas flotantes:
+
+```yaml
+---
+title: 'Título Claro y Descriptivo'
+description: 'Breve resumen (1-2 oraciones) que aparecerá en la tarjeta flotante'
+pubDate: 2026-09-05
+updatedDate: 2026-09-05
+heroImage: '../../assets/blog/covers/mi-portada.jpg'
+tags: ['astro', 'obsidian', 'desarrollo']
+category: 'Tutorial'
+author: 'Xinzaýr'
+readingTime: '5 min lectura'
+draft: false
+---
+```
+
+---
+
+## 2. Enlaces Estilo Obsidian (WikiLinks `[[slug]]`)
+
+Puedes conectar artículos usando los corchetes dobles de **Obsidian**. El sistema parseará automáticamente el enlace e inyectará la vista previa flotante estilo cristal líquido al pasar el cursor.
+
+### Sintaxis
+- `[[nombre-del-slug]]` $\rightarrow$ Enlace directo usando el slug de la nota.
+- `[[nombre-del-slug|Texto Personalizado]]` $\rightarrow$ Enlace con etiqueta personalizada.
+
+### Ejemplos en Vivo (Pasa el cursor para probar):
+1. **Historia de desarrollo agentico**: [[el-agente-antigravity-y-la-era-agentica|El Agente Antigravity de Google DeepMind]]
+2. **Arquitectura del sitio**: [[portfolio-moderno-astro-tailwind|Construyendo un Portafolio Moderno]]
+3. **Filosofía del jardín**: [[digital-garden-obsidian|Filosofía del Digital Garden]]
+4. **Biografía del autor**: [[quien-soy|Acerca de Xinzaýr]]
+
+---
+
+## 3. Formato de Texto Estándar
+
+| Formato | Sintaxis Markdown | Resultado |
+| :--- | :--- | :--- |
+| **Negrita** | `**Texto en negrita**` | **Texto en negrita** |
+| *Cursiva* | `*Texto en cursiva*` | *Texto en cursiva* |
+| ~~Tachado~~ | `~~Texto tachado~~` | ~~Texto tachado~~ |
+| `Código en línea` | `` `código en línea` `` | `código en línea` |
+| Destacado | `<mark>Texto resaltado</mark>` | <mark>Texto resaltado</mark> |
+| Teclas | `<kbd>Ctrl</kbd> + <kbd>C</kbd>` | <kbd>Ctrl</kbd> + <kbd>C</kbd> |
+
+---
+
+## 4. Bloques de Código con Resaltado de Sintaxis
+
+Los bloques de código soportan múltiples lenguajes de programación mediante tres comillas invertidas ` ``` `:
+
+```typescript
+// Ejemplo en TypeScript / Astro API Route
+import type { APIRoute } from 'astro';
+
+export const GET: APIRoute = async () => {
+  return new Response(JSON.stringify({ status: 'ok', engine: 'Antigravity' }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
+};
+```
+
+```bash
+# Comandos de instalación y ejecución
+npm run dev
+npm run build
+npm run spotify-setup
+```
+
+---
+
+## 5. Citas y Bloques Destacados (Blockquotes)
+
+Las citas se crean utilizando el carácter `>` al inicio de la línea:
+
+> 💡 **Tip de Redacción**: Los enlaces bidireccionales permiten crear un grafo de conocimiento orgánico. Mantén las notas enfocadas en un solo tema para maximizar su reusabilidad.
+> — *Xinzaýr & Antigravity AI*
+
+---
+
+## 6. Listas y Checklists de Tareas
+
+### Lista Desordenada
+- Elemento de primer nivel
+  - Sub-elemento identado
+  - Otro sub-elemento
+
+### Lista de Tareas (Checklist)
+- [x] Configurar esquema de Astro Content Collections
+- [x] Implementar plugin AST de WikiLinks (`[[slug]]`)
+- [x] Crear tarjetas flotantes Hover Preview en Liquid Glass
+- [ ] Publicar nuevas notas sobre tecnología y privacidad
+
+---
+
+## 7. Tablas Formateadas en Cristal Líquido
+
+```markdown
+| Característica | Soporte | Descripción |
+| :--- | :---: | :--- |
+| Auto-descubrimiento | ✅ | Escaneo automático de archivos `.md` / `.mdx` |
+| Hover Previews | ✅ | 0ms de latencia con portaling al `body` |
+| Tags Reactivos | ✅ | Filtrado directo desde la interfaz |
+```
+
+| Característica | Soporte | Descripción |
+| :--- | :---: | :--- |
+| Auto-descubrimiento | ✅ | Escaneo automático de archivos `.md` / `.mdx` |
+| Hover Previews | ✅ | 0ms de latencia con portaling al `body` |
+| Tags Reactivos | ✅ | Filtrado directo desde la interfaz |
+
+---
+
+## 8. Desplegables de Contenido (`<details>`)
+
+Puedes crear secciones colapsables para contenido extenso o respuestas frecuentes:
+
+<details class="glass p-4 rounded-xl border border-white/10 my-4">
+  <summary class="font-bold text-white cursor-pointer">▶ Haz clic para desplegar más información técnica</summary>
+  <p class="mt-2 text-white/70 text-sm">
+    El sistema de previsualizaciones flotantes intercepta las rutas mediante <code>LinkPreview.astro</code> y consulta un script de metadatos inyectado directamente en el HTML devuelto por Astro.
+  </p>
+</details>
+
+---
+
+## 🚀 ¡Listo para Redactar!
+
+Guarda tus archivos en `src/content/blog/tu-slug.mdx` y el sistema se encargará automáticamente del renderizado, la navegación y las vistas previas flotantes.

@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
+import LinkPreview from '../../components/LinkPreview.astro';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog');
@@ -19,7 +20,7 @@ const post = Astro.props;
 const { Content } = await render(post);
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description}>
+<BaseLayout title={`${post.data.title} - xinzayr`} description={post.data.description}>
 	<Header />
 
 	<main class="min-h-screen pt-16">
@@ -27,46 +28,57 @@ const { Content } = await render(post);
 			<!-- Hero Image -->
 			{post.data.heroImage && (
 				<div class="mb-12">
-					<div class="relative aspect-video rounded-2xl overflow-hidden glass">
+					<div class="relative aspect-video rounded-2xl overflow-hidden glass border border-white/10">
 						<img
 							src={post.data.heroImage.src}
 							alt={post.data.title}
 							class="w-full h-full object-cover"
 						/>
-						<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+						<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 					</div>
 				</div>
 			)}
 
 			<!-- Header -->
 			<header class="mb-12 text-center">
+				<div class="inline-flex items-center gap-2 px-3 py-1 glass rounded-full border border-blue-500/30 text-blue-300 text-xs font-mono mb-4">
+					{post.data.category || 'General'}
+				</div>
+
 				<h1 class="text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
 					{post.data.title}
 				</h1>
 
-				<div class="flex flex-wrap items-center justify-center gap-4 text-white/70">
+				<div class="flex flex-wrap items-center justify-center gap-4 text-white/70 text-sm">
 					<div class="flex items-center space-x-2">
-						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+						</svg>
+						<span>{post.data.author || 'Xinzaýr'}</span>
+					</div>
+
+					<div class="flex items-center space-x-2">
+						<svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
 						</svg>
 						<FormattedDate date={post.data.pubDate} />
 					</div>
 
-					{post.data.updatedDate && (
-						<div class="flex items-center space-x-2">
+					{post.data.readingTime && (
+						<div class="flex items-center space-x-2 text-blue-300 font-mono">
 							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
 							</svg>
-							<span class="text-sm">Actualizado: <FormattedDate date={post.data.updatedDate} /></span>
+							<span>{post.data.readingTime}</span>
 						</div>
 					)}
 
-					{post.data.tags && (
-						<div class="flex flex-wrap gap-2">
+					{post.data.tags && post.data.tags.length > 0 && (
+						<div class="flex flex-wrap gap-2 ml-2">
 							{post.data.tags.map((tag) => (
-								<span class="px-3 py-1 text-xs bg-blue-500/20 text-blue-300 rounded-full font-mono">
+								<a href={`/blog#tag-${tag}`} class="px-2.5 py-0.5 text-xs bg-blue-500/20 text-blue-300 rounded-full font-mono hover:bg-blue-500/40 transition-colors">
 									#{tag}
-								</span>
+								</a>
 							))}
 						</div>
 					)}
@@ -75,34 +87,34 @@ const { Content } = await render(post);
 
 			<!-- Content -->
 			<div class="prose prose-invert prose-lg max-w-none">
-				<div class="glass rounded-xl p-8 lg:p-12">
+				<div class="glass rounded-2xl p-8 lg:p-12 border border-white/10 shadow-2xl backdrop-blur-xl">
 					<Content />
 				</div>
 			</div>
 
-			<!-- Navigation -->
+			<!-- Navigation & Actions -->
 			<nav class="mt-16 pt-8 border-t border-white/10">
 				<div class="flex flex-col sm:flex-row justify-between items-center gap-4">
 					<a
 						href="/blog"
-						class="inline-flex items-center space-x-2 px-4 py-2 glass border border-white/20 text-white rounded-lg glass-hover"
+						class="inline-flex items-center space-x-2 px-5 py-2.5 glass border border-white/20 text-white rounded-xl glass-hover font-medium transition-all"
 					>
 						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
 						</svg>
-						<span>Volver al Blog</span>
+						<span>Volver a la Biblioteca</span>
 					</a>
 
 					<div class="flex items-center space-x-4">
-						<!-- Social sharing buttons -->
 						<button
-							onclick="navigator.share && navigator.share({title: document.title, url: window.location.href}) || (navigator.clipboard.writeText(window.location.href) && alert('URL copiada al portapapeles'))"
-							class="p-2 glass border border-white/20 text-white rounded-lg glass-hover"
-							title="Compartir"
+							onclick="navigator.share && navigator.share({title: document.title, url: window.location.href}) || (navigator.clipboard.writeText(window.location.href) && alert('¡Enlace copiado al portapapeles!'))"
+							class="inline-flex items-center gap-2 px-4 py-2.5 glass border border-white/20 text-white rounded-xl glass-hover text-sm font-medium transition-all"
+							title="Compartir artículo"
 						>
-							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
 							</svg>
+							<span>Compartir</span>
 						</button>
 					</div>
 				</div>
@@ -110,11 +122,14 @@ const { Content } = await render(post);
 		</article>
 	</main>
 
+	<!-- Componente Flotante para Vistas Previas al pasar el cursor -->
+	<LinkPreview />
+
 	<Footer />
 </BaseLayout>
 
 <style>
-	/* Custom prose styles for the glass theme */
+	/* Custom prose styles for Liquid Glass */
 	.prose {
 		@apply text-white/90;
 	}
@@ -125,48 +140,56 @@ const { Content } = await render(post);
 	.prose h4,
 	.prose h5,
 	.prose h6 {
-		@apply text-white font-bold;
+		@apply text-white font-bold tracking-tight;
 	}
 
 	.prose h2 {
-		@apply text-2xl lg:text-3xl mt-8 mb-4;
+		@apply text-2xl lg:text-3xl mt-10 mb-4 pb-2 border-b border-white/10;
 	}
 
 	.prose h3 {
-		@apply text-xl lg:text-2xl mt-6 mb-3;
+		@apply text-xl lg:text-2xl mt-8 mb-3 text-blue-300;
 	}
 
 	.prose p {
-		@apply text-white/80 leading-relaxed mb-4;
+		@apply text-white/80 leading-relaxed mb-6 font-normal;
 	}
 
 	.prose a {
-		@apply text-blue-400 hover:text-blue-300 underline;
+		@apply text-blue-400 hover:text-blue-300 underline underline-offset-4 decoration-blue-500/40 transition-colors;
 	}
 
 	.prose code {
-		@apply bg-white/10 text-blue-300 px-2 py-1 rounded font-mono text-sm;
+		@apply bg-white/10 text-blue-300 px-2 py-0.5 rounded font-mono text-sm border border-white/10;
 	}
 
 	.prose pre {
-		@apply bg-white/5 border border-white/10 rounded-lg p-4 overflow-x-auto;
+		@apply bg-slate-950/80 border border-white/15 rounded-xl p-5 overflow-x-auto shadow-xl my-6;
 	}
 
 	.prose pre code {
-		@apply bg-transparent p-0;
+		@apply bg-transparent p-0 border-none text-slate-200;
 	}
 
 	.prose blockquote {
-		@apply border-l-4 border-blue-500 pl-4 italic text-white/70;
+		@apply border-l-4 border-blue-500 pl-4 py-1 my-6 italic text-white/80 bg-blue-500/5 rounded-r-lg;
 	}
 
 	.prose ul,
 	.prose ol {
-		@apply text-white/80;
+		@apply text-white/80 my-6 pl-6;
+	}
+
+	.prose ul {
+		@apply list-disc;
+	}
+
+	.prose ol {
+		@apply list-decimal;
 	}
 
 	.prose li {
-		@apply mb-2;
+		@apply mb-2 leading-relaxed;
 	}
 
 	.prose strong {
@@ -174,19 +197,19 @@ const { Content } = await render(post);
 	}
 
 	.prose table {
-		@apply w-full border-collapse;
+		@apply w-full border-collapse my-6 overflow-hidden rounded-xl border border-white/10;
 	}
 
 	.prose th,
 	.prose td {
-		@apply border border-white/20 px-4 py-2;
+		@apply border border-white/10 px-4 py-3 text-sm;
 	}
 
 	.prose th {
-		@apply bg-white/5 font-semibold text-white;
+		@apply bg-white/10 font-semibold text-white text-left;
 	}
 
 	.prose td {
-		@apply text-white/80;
+		@apply bg-white/5 text-white/80;
 	}
 </style>

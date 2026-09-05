@@ -7,13 +7,19 @@ import BlogCard from '../../components/BlogCard.astro';
 import BloggerPosts from '../../components/BloggerPosts.astro';
 import { API_CONFIG } from '../../consts';
 
-// Obtener posts locales como fallback
-const localPosts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+// Obtener todos los posts locales desde src/content/blog/
+const rawLocalPosts = await getCollection('blog');
+const localPosts = rawLocalPosts
+	.filter((post) => !post.data.draft)
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Extraer todas las etiquetas únicas
+const allTags = Array.from(
+	new Set(localPosts.flatMap((post) => post.data.tags || []))
+).sort();
 ---
 
-<BaseLayout title="Blog - xinzayr" description="Artículos sobre desarrollo, experiencias e ideas.">
+<BaseLayout title="Blog & Digital Garden - xinzayr" description="Artículos, notas interconectadas y documentación en Markdown/MDX.">
 	<Header />
 
 	<main class="min-h-screen pt-16">
@@ -21,20 +27,85 @@ const localPosts = (await getCollection('blog')).sort(
 		<section class="py-20">
 			<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="text-center mb-16">
+					<div class="inline-flex items-center gap-2 px-3 py-1 glass rounded-full border border-blue-500/30 text-blue-300 text-xs font-mono mb-4">
+						<span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+						Digital Garden & Biblioteca MDX
+					</div>
 					<h1 class="text-4xl lg:text-5xl font-bold text-white mb-6">
-						Mi Blog
+						Mi Blog & Bitácora
 					</h1>
 					<p class="text-white/70 text-lg max-w-2xl mx-auto mb-8">
-						Comparto mis ideas, opiniones y reflexiones sobre temas varios sobre el mundo que nos rodea.
+						Explora mis notas, tutoriales y reflexiones interconectadas. Al abrir cualquier artículo podrás hacer hover sobre las citas estilo Obsidian [[wikilinks]] para ver vistas previas flotantes.
 					</p>
 
-					<!-- Blog Info -->
-					<div class="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-white/60">
-						<div class="flex items-center space-x-2">
-							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
-							</svg>
-							<span>Posts sincronizados desde</span>
+					<!-- Tag Filter Pills -->
+					{allTags.length > 0 && (
+						<div class="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto mb-8">
+							<span class="text-xs text-white/50 self-center font-mono mr-2">Filtros:</span>
+							{allTags.map((tag) => (
+								<a
+									href={`#tag-${tag}`}
+									data-tag-btn={tag}
+									class="tag-filter-btn px-3 py-1 text-xs glass border border-white/10 text-white/80 hover:text-white hover:border-blue-400/50 rounded-full transition-all duration-200"
+								>
+									#{tag}
+								</a>
+							))}
+						</div>
+					)}
+				</div>
+
+				<!-- Local MDX / MD Posts Section -->
+				<div class="mb-20">
+					<div class="flex items-center justify-between mb-8">
+						<div>
+							<h2 class="text-2xl font-bold text-white flex items-center gap-2">
+								<svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+								</svg>
+								Biblioteca de Contenidos ({localPosts.length})
+							</h2>
+							<p class="text-white/60 text-sm mt-1">
+								Artículos locales creados en Markdown/MDX con soporte para enlaces bidireccionales.
+							</p>
+						</div>
+					</div>
+
+					{localPosts.length > 0 ? (
+						<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="posts-grid">
+							{localPosts.map((post) => (
+								<div data-post-tags={JSON.stringify(post.data.tags || [])}>
+									<BlogCard
+										title={post.data.title}
+										description={post.data.description}
+										pubDate={post.data.pubDate}
+										heroImage={post.data.heroImage?.src}
+										tags={post.data.tags}
+										href={`/blog/${post.id}`}
+									/>
+								</div>
+							))}
+						</div>
+					) : (
+						<div class="glass rounded-xl p-8 text-center max-w-md mx-auto">
+							<p class="text-white/60 text-sm">No hay artículos publicados en la carpeta local aún.</p>
+						</div>
+					)}
+				</div>
+
+				<!-- Separador -->
+				<div class="my-16 flex items-center">
+					<div class="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+					<div class="px-4 text-white/60 text-sm font-medium">Sincronización Externa</div>
+					<div class="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+				</div>
+
+				<!-- Blogger RSS Feed Section -->
+				<div>
+					<div class="text-center mb-8">
+						<h2 class="text-2xl font-bold text-white mb-2">Feed de Blogger</h2>
+						<div class="flex items-center justify-center gap-2 text-sm text-white/60">
+							<span>Sincronizado desde</span>
 							<a
 								href={API_CONFIG.blogger.blogUrl}
 								target="_blank"
@@ -44,88 +115,48 @@ const localPosts = (await getCollection('blog')).sort(
 								blog.xinzayr.xyz
 							</a>
 						</div>
-						<div class="hidden sm:block w-1 h-1 bg-white/40 rounded-full"></div>
-						<div class="flex items-center space-x-2">
-							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-							</svg>
-							<span>Actualizado automáticamente</span>
-						</div>
 					</div>
+
+					<BloggerPosts variant="featured" maxPosts={6} showFeatured={false} />
 				</div>
-
-				<!-- Posts del Blog de Blogger -->
-				<BloggerPosts variant="featured" maxPosts={9} showFeatured={true} />
-
-				<!-- Separador -->
-				<div class="my-16 flex items-center">
-					<div class="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-					<div class="px-4 text-white/60 text-sm font-medium">Posts Locales</div>
-					<div class="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-				</div>
-
-				<!-- Posts Locales (si existen) -->
-				{localPosts.length > 0 ? (
-					<div>
-						<div class="text-center mb-8">
-							<h2 class="text-2xl font-bold text-white mb-4">Artículos Adicionales</h2>
-							<p class="text-white/60">
-								Contenido adicional y recursos almacenados de manera local
-							</p>
-						</div>
-
-						<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-							{/* Mostrar solo los primeros 2 posts con datos */}
-							{localPosts.slice(0, 2).map((post) => (
-								<BlogCard
-									title={post.data.title}
-									description={post.data.description}
-									pubDate={post.data.pubDate}
-									heroImage={post.data.heroImage?.src}
-									tags={post.data.tags}
-									href={`/blog/${post.id}`}
-								/>
-							))}
-
-							{/* Mostrar estructuras vacías para los demás posts */}
-							{localPosts.length > 2 && localPosts.slice(2).map((_, index) => (
-								<div class="glass rounded-xl overflow-hidden group hover:border-white/30 transition-all duration-300">
-									<div class="h-48 bg-gradient-to-br from-white/5 to-white/10 animate-pulse"></div>
-									<div class="p-6">
-										<div class="h-6 bg-white/10 rounded mb-3 animate-pulse"></div>
-										<div class="space-y-2 mb-4">
-											<div class="h-4 bg-white/5 rounded animate-pulse"></div>
-											<div class="h-4 bg-white/5 rounded w-3/4 animate-pulse"></div>
-										</div>
-										<div class="flex flex-wrap gap-2 mb-4">
-											<div class="h-6 w-16 bg-white/5 rounded-full animate-pulse"></div>
-											<div class="h-6 w-20 bg-white/5 rounded-full animate-pulse"></div>
-										</div>
-										<div class="flex items-center text-xs text-white/40">
-											<div class="h-4 w-24 bg-white/5 rounded animate-pulse"></div>
-										</div>
-									</div>
-								</div>
-							))}
-						</div>
-					</div>
-				) : (
-					<!-- No Local Posts -->
-					<div class="text-center">
-						<div class="glass rounded-xl p-8 max-w-md mx-auto">
-							<svg class="w-12 h-12 text-white/40 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-							</svg>
-							<h3 class="text-lg font-semibold text-white mb-2">Sin contenido local</h3>
-							<p class="text-white/60 text-sm">
-								Todo el contenido del blog se obtiene automáticamente desde mi blog principal.
-							</p>
-						</div>
-					</div>
-				)}
 			</div>
 		</section>
 	</main>
 
 	<Footer />
 </BaseLayout>
+
+<script>
+	function setupTagFilter() {
+		const tagBtns = document.querySelectorAll('.tag-filter-btn');
+		const postItems = document.querySelectorAll('#posts-grid > div');
+
+		tagBtns.forEach((btn) => {
+			btn.addEventListener('click', (e) => {
+				const tag = btn.getAttribute('data-tag-btn');
+				if (!tag) return;
+
+				const isActive = btn.classList.contains('bg-blue-500/30');
+
+				tagBtns.forEach((b) => b.classList.remove('bg-blue-500/30', 'border-blue-400'));
+
+				if (!isActive) {
+					btn.classList.add('bg-blue-500/30', 'border-blue-400');
+					postItems.forEach((item) => {
+						const itemTags = JSON.parse(item.getAttribute('data-post-tags') || '[]');
+						if (itemTags.includes(tag)) {
+							(item as HTMLElement).style.display = 'block';
+						} else {
+							(item as HTMLElement).style.display = 'none';
+						}
+					});
+				} else {
+					postItems.forEach((item) => ((item as HTMLElement).style.display = 'block'));
+				}
+			});
+		});
+	}
+
+	document.addEventListener('astro:page-load', setupTagFilter);
+	setupTagFilter();
+</script>

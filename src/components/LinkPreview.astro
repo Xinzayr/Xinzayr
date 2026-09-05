@@ -1,0 +1,232 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog');
+const previewsMap: Record<string, any> = {};
+
+for (const post of posts) {
+	const rawId = post.id;
+	const cleanSlug = rawId.replace(/\.(md|mdx)$/, '');
+
+	const postData = {
+		id: cleanSlug,
+		title: post.data.title,
+		description: post.data.description,
+		pubDate: post.data.pubDate.toLocaleDateString('es-ES', {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+		}),
+		heroImage: post.data.heroImage?.src || null,
+		tags: post.data.tags || [],
+		category: post.data.category || 'General',
+		author: post.data.author || 'Xinzaýr',
+		readingTime: post.data.readingTime || '3 min lectura',
+	};
+
+	previewsMap[rawId] = postData;
+	previewsMap[cleanSlug] = postData;
+}
+---
+
+<!-- Datos inyectados en tiempo de servidor para 0ms de latencia -->
+<script id="blog-previews-data" type="application/json" set:html={JSON.stringify(previewsMap)} />
+
+<!-- Liquid Glass Floating Hover Card -->
+<div
+	id="blog-hover-preview"
+	class="fixed z-[99999] pointer-events-none opacity-0 scale-95 transition-all duration-200 ease-out max-w-sm w-80 glass border border-white/20 rounded-xl p-4 shadow-2xl backdrop-blur-xl bg-slate-950/90 text-white overflow-hidden hidden"
+>
+	<div id="preview-image-container" class="mb-3 hidden">
+		<img id="preview-image" src="" alt="Cover" class="w-full h-32 object-cover rounded-lg border border-white/10" />
+	</div>
+
+	<div class="flex items-center gap-2 mb-2">
+		<span id="preview-category" class="px-2 py-0.5 text-[10px] uppercase font-mono tracking-wider bg-blue-500/20 text-blue-300 rounded border border-blue-500/30">
+			Blog
+		</span>
+		<span id="preview-date" class="text-xs text-white/50"></span>
+	</div>
+
+	<h4 id="preview-title" class="text-base font-bold text-white mb-1.5 leading-snug line-clamp-2"></h4>
+	
+	<p id="preview-description" class="text-xs text-white/70 mb-3 line-clamp-3 leading-relaxed"></p>
+
+	<div class="flex items-center justify-between pt-2 border-t border-white/10 text-[11px] text-white/60">
+		<span id="preview-author" class="font-medium text-white/80"></span>
+		<span id="preview-reading-time" class="font-mono text-blue-300"></span>
+	</div>
+</div>
+
+<script>
+	interface PostPreview {
+		id: string;
+		title: string;
+		description: string;
+		pubDate: string;
+		heroImage: string | null;
+		tags: string[];
+		category: string;
+		author: string;
+		readingTime: string;
+	}
+
+	let previewsCache: Record<string, PostPreview> | null = null;
+	let currentHoverTarget: HTMLElement | null = null;
+
+	function getPreviewsData(): Record<string, PostPreview> {
+		if (previewsCache) return previewsCache;
+		const scriptTag = document.getElementById('blog-previews-data');
+		if (scriptTag && scriptTag.textContent) {
+			try {
+				previewsCache = JSON.parse(scriptTag.textContent);
+			} catch (e) {
+				console.error('Error parseando datos de vista previa:', e);
+			}
+		}
+		return previewsCache || {};
+	}
+
+	function getSlugFromElement(el: HTMLElement): string | null {
+		const wikilink = el.getAttribute('data-wikilink') || el.getAttribute('data-post-preview');
+		if (wikilink) return wikilink.replace(/\.(md|mdx)$/, '');
+
+		if (el instanceof HTMLAnchorElement) {
+			const href = el.getAttribute('href');
+			if (href && href.includes('/blog/')) {
+				const pathPart = href.split('/blog/')[1];
+				if (pathPart) {
+					const slug = pathPart.split('/')[0].split('#')[0].replace(/\.(md|mdx)$/, '');
+					return slug || null;
+				}
+			}
+		}
+		return null;
+	}
+
+	function positionCard(card: HTMLElement, e: MouseEvent) {
+		const cardWidth = 320;
+		const cardHeight = card.offsetHeight || 220;
+		const padding = 16;
+
+		let x = e.clientX + 16;
+		let y = e.clientY + 16;
+
+		if (x + cardWidth > window.innerWidth - padding) {
+			x = e.clientX - cardWidth - 16;
+		}
+
+		if (y + cardHeight > window.innerHeight - padding) {
+			y = e.clientY - cardHeight - 16;
+		}
+
+		x = Math.max(padding, x);
+		y = Math.max(padding, y);
+
+		card.style.left = `${x}px`;
+		card.style.top = `${y}px`;
+	}
+
+	function setupHoverPreview() {
+		const hoverCard = document.getElementById('blog-hover-preview');
+		if (!hoverCard) return;
+
+		// Mover el elemento al body raíz para evitar trampas de stacking context
+		if (hoverCard.parentElement !== document.body) {
+			document.body.appendChild(hoverCard);
+		}
+
+		const previewImgContainer = document.getElementById('preview-image-container');
+		const previewImg = document.getElementById('preview-image') as HTMLImageElement;
+		const previewCategory = document.getElementById('preview-category');
+		const previewDate = document.getElementById('preview-date');
+		const previewTitle = document.getElementById('preview-title');
+		const previewDescription = document.getElementById('preview-description');
+		const previewAuthor = document.getElementById('preview-author');
+		const previewReadingTime = document.getElementById('preview-reading-time');
+
+		const previews = getPreviewsData();
+
+		function showCard(target: HTMLElement, data: PostPreview, e: MouseEvent) {
+			if (!hoverCard) return;
+
+			if (previewTitle) previewTitle.textContent = data.title;
+			if (previewDescription) previewDescription.textContent = data.description;
+			if (previewDate) previewDate.textContent = data.pubDate;
+			if (previewCategory) previewCategory.textContent = data.category;
+			if (previewAuthor) previewAuthor.textContent = `Por ${data.author}`;
+			if (previewReadingTime) previewReadingTime.textContent = data.readingTime;
+
+			if (data.heroImage && previewImgContainer && previewImg) {
+				previewImg.src = data.heroImage;
+				previewImgContainer.classList.remove('hidden');
+			} else if (previewImgContainer) {
+				previewImgContainer.classList.add('hidden');
+			}
+
+			hoverCard.classList.remove('hidden');
+			positionCard(hoverCard, e);
+
+			requestAnimationFrame(() => {
+				hoverCard.classList.remove('opacity-0', 'scale-95');
+				hoverCard.classList.add('opacity-100', 'scale-100');
+			});
+		}
+
+		function hideCard() {
+			if (!hoverCard || !currentHoverTarget) return;
+			currentHoverTarget = null;
+			hoverCard.classList.remove('opacity-100', 'scale-100');
+			hoverCard.classList.add('opacity-0', 'scale-95');
+			setTimeout(() => {
+				if (!currentHoverTarget) {
+					hoverCard.classList.add('hidden');
+				}
+			}, 150);
+		}
+
+		document.addEventListener('mouseover', (e) => {
+			const target = (e.target as HTMLElement).closest('a[href*="/blog/"], [data-wikilink], [data-post-preview], .wikilink') as HTMLElement;
+			if (!target) return;
+
+			const slug = getSlugFromElement(target);
+			if (!slug) return;
+
+			const data = previews[slug];
+			if (!data) return;
+
+			currentHoverTarget = target;
+			showCard(target, data, e);
+		});
+
+		document.addEventListener('mousemove', (e) => {
+			if (!currentHoverTarget || !hoverCard || hoverCard.classList.contains('hidden')) return;
+
+			const target = e.target as HTMLElement | null;
+			const isOverLink = target ? target.closest('a[href*="/blog/"], [data-wikilink], [data-post-preview], .wikilink') === currentHoverTarget : false;
+
+			if (isOverLink) {
+				positionCard(hoverCard, e);
+			} else {
+				hideCard();
+			}
+		});
+
+		document.addEventListener('mouseout', (e) => {
+			if (!currentHoverTarget) return;
+			const relatedTarget = e.relatedTarget as HTMLElement;
+			if (!relatedTarget || !currentHoverTarget.contains(relatedTarget)) {
+				hideCard();
+			}
+		});
+
+		// Ocultar tarjeta inmediatamente al desplazarse (scroll) o desenfocar ventana
+		window.addEventListener('scroll', hideCard, { passive: true });
+		window.addEventListener('blur', hideCard);
+	}
+
+	document.addEventListener('astro:page-load', setupHoverPreview);
+	if (document.readyState === 'complete' || document.readyState === 'interactive') {
+		setupHoverPreview();
+	}
+</script>
