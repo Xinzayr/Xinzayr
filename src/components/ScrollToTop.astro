@@ -6,7 +6,7 @@
 	id="scroll-to-top"
 	type="button"
 	aria-label="Volver arriba"
-	class="fixed bottom-6 right-6 z-40 p-3.5 rounded-full glass border border-white/20 text-white/80 hover:text-white hover:border-blue-400/60 hover:shadow-blue-500/20 shadow-2xl backdrop-blur-xl bg-slate-950/80 opacity-0 scale-95 pointer-events-none transition-all duration-300 ease-out hover:-translate-y-1 group"
+	class="fixed bottom-6 right-6 z-40 p-3.5 rounded-full glass border border-white/20 text-white/80 hover:text-white hover:border-blue-400/60 hover:shadow-blue-500/20 shadow-2xl backdrop-blur-xl bg-slate-950/80 opacity-0 scale-95 pointer-events-none transition-all duration-300 ease-out hover:-translate-y-1 group transform-gpu will-change-transform"
 >
 	<svg class="w-5 h-5 text-blue-400 group-hover:text-blue-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 		<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
@@ -18,26 +18,38 @@
 		const btn = document.getElementById('scroll-to-top');
 		if (!btn) return;
 
-		function toggleBtnVisibility() {
+		let isTicking = false;
+
+		function updateVisibility() {
 			if (!btn) return;
-			if (window.scrollY > 300) {
+			const shouldShow = window.scrollY > 300;
+			if (shouldShow) {
 				btn.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
 				btn.classList.add('opacity-100', 'scale-100', 'pointer-events-auto');
 			} else {
 				btn.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto');
 				btn.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
 			}
+			isTicking = false;
 		}
 
-		btn.addEventListener('click', () => {
+		function onScroll() {
+			if (!isTicking) {
+				window.requestAnimationFrame(updateVisibility);
+				isTicking = true;
+			}
+		}
+
+		btn.addEventListener('click', (e) => {
+			e.preventDefault();
 			window.scrollTo({
 				top: 0,
 				behavior: 'smooth',
 			});
 		});
 
-		window.addEventListener('scroll', toggleBtnVisibility, { passive: true });
-		toggleBtnVisibility();
+		window.addEventListener('scroll', onScroll, { passive: true });
+		updateVisibility();
 	}
 
 	document.addEventListener('astro:page-load', setupScrollToTop);

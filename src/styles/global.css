@@ -620,6 +620,25 @@ img[width][height] {
 	}
 }
 
+/* Mobile-specific performance optimizations for smooth touch scroll */
+@media (max-width: 768px) {
+	/* Optimize glass rendering for mobile GPUs (prevents scroll lag) */
+	.glass,
+	.glass-card,
+	.liquid-glass-card,
+	.liquid-glass-nav {
+		backdrop-filter: blur(8px) !important;
+		-webkit-backdrop-filter: blur(8px) !important;
+		background: rgba(12, 16, 26, 0.88) !important;
+	}
+
+	/* Disable heavy hover transform calculations on touch devices */
+	.glass-card:hover,
+	.liquid-glass-card:hover {
+		transform: none !important;
+	}
+}
+
 /* Large screen optimizations */
 @media (min-width: 1920px) {
 	/* Prevent content from becoming too wide on large screens */
