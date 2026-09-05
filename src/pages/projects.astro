@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import GitHubRepos from '../components/GitHubRepos.astro';
 import DynamicProjectCards from '../components/DynamicProjectCards.astro';
 import GitHubRepoCards from '../components/GitHubRepoCards.astro';
+import GitHubContributionGraph from '../components/GitHubContributionGraph.astro';
 import { getCollection } from 'astro:content';
 import { API_CONFIG } from '../consts';
 
@@ -20,7 +21,7 @@ const allCategories = [...new Set(projects.map((project) => project.data.categor
 
 // Obtener estadísticas reales de GitHub
 const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN || API_CONFIG.github.token;
-const GITHUB_USERNAME = API_CONFIG.github.username;
+const GITHUB_USERNAME = import.meta.env.GITHUB_USERNAME || API_CONFIG.github.username || 'xinzayr';
 
 let githubStats = {
   publicRepos: 0,
@@ -31,27 +32,26 @@ let githubStats = {
   topLanguage: '',
   activeRepos: [],
   languageDistribution: {},
+  loaded: false
 };
 
-if (GITHUB_TOKEN && GITHUB_USERNAME) {
+if (GITHUB_USERNAME) {
   try {
+    const headers: any = {
+      Accept: 'application/vnd.github.v3+json',
+      'User-Agent': 'xinzayr-portfolio',
+    };
+    if (GITHUB_TOKEN) {
+      headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`;
+    }
+
     // Obtener información del usuario
-    const userResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, {
-      headers: {
-        Authorization: `token ${GITHUB_TOKEN}`,
-        Accept: 'application/vnd.github.v3+json',
-      },
-    });
+    const userResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, { headers });
 
     // Obtener repositorios del usuario
     const reposResponse = await fetch(
       `https://api.github.com/users/${GITHUB_USERNAME}/repos?type=public&per_page=100&sort=updated`,
-      {
-        headers: {
-          Authorization: `token ${GITHUB_TOKEN}`,
-          Accept: 'application/vnd.github.v3+json',
-        },
-      },
+      { headers }
     );
 
     if (userResponse.ok && reposResponse.ok) {
@@ -62,7 +62,7 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
       const activePublicRepos = reposData.filter((repo: any) => !repo.private && !repo.archived);
 
       // Calcular estadísticas básicas
-      githubStats.publicRepos = activePublicRepos.length;
+      githubStats.publicRepos = activePublicRepos.length || userData.public_repos || 0;
       githubStats.totalStars = activePublicRepos.reduce(
         (sum: number, repo: any) => sum + repo.stargazers_count,
         0,
@@ -85,6 +85,7 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
 
       githubStats.totalLanguages = languages.size;
       githubStats.languageDistribution = languageCount;
+      githubStats.loaded = true;
 
       // Encontrar el lenguaje más usado
       const sortedLanguages = Object.entries(languageCount).sort(
@@ -104,14 +105,6 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
         stars: repo.stargazers_count,
         updated: repo.updated_at,
       }));
-
-      console.log('📊 GitHub Stats completas:', {
-        repos: githubStats.publicRepos,
-        languages: githubStats.totalLanguages,
-        stars: githubStats.totalStars,
-        topLanguage: githubStats.topLanguage,
-        distribution: githubStats.languageDistribution,
-      });
     }
   } catch (error) {
     console.warn('Error fetching GitHub stats for projects page:', error);
@@ -127,27 +120,27 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
 
   <main class="min-h-screen pt-16">
     <!-- Hero Section -->
-    <section class="py-20">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="py-12 sm:py-20">
+      <div class="max-w-7xl 2xl:max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
-          <h1 class="text-4xl lg:text-5xl font-bold text-white mb-6">Mis Proyectos</h1>
-          <p class="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6">Mis Proyectos</h1>
+          <p class="text-lg sm:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
             Una colección de proyectos que demuestran mi experiencia en desarrollo, desde
             aplicaciones modernas, herramientas e ideas innovadoras.
           </p>
         </div>
 
         <!-- Stats -->
-        <div class="grid grid-cols-1 sm:grid-cols-4 gap-6 max-w-4xl mx-auto mb-16">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto mb-12 sm:mb-16">
           <div class="glass rounded-lg p-6 text-center">
             <div class="text-3xl font-bold text-blue-400 mb-2">
-              {githubStats.publicRepos || '2'}
+              {githubStats.loaded ? githubStats.publicRepos : '...'}
             </div>
             <div class="text-white/70 text-sm">Repositorios públicos</div>
           </div>
           <div class="glass rounded-lg p-6 text-center">
             <div class="text-3xl font-bold text-purple-400 mb-2">
-              {githubStats.totalLanguages || '2'}
+              {githubStats.loaded ? githubStats.totalLanguages : '...'}
             </div>
             <div class="text-white/70 text-sm">Lenguajes de programación</div>
             {
@@ -158,13 +151,13 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
           </div>
           <div class="glass rounded-lg p-6 text-center">
             <div class="text-3xl font-bold text-yellow-400 mb-2">
-              {githubStats.totalStars || '0'}
+              {githubStats.loaded ? githubStats.totalStars : '0'}
             </div>
             <div class="text-white/70 text-sm">Estrellas totales</div>
           </div>
           <div class="glass rounded-lg p-6 text-center">
             <div class="text-3xl font-bold text-green-400 mb-2">
-              {projects.filter((p) => p.data.featured).length || '1'}
+              {projects.filter((p) => p.data.featured).length}
             </div>
             <div class="text-white/70 text-sm">Proyectos destacados</div>
           </div>
@@ -174,7 +167,7 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
         {
           githubStats.languageDistribution &&
             Object.keys(githubStats.languageDistribution).length > 0 && (
-              <div class="max-w-2xl mx-auto mb-16">
+              <div class="max-w-2xl mx-auto mb-12 sm:mb-16">
                 <h3 class="text-xl font-bold text-white mb-6 text-center">
                   Distribución de tecnologías
                 </h3>
@@ -182,7 +175,7 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {Object.entries(githubStats.languageDistribution).map(([language, count]) => (
                       <div class="flex items-center justify-between">
-                        <span class="text-white/80">{language}</span>
+                        <span class="text-white/80 text-sm">{language}</span>
                         <div class="flex items-center space-x-2">
                           <div class="w-16 h-2 bg-white/10 rounded-full overflow-hidden">
                             <div
@@ -190,7 +183,7 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
                               style={`width: ${((count as number) / githubStats.publicRepos) * 100}%`}
                             />
                           </div>
-                          <span class="text-white/60 text-sm">{count} repos</span>
+                          <span class="text-white/60 text-xs">{count} repos</span>
                         </div>
                       </div>
                     ))}
@@ -203,18 +196,18 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
     </section>
 
     <!-- Dynamic Projects Section -->
-    <section class="py-20">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="py-12 sm:py-20">
+      <div class="max-w-7xl 2xl:max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
-          <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">Todos mis Proyectos</h2>
-          <p class="text-white/70 text-lg max-w-2xl mx-auto mb-8">
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">Todos mis Proyectos</h2>
+          <p class="text-white/70 text-base sm:text-lg max-w-2xl mx-auto mb-8">
             Proyectos dinámicos actualizados automáticamente desde GitHub con enlaces a repositorios
             y documentación detallada cuando está disponible
           </p>
 
-          <!-- Explicación de estados movida aquí -->
+          <!-- Explicación de estados -->
           <div class="glass rounded-lg p-4 max-w-xl mx-auto mb-8">
-            <div class="flex items-center justify-center space-x-6 text-sm text-white/70">
+            <div class="flex flex-wrap items-center justify-center gap-4 text-sm text-white/70">
               <div class="flex items-center space-x-2">
                 <div class="w-2 h-2 bg-green-400 rounded-full"></div>
                 <span>Con documentación</span>
@@ -227,6 +220,11 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
             <p class="text-white/60 text-xs mt-2">
               Los repositorios con documentación incluyen enlaces a contenido detallado
             </p>
+          </div>
+
+          <!-- Actividad de Contribuciones de GitHub en estilo nativo con cuadritos y estadísticas -->
+          <div class="mb-12">
+            <GitHubContributionGraph username={GITHUB_USERNAME} />
           </div>
         </div>
 

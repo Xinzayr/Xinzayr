@@ -24,7 +24,7 @@ const {
 } = Astro.props;
 ---
 
-<article class={`glass rounded-xl p-6 glass-hover transition-all duration-300 ${featured ? 'ring-2 ring-blue-500/30 glow' : ''}`}>
+<article class={`liquid-glass-card p-6 flex flex-col ${featured ? 'ring-2 ring-cyber-cyan/30 glow-cyber' : ''}`}>
 	<!-- Image -->
 	{imageUrl && (
 		<div class="relative overflow-hidden rounded-lg mb-4 bg-white/5 aspect-video">
@@ -38,7 +38,7 @@ const {
 			/>
 			{featured && (
 				<div class="absolute top-2 left-2">
-					<span class="px-2 py-1 text-xs font-medium bg-blue-500 text-white rounded-full">
+					<span class="px-2 py-1 text-xs font-bold bg-cyber-cyan text-black rounded-full shadow-lg shadow-cyber-cyan/20">
 						Destacado
 					</span>
 				</div>
@@ -48,7 +48,7 @@ const {
 
 	<!-- Content -->
 	<div class="space-y-3">
-		<h3 class="text-xl font-semibold text-white hover:text-blue-400 transition-colors">
+		<h3 class="text-xl font-semibold text-white/90 hover:text-cyber-cyan transition-colors">
 			<a href={href} class="block">
 				{title}
 			</a>
@@ -61,7 +61,7 @@ const {
 		<!-- Tech Stack -->
 		<div class="flex flex-wrap gap-2">
 			{stack.map((tech) => (
-				<span class="px-2 py-1 text-xs bg-white/10 text-white/80 rounded-md font-mono">
+				<span class="px-2 py-1 text-xs bg-white/5 border border-white/10 text-white/80 rounded-md font-mono">
 					{tech}
 				</span>
 			))}
@@ -71,7 +71,7 @@ const {
 		{tags.length > 0 && (
 			<div class="flex flex-wrap gap-2">
 				{tags.map((tag) => (
-					<span class="px-2 py-1 text-xs bg-blue-500/20 text-blue-300 rounded-md">
+					<span class="px-2 py-1 text-xs bg-white/5 border border-white/10 text-cyber-cyan rounded-md">
 						#{tag}
 					</span>
 				))}
@@ -79,10 +79,10 @@ const {
 		)}
 
 		<!-- Actions -->
-		<div class="flex items-center justify-between pt-4 border-t border-white/10">
+		<div class="flex items-center justify-between pt-4 border-t border-white/10 mt-auto">
 			<a
 				href={href}
-				class="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors"
+				class="text-cyber-cyan hover:text-cyber-purple text-sm font-medium transition-colors"
 			>
 				Ver detalles →
 			</a>

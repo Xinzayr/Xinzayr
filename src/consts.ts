@@ -9,11 +9,11 @@ export const EXTERNAL_RESOURCES = {
 	GITHUB_MEDIA_BASE: 'https://raw.githubusercontent.com/xinzayr/xinzayr/main',
 	GRAVATAR_BASE: 'https://gravatar.com',
 	GITHUB_API: 'https://api.github.com',
-	GITHUB_USERNAME: 'xinzayr',
+	GITHUB_USERNAME: import.meta.env?.GITHUB_USERNAME || process.env.GITHUB_USERNAME || 'xinzayr',
 	GITHUB_PROFILE: 'https://github.com/xinzayr',
-	DISCORD_USER_ID: process.env.DISCORD_USER_ID || '',
-	SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID || '',
-	GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',
+	DISCORD_USER_ID: import.meta.env?.DISCORD_USER_ID || process.env.DISCORD_USER_ID || '',
+	SPOTIFY_CLIENT_ID: import.meta.env?.SPOTIFY_CLIENT_ID || process.env.SPOTIFY_CLIENT_ID || '',
+	GITHUB_TOKEN: import.meta.env?.GITHUB_TOKEN || process.env.GITHUB_TOKEN || '',
 
 	// Redes sociales
 	TWITTER: 'https://x.com/xinzayr',
@@ -33,7 +33,7 @@ export const EXTERNAL_RESOURCES = {
 // Información personal
 export const PERSONAL_INFO = {
 	name: 'Xinzayr',
-	username: 'xinzayr',
+	username: import.meta.env?.GITHUB_USERNAME || process.env.GITHUB_USERNAME || 'xinzayr',
 	email: 'contact@xinzayr.xyz',
 	gravatar: 'xinzayr',
 	location: 'Ecuador',
@@ -51,21 +51,19 @@ export const PERSONAL_INFO = {
 export const API_CONFIG = {
 	github: {
 		baseUrl: 'https://api.github.com',
-		username: 'xinzayr',
-		token: process.env.GITHUB_TOKEN
+		username: import.meta.env?.GITHUB_USERNAME || process.env.GITHUB_USERNAME || 'xinzayr',
+		token: import.meta.env?.GITHUB_TOKEN || process.env.GITHUB_TOKEN
 	},
 	discord: {
-		userId: process.env.DISCORD_USER_ID
+		userId: import.meta.env?.DISCORD_USER_ID || process.env.DISCORD_USER_ID
 	},
 	spotify: {
-		clientId: process.env.SPOTIFY_CLIENT_ID
+		clientId: import.meta.env?.SPOTIFY_CLIENT_ID || process.env.SPOTIFY_CLIENT_ID
 	},
 	blogger: {
 		blogUrl: 'https://blog.xinzayr.xyz',
-		apiKey: process.env.BLOGGER_API_KEY || '',
-		// Para obtener el blogId, necesitaremos hacer una petición a la API de Blogger
-		blogId: process.env.BLOGGER_BLOG_ID || '',
-		// URL de feed RSS como alternativa
+		apiKey: import.meta.env?.BLOGGER_API_KEY || process.env.BLOGGER_API_KEY || '',
+		blogId: import.meta.env?.BLOGGER_BLOG_ID || process.env.BLOGGER_BLOG_ID || '',
 		feedUrl: 'https://blog.xinzayr.xyz/feeds/posts/default?alt=json',
 		feedRssUrl: 'https://blog.xinzayr.xyz/feeds/posts/default'
 	}

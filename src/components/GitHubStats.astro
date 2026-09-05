@@ -10,28 +10,26 @@ const { variant = 'compact' } = Astro.props;
 
 // Obtener configuración de GitHub desde constants
 const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN || API_CONFIG.github.token;
-const GITHUB_USERNAME = API_CONFIG.github.username;
+const GITHUB_USERNAME = import.meta.env.GITHUB_USERNAME || API_CONFIG.github.username || 'xinzayr';
 
 let githubStats = null;
 
-// Obtener estadísticas reales de GitHub si hay token configurado
-if (GITHUB_TOKEN && GITHUB_USERNAME) {
+// Obtener estadísticas reales de GitHub (funciona con o sin token)
+if (GITHUB_USERNAME) {
   try {
+    const headers: any = {
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'xinzayr-portfolio'
+    };
+    if (GITHUB_TOKEN) {
+      headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`;
+    }
+
     // Obtener información del usuario
-    const userResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, {
-      headers: {
-        'Authorization': `token ${GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json'
-      }
-    });
+    const userResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, { headers });
 
     // Obtener repositorios del usuario
-    const reposResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?type=all&per_page=100`, {
-      headers: {
-        'Authorization': `token ${GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json'
-      }
-    });
+    const reposResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?type=all&per_page=100`, { headers });
 
     if (userResponse.ok && reposResponse.ok) {
       const userData = await userResponse.json();
@@ -48,7 +46,7 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
         }, {});
 
       const topLanguages = Object.entries(languages)
-        .sort(([,a]: any, [,b]: any) => b - a)
+        .sort(([,a]: any, [,b]: any) => (b as number) - (a as number))
         .slice(0, 5);
 
       githubStats = {

@@ -2,6 +2,10 @@
 import DiscordStatus from './DiscordStatus.astro';
 import SpotifyNowPlaying from './SpotifyNowPlaying.astro';
 import { EXTERNAL_RESOURCES, PERSONAL_INFO } from '../consts';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 // Información de deployment temporal
 const deploymentInfo = {
@@ -14,19 +18,19 @@ const currentYear = new Date().getFullYear();
 ---
 
 <footer
-  class="border-t border-gold-400/15 bg-gradient-to-b from-black/90 to-black-pure backdrop-blur-sm relative"
+  class="border-t border-white/5 bg-black-deep/90 backdrop-blur-2xl relative"
 >
   <!-- Efecto de brillo sutil en el fondo -->
-  <div class="absolute inset-0 bg-gradient-to-t from-gold-400/3 to-transparent pointer-events-none">
+  <div class="absolute inset-0 bg-gradient-to-t from-cyber-cyan/5 to-transparent pointer-events-none">
   </div>
 
-  <div class="relative w-full px-4 sm:px-6 lg:px-8 py-8">
+  <div class="relative w-full max-w-7xl 2xl:max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <!-- Header Section: Brand & Navigation -->
-    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 mb-8">
+    <div class="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-8 mb-10 text-center lg:text-left">
       <!-- Brand Identity -->
-      <div class="flex items-center space-x-4">
+      <div class="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4">
         <div
-          class="w-12 h-12 rounded-xl border-2 border-gold-400 shadow-xl shadow-gold-400/30 overflow-hidden"
+          class="w-12 h-12 rounded-xl border border-white/10 shadow-xl shadow-cyber-cyan/20 overflow-hidden flex-shrink-0"
         >
           <img
             src="https://www.gravatar.com/avatar/977ea9a49bad6103d6cf96df4ace2cdf?s=48&d=identicon"
@@ -35,85 +39,73 @@ const currentYear = new Date().getFullYear();
           />
         </div>
         <div>
-          <h2 class="font-display font-bold text-xl text-white tracking-wide">xinzayr</h2>
-          <p class="text-gold-300/90 text-sm font-mono">Desarrollador Junior</p>
-          <p class="text-white/70 text-xs mt-1 max-w-md">
-            Con visión hacia un futuro libre y sin censura
+          <h2 class="font-display font-bold text-xl text-white/90 tracking-wide">xinzayr</h2>
+          <p class="text-cyber-cyan text-sm font-mono">{t('hero.role')}</p>
+          <p class="text-white/70 text-xs mt-1 max-w-md mx-auto lg:mx-0">
+            {t('footer.vision')}
           </p>
         </div>
       </div>
 
       <!-- Quick Navigation -->
-      <nav class="flex flex-wrap gap-3" aria-label="Footer navigation">
+      <nav class="flex flex-wrap justify-center gap-3" aria-label="Footer navigation">
         <a
           href="/projects"
-          class="cursor-glow inline-flex items-center px-3 py-2 rounded-lg text-white/80 hover:text-white border border-gold-400/20 hover:border-gold-400/50 transition-all duration-300 text-sm"
+          class="glass-pill cursor-glow inline-flex items-center px-4 py-2 text-white/80 hover:text-white border border-white/10 hover:border-cyber-cyan/50 text-sm"
         >
-          <span>Proyectos</span>
+          <span>{t('nav.projects')}</span>
         </a>
         <a
           href="/blog"
-          class="cursor-glow inline-flex items-center px-3 py-2 rounded-lg text-white/80 hover:text-white border border-neon-blue/20 hover:border-neon-blue/50 transition-all duration-300 text-sm"
+          class="glass-pill cursor-glow inline-flex items-center px-4 py-2 text-white/80 hover:text-white border border-white/10 hover:border-cyber-cyan/50 text-sm"
         >
-          <span>Blog</span>
+          <span>{t('nav.blog')}</span>
         </a>
         <a
           href="/contact"
-          class="cursor-glow inline-flex items-center px-3 py-2 rounded-lg text-white/80 hover:text-white border border-neon-green/20 hover:border-neon-green/50 transition-all duration-300 text-sm"
+          class="glass-pill cursor-glow inline-flex items-center px-4 py-2 text-white/80 hover:text-white border border-white/10 hover:border-cyber-cyan/50 text-sm"
         >
-          <span>Contacto</span>
+          <span>{t('nav.contact')}</span>
         </a>
         <a
           href="/cv"
-          class="cursor-glow inline-flex items-center px-3 py-2 rounded-lg text-white/80 hover:text-white border border-pearl-300/20 hover:border-pearl-300/50 transition-all duration-300 text-sm"
+          class="glass-pill cursor-glow inline-flex items-center px-4 py-2 text-white/80 hover:text-white border border-white/10 hover:border-cyber-cyan/50 text-sm"
         >
-          <span>CV</span>
+          <span>{t('nav.cv')}</span>
         </a>
       </nav>
     </div>
 
     <!-- Main Content: Status & Social -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
       <!-- Real-time Status -->
       <div class="md:col-span-2 lg:col-span-1">
-        <h3 class="text-white font-semibold text-sm mb-4 flex items-center">
-          <span class="w-2 h-2 bg-neon-green rounded-full mr-2 animate-pulse"></span>
-          Estados en Tiempo Real
+        <h3 class="text-white font-semibold text-sm mb-4 flex items-center justify-center lg:justify-start">
+          <span class="w-2 h-2 bg-cyber-green rounded-full mr-2 animate-pulse"></span>
+          {t('footer.status')}
         </h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
           <!-- Discord Status -->
-          <div class="bg-white/5 backdrop-blur rounded-lg p-4 border border-neon-purple/30">
-            <div class="flex items-center space-x-2 mb-3">
-              <div class="w-2 h-2 bg-neon-purple rounded-full animate-pulse"></div>
-              <span class="text-neon-purple font-medium text-sm">Discord</span>
-            </div>
-            <DiscordStatus variant="detailed" />
-          </div>
+          <DiscordStatus variant="detailed" />
           <!-- Spotify Status -->
-          <div class="bg-white/5 backdrop-blur rounded-lg p-4 border border-neon-green/30">
-            <div class="flex items-center space-x-2 mb-3">
-              <div class="w-2 h-2 bg-neon-green rounded-full animate-pulse"></div>
-              <span class="text-neon-green font-medium text-sm">Spotify</span>
-            </div>
-            <SpotifyNowPlaying variant="detailed" showWhenNotPlaying={true} />
-          </div>
+          <SpotifyNowPlaying variant="detailed" showWhenNotPlaying={true} />
         </div>
       </div>
 
       <!-- Social Networks & Support -->
-      <div class="flex flex-col justify-between">
-        <div>
-          <h3 class="text-white font-semibold text-sm mb-4">Conecta Conmigo</h3>
-          <div class="flex space-x-4 mb-6">
+      <div class="flex flex-col justify-between items-center lg:items-start text-center lg:text-left">
+        <div class="mb-6 lg:mb-0">
+          <h3 class="text-white font-semibold text-sm mb-4">{t('footer.connect')}</h3>
+          <div class="flex justify-center lg:justify-start space-x-4 mb-6">
             <a
               href={EXTERNAL_RESOURCES.GITHUB_PROFILE}
               target="_blank"
               rel="noopener noreferrer"
-              class="cursor-glow group p-3 rounded-lg border border-white/10 hover:border-gold-400/50 transition-all duration-300"
+              class="glass-pill cursor-glow p-3 hover:border-cyber-cyan/50 text-white/80 hover:text-white"
               aria-label="GitHub"
             >
               <svg
-                class="w-5 h-5 text-white group-hover:text-gold-400 transition-colors"
+                class="w-5 h-5"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
@@ -126,11 +118,11 @@ const currentYear = new Date().getFullYear();
               href="https://linkedin.com/in/xinzayr"
               target="_blank"
               rel="noopener noreferrer"
-              class="cursor-glow group p-3 rounded-lg border border-white/10 hover:border-blue-400/50 transition-all duration-300"
+              class="glass-pill cursor-glow p-3 hover:border-cyber-cyan/50 text-white/80 hover:text-white"
               aria-label="LinkedIn"
             >
               <svg
-                class="w-5 h-5 text-white group-hover:text-blue-400 transition-colors"
+                class="w-5 h-5"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
@@ -144,13 +136,13 @@ const currentYear = new Date().getFullYear();
 
         <!-- Support Links -->
         <div>
-          <h4 class="text-neon-pink font-medium text-sm mb-3">Apóyame</h4>
+          <h4 class="text-cyber-cyan font-medium text-sm mb-3">{t('footer.support')}</h4>
           <div class="space-y-2">
             <a
               href={EXTERNAL_RESOURCES.GITHUB_SPONSORS}
               target="_blank"
               rel="noopener noreferrer"
-              class="cursor-glow flex items-center space-x-2 text-white/80 hover:text-neon-pink transition-all duration-300 text-sm"
+              class="cursor-glow flex items-center justify-center lg:justify-start space-x-2 text-white/80 hover:text-cyber-cyan transition-all duration-300 text-sm"
             >
               <span>GitHub Sponsors</span>
             </a>
@@ -158,7 +150,7 @@ const currentYear = new Date().getFullYear();
               href="https://ko-fi.com/xinzayr"
               target="_blank"
               rel="noopener noreferrer"
-              class="cursor-glow flex items-center space-x-2 text-white/80 hover:text-blue-400 transition-all duration-300 text-sm"
+              class="cursor-glow flex items-center justify-center lg:justify-start space-x-2 text-white/80 hover:text-cyber-cyan transition-all duration-300 text-sm"
             >
               <span>Ko-fi</span>
             </a>
@@ -168,11 +160,11 @@ const currentYear = new Date().getFullYear();
 
       <!-- Environment & Tools -->
       <div class="flex flex-col justify-between">
-        <div class="bg-white/5 backdrop-blur rounded-lg p-3 border border-pearl-300/30 mb-4">
-          <div class="flex items-center space-x-2 text-sm">
-            <div class="w-2 h-2 rounded-full bg-neon-green animate-pulse"></div>
-            <span class="text-white/90"
-              >Alojado en <span class="font-semibold text-gold-400"
+        <div class="glass-pill p-3 mb-4">
+          <div class="flex items-center justify-center lg:justify-start space-x-2 text-sm">
+            <div class="w-2 h-2 rounded-full bg-cyber-green animate-pulse"></div>
+            <span class="text-white/80"
+              >{t('footer.hosted')} <span class="font-semibold text-cyber-cyan"
                 >{deploymentInfo.displayName}</span
               ></span
             >
@@ -181,18 +173,18 @@ const currentYear = new Date().getFullYear();
 
         <!-- World Clocks -->
         <div>
-          <h4 class="text-white font-medium text-sm mb-3">Zona Horaria</h4>
+          <h4 class="text-white font-medium text-sm mb-3 text-center lg:text-left">{t('footer.timezone')}</h4>
           <div class="space-y-2">
             <div
-              class="flex items-center justify-between px-3 py-2 rounded-lg bg-white/5 border border-neon-blue/30"
+              class="flex items-center justify-between px-3 py-2 rounded-lg glass border border-white/10"
             >
-              <span class="text-neon-blue font-mono text-xs">Florida</span>
+              <span class="text-cyber-cyan font-mono text-xs">Florida</span>
               <span id="florida-compact" class="text-white font-mono text-sm font-bold">--:--</span>
             </div>
             <div
-              class="flex items-center justify-between px-3 py-2 rounded-lg bg-white/5 border border-neon-green/30"
+              class="flex items-center justify-between px-3 py-2 rounded-lg glass border border-white/10"
             >
-              <span class="text-neon-green font-mono text-xs">Ecuador</span>
+              <span class="text-cyber-green font-mono text-xs">Ecuador</span>
               <span id="guayaquil-compact" class="text-white font-mono text-sm font-bold"
                 >--:--</span
               >
@@ -204,38 +196,36 @@ const currentYear = new Date().getFullYear();
 
     <!-- Copyright & Legal -->
     <div
-      class="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-gold-400/20"
+      class="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-white/10 text-center sm:text-left"
     >
-      <div class="text-center sm:text-left mb-4 sm:mb-0">
-        <p class="text-white/85 text-sm">
+      <div class="mb-4 sm:mb-0">
+        <p class="text-white/80 text-sm">
           © {currentYear}
-          <span class="text-gold-400 font-semibold">xinzayr</span>
+          <span class="text-cyber-cyan font-semibold">xinzayr</span>
         </p>
         <p class="text-white/60 text-xs mt-1">
-          Desarrollado con <span class="text-neon-blue">Astro</span> y <span
-            class="text-neon-purple">TailwindCSS</span
+          {t('footer.developed_with')} <span class="text-cyber-cyan">Astro</span> & <span
+            class="text-cyber-cyan font-medium">TailwindCSS</span
           >
         </p>
       </div>
 
       <div class="flex items-center space-x-4 text-xs">
-        <a href="/rss.xml" class="cursor-glow text-white/70 hover:text-gold-400 transition-colors"
+        <a href="/rss.xml" class="cursor-glow text-white/60 hover:text-cyber-cyan transition-colors"
           >RSS</a
         >
         <a
           href="/sitemap-index.xml"
-          class="cursor-glow text-white/70 hover:text-pearl-300 transition-colors">Sitemap</a
+          class="cursor-glow text-white/60 hover:text-cyber-cyan transition-colors">Sitemap</a
         >
       </div>
     </div>
   </div>
 
-  <!-- Script para cursor tracking y relojes -->
   <script>
-    // Cursor glow tracking
-    document.addEventListener('DOMContentLoaded', function () {
+    function setupFooterScripts() {
+      // Cursor glow tracking
       const cursorElements = document.querySelectorAll('.cursor-glow') as NodeListOf<HTMLElement>;
-
       cursorElements.forEach((element: HTMLElement) => {
         element.addEventListener('mousemove', function (e: MouseEvent) {
           const rect = this.getBoundingClientRect();
@@ -276,9 +266,11 @@ const currentYear = new Date().getFullYear();
         }
       }
 
-      // Actualizar relojes cada segundo
       updateTime();
-      setInterval(updateTime, 1000);
-    });
+    }
+
+    setupFooterScripts();
+    setInterval(setupFooterScripts, 1000);
+    document.addEventListener('astro:page-load', setupFooterScripts);
   </script>
 </footer>

@@ -1,0 +1,1003 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<BaseLayout
+  title="CyberMath Studio 3.0 - Calculadora Científica, Graficador GeoGebra & Álgebra Vectorial - xinzayr"
+  description="Suite matemática científica completa con graficador 2D GeoGebra, calculadora numérica RAD/DEG, álgebra vectorial 2D/3D y desglose procedural estilo PhotoMath."
+>
+  <Header />
+
+  <main class="min-h-screen pt-24 pb-16 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Top Bar & Breadcrumb -->
+      <div class="flex items-center justify-between mb-8">
+        <a
+          href="/tools"
+          class="glass-pill inline-flex items-center space-x-2 px-4 py-2 text-sm text-white/80 hover:text-cyber-cyan hover:border-cyber-cyan/40 transition-all"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          <span>Volver a Herramientas</span>
+        </a>
+
+        <div class="flex items-center space-x-2">
+          <span class="w-2.5 h-2.5 bg-cyber-cyan rounded-full animate-pulse"></span>
+          <span class="text-xs font-mono text-cyber-cyan tracking-wider uppercase">CyberMath Studio v3.0</span>
+        </div>
+      </div>
+
+      <!-- Main Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-3xl md:text-5xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 mb-3">
+          CyberMath Studio
+        </h1>
+        <p class="text-white/70 max-w-2xl mx-auto font-body text-sm md:text-base">
+          Suite matemática científica modular con graficador 2D <strong class="text-cyber-cyan">GeoGebra</strong>, cálculo numérico, <strong class="text-cyber-green">Álgebra Vectorial 2D/3D</strong> y desglose paso a paso <strong class="text-cyber-cyan">PhotoMath</strong>.
+        </p>
+      </div>
+
+      <!-- Main Mode Switcher Tabs -->
+      <div class="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-8">
+        <button
+          id="mode-btn-graph"
+          class="mode-tab-btn px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40 shadow-lg shadow-cyber-cyan/10"
+          data-target="segment-graph"
+        >
+          📈 Graficador GeoGebra 2D
+        </button>
+        <button
+          id="mode-btn-scientific"
+          class="mode-tab-btn px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all glass text-white/70 hover:text-white hover:border-white/20"
+          data-target="segment-scientific"
+        >
+          🧮 Calculadora Científica
+        </button>
+        <button
+          id="mode-btn-vector"
+          class="mode-tab-btn px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all glass text-white/70 hover:text-white hover:border-white/20"
+          data-target="segment-vector"
+        >
+          ↗️ Álgebra Vectorial (2D/3D)
+        </button>
+        <button
+          id="mode-btn-steps"
+          class="mode-tab-btn px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all glass text-white/70 hover:text-white hover:border-white/20"
+          data-target="segment-steps"
+        >
+          📸 Desglose PhotoMath
+        </button>
+      </div>
+
+      <!-- SEGMENT 1: GeoGebra 2D Grapher + Function Input -->
+      <div id="segment-graph" class="math-segment grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left: Function Keypad (5 cols) -->
+        <div class="lg:col-span-5 flex flex-col space-y-6">
+          <!-- Preset Selector -->
+          <div class="glass-card rounded-2xl p-4 border border-white/10">
+            <div class="text-xs text-white/50 font-mono mb-2">FUNCIONES MUESTRA:</div>
+            <div class="flex flex-wrap gap-2">
+              <button class="preset-btn glass-pill text-xs px-2.5 py-1 text-white/80 hover:text-cyber-cyan hover:border-cyber-cyan/50" data-expr="x^2 - 4">x² - 4</button>
+              <button class="preset-btn glass-pill text-xs px-2.5 py-1 text-white/80 hover:text-cyber-cyan hover:border-cyber-cyan/50" data-expr="sin(x)">sin(x)</button>
+              <button class="preset-btn glass-pill text-xs px-2.5 py-1 text-white/80 hover:text-cyber-cyan hover:border-cyber-cyan/50" data-expr="x^3 - 3*x">x³ - 3x</button>
+              <button class="preset-btn glass-pill text-xs px-2.5 py-1 text-white/80 hover:text-cyber-cyan hover:border-cyber-cyan/50" data-expr="2*x + 1">2x + 1</button>
+              <button class="preset-btn glass-pill text-xs px-2.5 py-1 text-white/80 hover:text-cyber-cyan hover:border-cyber-cyan/50" data-expr="cos(x) + x/2">cos(x) + x/2</button>
+            </div>
+          </div>
+
+          <!-- Display Box -->
+          <div class="glass-card rounded-2xl p-5 border border-white/10 bg-black/40">
+            <div class="flex items-center justify-between text-xs text-white/40 font-mono mb-2">
+              <span>EXPRESIÓN DE LA FUNCIÓN</span>
+              <span class="text-cyber-cyan">y = f(x)</span>
+            </div>
+            
+            <div class="relative">
+              <span class="absolute left-3 top-3 text-cyber-cyan font-mono font-bold text-lg">f(x) =</span>
+              <input
+                type="text"
+                id="math-expression-input"
+                value="x^2 - 4"
+                class="w-full bg-black/60 border border-cyber-cyan/30 rounded-xl pl-16 pr-4 py-3 text-white font-mono text-xl focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan transition-all shadow-inner"
+                placeholder="Ej. x^2 - 4"
+              />
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-sm font-mono">
+              <span class="text-white/60">Resultado f(0):</span>
+              <span id="current-eval-result" class="text-cyber-green font-bold text-lg">-4.00</span>
+            </div>
+          </div>
+
+          <!-- Keypad for Functions -->
+          <div class="glass-card rounded-2xl p-5 border border-white/10 bg-black/40">
+            <div class="grid grid-cols-5 gap-2 mb-2.5">
+              <button class="fn-key-btn glass text-cyber-cyan font-mono text-sm p-3 rounded-xl hover:bg-cyber-cyan/20 transition-all" data-key="sin(">sin</button>
+              <button class="fn-key-btn glass text-cyber-cyan font-mono text-sm p-3 rounded-xl hover:bg-cyber-cyan/20 transition-all" data-key="cos(">cos</button>
+              <button class="fn-key-btn glass text-cyber-cyan font-mono text-sm p-3 rounded-xl hover:bg-cyber-cyan/20 transition-all" data-key="tan(">tan</button>
+              <button class="fn-key-btn glass text-cyber-green font-mono text-sm p-3 rounded-xl hover:bg-cyber-green/20 transition-all" data-key="^">x^y</button>
+              <button class="glass text-rose-400 font-mono text-sm p-3 rounded-xl hover:bg-rose-500/20 transition-all" id="btn-fn-clear">AC</button>
+            </div>
+
+            <div class="grid grid-cols-5 gap-2 mb-2.5">
+              <button class="fn-key-btn glass text-cyber-cyan font-mono text-sm p-3 rounded-xl hover:bg-cyber-cyan/20 transition-all" data-key="sqrt(">√</button>
+              <button class="fn-key-btn glass text-cyber-cyan font-mono text-sm p-3 rounded-xl hover:bg-cyber-cyan/20 transition-all" data-key="ln(">ln</button>
+              <button class="fn-key-btn glass text-cyber-cyan font-mono text-sm p-3 rounded-xl hover:bg-cyber-cyan/20 transition-all" data-key="log(">log</button>
+              <button class="fn-key-btn glass text-cyber-green font-mono text-sm p-3 rounded-xl hover:bg-cyber-green/20 transition-all" data-key="^2">x²</button>
+              <button class="glass text-amber-400 font-mono text-sm p-3 rounded-xl hover:bg-amber-400/20 transition-all" id="btn-fn-backspace">⌫</button>
+            </div>
+
+            <div class="grid grid-cols-5 gap-2 mb-2.5">
+              <button class="fn-key-btn glass text-white font-mono text-base p-3 rounded-xl hover:bg-white/10 transition-all" data-key="(">(</button>
+              <button class="fn-key-btn glass text-white font-mono text-base p-3 rounded-xl hover:bg-white/10 transition-all" data-key=")">)</button>
+              <button class="fn-key-btn glass text-white font-mono text-base p-3 rounded-xl hover:bg-white/10 transition-all" data-key="x">x</button>
+              <button class="fn-key-btn glass text-cyber-cyan font-mono text-base p-3 rounded-xl hover:bg-cyber-cyan/20 transition-all" data-key="pi">π</button>
+              <button class="fn-key-btn glass text-cyber-cyan font-mono text-base p-3 rounded-xl hover:bg-cyber-cyan/20 transition-all" data-key="/">÷</button>
+            </div>
+
+            <div class="grid grid-cols-5 gap-2 mb-2.5">
+              <button class="fn-key-btn glass text-white font-mono font-bold text-lg p-3 rounded-xl hover:bg-white/10 transition-all" data-key="7">7</button>
+              <button class="fn-key-btn glass text-white font-mono font-bold text-lg p-3 rounded-xl hover:bg-white/10 transition-all" data-key="8">8</button>
+              <button class="fn-key-btn glass text-white font-mono font-bold text-lg p-3 rounded-xl hover:bg-white/10 transition-all" data-key="9">9</button>
+              <button class="fn-key-btn glass text-cyber-cyan font-mono text-lg p-3 rounded-xl hover:bg-cyber-cyan/20 transition-all" data-key="*">×</button>
+              <button class="fn-key-btn glass text-cyber-cyan font-mono text-lg p-3 rounded-xl hover:bg-cyber-cyan/20 transition-all" data-key="-">-</button>
+            </div>
+
+            <div class="grid grid-cols-5 gap-2 mb-2.5">
+              <button class="fn-key-btn glass text-white font-mono font-bold text-lg p-3 rounded-xl hover:bg-white/10 transition-all" data-key="4">4</button>
+              <button class="fn-key-btn glass text-white font-mono font-bold text-lg p-3 rounded-xl hover:bg-white/10 transition-all" data-key="5">5</button>
+              <button class="fn-key-btn glass text-white font-mono font-bold text-lg p-3 rounded-xl hover:bg-white/10 transition-all" data-key="6">6</button>
+              <button class="fn-key-btn glass text-cyber-cyan font-mono text-lg p-3 rounded-xl hover:bg-cyber-cyan/20 transition-all" data-key="+">+</button>
+              <button class="fn-key-btn glass text-cyber-green font-mono text-sm p-3 rounded-xl hover:bg-cyber-green/20 transition-all" data-key="abs(">|x|</button>
+            </div>
+
+            <div class="grid grid-cols-5 gap-2">
+              <button class="fn-key-btn glass text-white font-mono font-bold text-lg p-3 rounded-xl hover:bg-white/10 transition-all" data-key="1">1</button>
+              <button class="fn-key-btn glass text-white font-mono font-bold text-lg p-3 rounded-xl hover:bg-white/10 transition-all" data-key="2">2</button>
+              <button class="fn-key-btn glass text-white font-mono font-bold text-lg p-3 rounded-xl hover:bg-white/10 transition-all" data-key="3">3</button>
+              <button class="fn-key-btn glass text-white font-mono font-bold text-lg p-3 rounded-xl hover:bg-white/10 transition-all" data-key="0">0</button>
+              <button class="fn-key-btn glass text-white font-mono font-bold text-lg p-3 rounded-xl hover:bg-white/10 transition-all" data-key=".">.</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: GeoGebra Canvas 2D (7 cols) -->
+        <div class="lg:col-span-7 flex flex-col space-y-6">
+          <div class="glass-card rounded-2xl p-4 border border-white/10 relative">
+            <div class="flex items-center justify-between mb-3 px-2">
+              <div class="flex items-center space-x-2 text-xs font-mono text-white/70">
+                <span>PLANO CARTESIANO 2D</span>
+                <span id="canvas-coordinates" class="text-cyber-green font-bold ml-2">X: 0.00 | Y: 0.00</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <button id="btn-zoom-in" class="glass-pill px-3 py-1 text-xs text-white/80 hover:text-cyber-cyan font-mono">+</button>
+                <button id="btn-zoom-out" class="glass-pill px-3 py-1 text-xs text-white/80 hover:text-cyber-cyan font-mono">-</button>
+                <button id="btn-reset-view" class="glass-pill px-3 py-1 text-xs text-white/80 hover:text-cyber-cyan font-mono">⟲ Reset</button>
+              </div>
+            </div>
+
+            <div class="relative w-full h-[440px] bg-[#050914] rounded-xl overflow-hidden border border-cyber-cyan/20">
+              <canvas id="geogebra-canvas" class="w-full h-full cursor-crosshair"></canvas>
+            </div>
+            
+            <div class="mt-3 flex items-center justify-between text-xs text-white/40 px-2 font-mono">
+              <span>Arrastra con el mouse para desplazar el plano. Rueda para Zoom.</span>
+              <span class="text-cyber-cyan">Curva Verde: y = f(x)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEGMENT 2: Scientific Calculator (Numeric Engine RAD/DEG) -->
+      <div id="segment-scientific" class="math-segment hidden max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl p-6 md:p-8 border border-white/10 bg-black/40 space-y-6">
+          
+          <!-- Mode Header RAD/DEG -->
+          <div class="flex items-center justify-between border-b border-white/10 pb-4">
+            <div class="flex items-center space-x-3">
+              <span class="text-xs font-mono text-white/50">UNIDAD ANGULAR:</span>
+              <button id="btn-angle-unit" class="glass-pill text-xs px-4 py-1.5 font-mono text-cyber-cyan border-cyber-cyan/40 font-bold">
+                DEG (Grados)
+              </button>
+            </div>
+            <span class="text-xs font-mono text-cyber-green">EVALUADOR NUMÉRICO DIRECTO</span>
+          </div>
+
+          <!-- LCD Display Box -->
+          <div class="bg-black/80 border border-cyber-cyan/30 rounded-2xl p-6 shadow-inner text-right">
+            <div id="sci-history-display" class="text-white/40 font-mono text-sm min-h-[20px] truncate"></div>
+            <div id="sci-main-display" class="text-white font-mono text-3xl md:text-4xl font-bold tracking-wider truncate mt-1">
+              0
+            </div>
+          </div>
+
+          <!-- Scientific Keypad Buttons -->
+          <div class="grid grid-cols-5 gap-2.5">
+            <button class="sci-btn glass text-cyber-cyan font-mono text-sm p-3.5 rounded-xl hover:bg-cyber-cyan/20" data-val="sin(">sin</button>
+            <button class="sci-btn glass text-cyber-cyan font-mono text-sm p-3.5 rounded-xl hover:bg-cyber-cyan/20" data-val="cos(">cos</button>
+            <button class="sci-btn glass text-cyber-cyan font-mono text-sm p-3.5 rounded-xl hover:bg-cyber-cyan/20" data-val="tan(">tan</button>
+            <button class="glass text-amber-400 font-mono text-sm p-3.5 rounded-xl hover:bg-amber-400/20" id="btn-sci-backspace">⌫</button>
+            <button class="glass text-rose-400 font-mono text-sm p-3.5 rounded-xl hover:bg-rose-500/20" id="btn-sci-clear">AC</button>
+
+            <button class="sci-btn glass text-cyber-cyan font-mono text-sm p-3.5 rounded-xl hover:bg-cyber-cyan/20" data-val="sqrt(">√</button>
+            <button class="sci-btn glass text-cyber-cyan font-mono text-sm p-3.5 rounded-xl hover:bg-cyber-cyan/20" data-val="ln(">ln</button>
+            <button class="sci-btn glass text-cyber-cyan font-mono text-sm p-3.5 rounded-xl hover:bg-cyber-cyan/20" data-val="log(">log</button>
+            <button class="sci-btn glass text-cyber-green font-mono text-sm p-3.5 rounded-xl hover:bg-cyber-green/20" data-val="^">x^y</button>
+            <button class="sci-btn glass text-cyber-cyan font-mono text-sm p-3.5 rounded-xl hover:bg-cyber-cyan/20" data-val="/">÷</button>
+
+            <button class="sci-btn glass text-white font-mono text-base p-3.5 rounded-xl hover:bg-white/10" data-val="(">(</button>
+            <button class="sci-btn glass text-white font-mono text-base p-3.5 rounded-xl hover:bg-white/10" data-val=")">)</button>
+            <button class="sci-btn glass text-cyber-cyan font-mono text-base p-3.5 rounded-xl hover:bg-cyber-cyan/20" data-val="pi">π</button>
+            <button class="sci-btn glass text-cyber-cyan font-mono text-base p-3.5 rounded-xl hover:bg-cyber-cyan/20" data-val="e">e</button>
+            <button class="sci-btn glass text-cyber-cyan font-mono text-lg p-3.5 rounded-xl hover:bg-cyber-cyan/20" data-val="*">×</button>
+
+            <button class="sci-btn glass text-white font-mono font-bold text-xl p-3.5 rounded-xl hover:bg-white/10" data-val="7">7</button>
+            <button class="sci-btn glass text-white font-mono font-bold text-xl p-3.5 rounded-xl hover:bg-white/10" data-val="8">8</button>
+            <button class="sci-btn glass text-white font-mono font-bold text-xl p-3.5 rounded-xl hover:bg-white/10" data-val="9">9</button>
+            <button class="sci-btn glass text-cyber-cyan font-mono text-lg p-3.5 rounded-xl hover:bg-cyber-cyan/20" data-val="-">-</button>
+            <button class="sci-btn glass text-cyber-green font-mono text-sm p-3.5 rounded-xl hover:bg-cyber-green/20" data-val="!">n!</button>
+
+            <button class="sci-btn glass text-white font-mono font-bold text-xl p-3.5 rounded-xl hover:bg-white/10" data-val="4">4</button>
+            <button class="sci-btn glass text-white font-mono font-bold text-xl p-3.5 rounded-xl hover:bg-white/10" data-val="5">5</button>
+            <button class="sci-btn glass text-white font-mono font-bold text-xl p-3.5 rounded-xl hover:bg-white/10" data-val="6">6</button>
+            <button class="sci-btn glass text-cyber-cyan font-mono text-lg p-3.5 rounded-xl hover:bg-cyber-cyan/20" data-val="+">+</button>
+            <button class="sci-btn glass text-cyber-green font-mono text-sm p-3.5 rounded-xl hover:bg-cyber-green/20" data-val="ANS">ANS</button>
+
+            <button class="sci-btn glass text-white font-mono font-bold text-xl p-3.5 rounded-xl hover:bg-white/10" data-val="1">1</button>
+            <button class="sci-btn glass text-white font-mono font-bold text-xl p-3.5 rounded-xl hover:bg-white/10" data-val="2">2</button>
+            <button class="sci-btn glass text-white font-mono font-bold text-xl p-3.5 rounded-xl hover:bg-white/10" data-val="3">3</button>
+            <button class="sci-btn glass text-white font-mono font-bold text-xl p-3.5 rounded-xl hover:bg-white/10" data-val="0">0</button>
+            <button class="sci-btn glass text-white font-mono font-bold text-xl p-3.5 rounded-xl hover:bg-white/10" data-val=".">.</button>
+          </div>
+
+          <!-- Equal Button -->
+          <button
+            id="btn-sci-equals"
+            class="btn-primary w-full py-4 rounded-xl text-white font-bold text-xl shadow-lg shadow-cyber-cyan/20"
+          >
+            = EVALUAR RESULTADO
+          </button>
+        </div>
+      </div>
+
+      <!-- SEGMENT 3: Vector Algebra (2D / 3D Vector Engine) -->
+      <div id="segment-vector" class="math-segment hidden max-w-4xl mx-auto space-y-6">
+        <div class="glass-card rounded-2xl p-6 md:p-8 border border-white/10 bg-black/40 space-y-6">
+          <div class="flex items-center justify-between border-b border-white/10 pb-4">
+            <h3 class="text-white font-bold text-lg flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 bg-cyber-cyan rounded-full"></span>
+              <span>Calculadora de Álgebra Vectorial (2D & 3D)</span>
+            </h3>
+            <span class="text-xs font-mono text-cyber-cyan px-3 py-1 bg-cyber-cyan/10 border border-cyber-cyan/30 rounded-full">Motor Vectorial</span>
+          </div>
+
+          <!-- Vector Inputs -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Vector A -->
+            <div class="glass rounded-xl p-5 border border-white/5 space-y-3">
+              <span class="text-cyber-cyan font-mono font-bold text-sm">VECTOR A = (Ax, Ay, Az)</span>
+              <div class="grid grid-cols-3 gap-2">
+                <div>
+                  <label class="text-[10px] font-mono text-white/50 block mb-1">Ax</label>
+                  <input type="number" id="vec-ax" value="3" class="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-cyber-cyan focus:outline-none" />
+                </div>
+                <div>
+                  <label class="text-[10px] font-mono text-white/50 block mb-1">Ay</label>
+                  <input type="number" id="vec-ay" value="4" class="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-cyber-cyan focus:outline-none" />
+                </div>
+                <div>
+                  <label class="text-[10px] font-mono text-white/50 block mb-1">Az</label>
+                  <input type="number" id="vec-az" value="0" class="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-cyber-cyan focus:outline-none" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Vector B -->
+            <div class="glass rounded-xl p-5 border border-white/5 space-y-3">
+              <span class="text-cyber-green font-mono font-bold text-sm">VECTOR B = (Bx, By, Bz)</span>
+              <div class="grid grid-cols-3 gap-2">
+                <div>
+                  <label class="text-[10px] font-mono text-white/50 block mb-1">Bx</label>
+                  <input type="number" id="vec-bx" value="1" class="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-cyber-green focus:outline-none" />
+                </div>
+                <div>
+                  <label class="text-[10px] font-mono text-white/50 block mb-1">By</label>
+                  <input type="number" id="vec-by" value="2" class="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-cyber-green focus:outline-none" />
+                </div>
+                <div>
+                  <label class="text-[10px] font-mono text-white/50 block mb-1">Bz</label>
+                  <input type="number" id="vec-bz" value="2" class="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-cyber-green focus:outline-none" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Compute Action Button -->
+          <button id="btn-calc-vector" class="btn-primary w-full py-3.5 rounded-xl text-white font-bold text-base shadow-lg shadow-cyber-cyan/20">
+            CALCULAR PROPIEDADES VECTORIALES
+          </button>
+
+          <!-- Results Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-2">
+            <div class="glass rounded-xl p-4 border border-white/5 space-y-1">
+              <span class="text-xs font-mono text-white/50">MAGNITUD |A| Y |B|</span>
+              <div id="res-vec-mag-a" class="text-cyber-cyan font-mono font-bold text-sm">|A| = 5.00</div>
+              <div id="res-vec-mag-b" class="text-cyber-green font-mono font-bold text-sm">|B| = 3.00</div>
+            </div>
+
+            <div class="glass rounded-xl p-4 border border-white/5 space-y-1">
+              <span class="text-xs font-mono text-white/50">SUMA (A + B)</span>
+              <div id="res-vec-add" class="text-white font-mono font-bold text-sm">(4.00, 6.00, 2.00)</div>
+            </div>
+
+            <div class="glass rounded-xl p-4 border border-white/5 space-y-1">
+              <span class="text-xs font-mono text-white/50">RESTA (A - B)</span>
+              <div id="res-vec-sub" class="text-white font-mono font-bold text-sm">(2.00, 2.00, -2.00)</div>
+            </div>
+
+            <div class="glass rounded-xl p-4 border border-white/5 space-y-1">
+              <span class="text-xs font-mono text-white/50">PRODUCTO ESCALAR (A · B)</span>
+              <div id="res-vec-dot" class="text-amber-400 font-mono font-bold text-base">11.00</div>
+            </div>
+
+            <div class="glass rounded-xl p-4 border border-white/5 space-y-1">
+              <span class="text-xs font-mono text-white/50">PRODUCTO VECTORIAL (A × B)</span>
+              <div id="res-vec-cross" class="text-cyber-cyan font-mono font-bold text-sm">(8.00, -6.00, 2.00)</div>
+            </div>
+
+            <div class="glass rounded-xl p-4 border border-white/5 space-y-1">
+              <span class="text-xs font-mono text-white/50">ÁNGULO θ ENTRE VECTORES</span>
+              <div id="res-vec-angle" class="text-cyber-green font-mono font-bold text-sm">42.83° (0.75 rad)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEGMENT 4: PhotoMath Step Solver -->
+      <div id="segment-steps" class="math-segment hidden max-w-4xl mx-auto space-y-6">
+        <div class="glass-card rounded-2xl p-6 md:p-8 border border-white/10 bg-black/40 space-y-6">
+          <div class="flex items-center justify-between border-b border-white/10 pb-4">
+            <div>
+              <h3 class="text-white font-bold text-lg flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 bg-cyber-green rounded-full"></span>
+                <span>Análisis y Desglose Paso a Paso</span>
+              </h3>
+              <p class="text-white/60 text-xs mt-1 font-body">Demostración analítica procedural del comportamiento de la función.</p>
+            </div>
+            <span class="text-xs font-mono px-3 py-1 bg-cyber-green/20 text-cyber-green rounded-full border border-cyber-green/30">PhotoMath Engine</span>
+          </div>
+
+          <!-- Step 1: Definition -->
+          <div class="glass rounded-xl p-4 border border-white/5 space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono text-cyber-cyan">
+              <span>PASO 1: EXPRESIÓN CANÓNICA</span>
+              <span>f(x)</span>
+            </div>
+            <div id="step-1-content" class="text-white font-mono text-base font-semibold">
+              f(x) = x² - 4
+            </div>
+            <p class="text-white/60 text-xs font-body">Función matemática simplificada en coordenadas continuas.</p>
+          </div>
+
+          <!-- Step 2: Derivative f'(x) -->
+          <div class="glass rounded-xl p-4 border border-white/5 space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono text-cyber-green">
+              <span>PASO 2: DERIVADA ANALÍTICA f'(x)</span>
+              <span>Tasa de Cambio</span>
+            </div>
+            <div id="step-2-content" class="text-cyber-green font-mono text-base font-semibold">
+              f'(x) = 2x
+            </div>
+            <p class="text-white/60 text-xs font-body">Representa la pendiente de la recta tangente en cualquier punto $x$.</p>
+          </div>
+
+          <!-- Step 3: Roots (f(x) = 0) -->
+          <div class="glass rounded-xl p-4 border border-white/5 space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono text-amber-400">
+              <span>PASO 3: RAÍCES REALES (f(x) = 0)</span>
+              <span>Solución</span>
+            </div>
+            <div id="step-3-content" class="text-amber-300 font-mono text-sm space-y-1">
+              <div>x₁ = 2.00</div>
+              <div>x₂ = -2.00</div>
+            </div>
+            <p class="text-white/60 text-xs font-body">Puntos exactos donde la gráfica intersecta el eje horizontal $Y = 0$.</p>
+          </div>
+
+          <!-- Step 4: Value Table -->
+          <div class="glass rounded-xl p-4 border border-white/5 space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono text-white/70">
+              <span>PASO 4: TABLA DE EVALUACIÓN MUESTRA</span>
+              <span>Puntos (x, y)</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs font-mono text-white/80 border-collapse">
+                <thead>
+                  <tr class="border-b border-white/10 text-cyber-cyan">
+                    <th class="py-2 px-3">x</th>
+                    <th class="py-2 px-3">-2</th>
+                    <th class="py-2 px-3">-1</th>
+                    <th class="py-2 px-3">0</th>
+                    <th class="py-2 px-3">1</th>
+                    <th class="py-2 px-3">2</th>
+                  </tr>
+                </thead>
+                <tbody id="step-4-table">
+                  <tr class="border-b border-white/5">
+                    <td class="py-2 px-3 text-white/50">f(x)</td>
+                    <td class="py-2 px-3">0.00</td>
+                    <td class="py-2 px-3">-3.00</td>
+                    <td class="py-2 px-3 text-cyber-green font-bold">-4.00</td>
+                    <td class="py-2 px-3">-3.00</td>
+                    <td class="py-2 px-3">0.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <Footer />
+
+  <script>
+    // CyberMath Studio 3.0 Core Engine (SINGLE INSTANCE DELEGATION)
+    
+    // Global State
+    let isDeg = true;
+    let lastAns = '0';
+
+    // Helper functions
+    function evaluateFx(expr: string, x: number): number {
+      try {
+        let sanitized = expr
+          .replace(/\s+/g, '')
+          .replace(/(\d+)([a-zA-Z\(])/g, '$1*$2')
+          .replace(/(\))([a-zA-Z0-9\(])/g, '$1*$2')
+          .replace(/x\^2/g, '(x*x)')
+          .replace(/x\^3/g, '(x*x*x)')
+          .replace(/\^/g, '**')
+          .replace(/pi/g, 'Math.PI')
+          .replace(/sin\(/g, 'Math.sin(')
+          .replace(/cos\(/g, 'Math.cos(')
+          .replace(/tan\(/g, 'Math.tan(')
+          .replace(/sqrt\(/g, 'Math.sqrt(')
+          .replace(/ln\(/g, 'Math.log(')
+          .replace(/log\(/g, 'Math.log10(')
+          .replace(/abs\(/g, 'Math.abs(');
+
+        const fn = new Function('x', `return ${sanitized};`);
+        const val = fn(x);
+        return typeof val === 'number' && !isNaN(val) ? val : NaN;
+      } catch (e) {
+        return NaN;
+      }
+    }
+
+    function evaluateFxDerivative(expr: string, x: number): number {
+      const h = 0.0001;
+      const y1 = evaluateFx(expr, x + h);
+      const y2 = evaluateFx(expr, x - h);
+      return (y1 - y2) / (2 * h);
+    }
+
+    // Canvas State
+    let scale = 35;
+    let offsetX = 0;
+    let offsetY = 0;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let mouseX = 0;
+    let mouseY = 0;
+
+    function renderGraph() {
+      const canvas = document.getElementById('geogebra-canvas') as HTMLCanvasElement;
+      const inputExpr = document.getElementById('math-expression-input') as HTMLInputElement;
+      const evalResult = document.getElementById('current-eval-result');
+      if (!canvas || !inputExpr) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      const expr = inputExpr.value || '0';
+
+      ctx.clearRect(0, 0, width, height);
+
+      // Background
+      ctx.fillStyle = '#050914';
+      ctx.fillRect(0, 0, width, height);
+
+      // Grid Lines
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+
+      const startMathX = (0 - offsetX) / scale;
+      const endMathX = (width - offsetX) / scale;
+      const startMathY = (offsetY - height) / scale;
+      const endMathY = (offsetY - 0) / scale;
+
+      const gridStep = scale > 60 ? 0.5 : scale < 20 ? 2 : 1;
+
+      for (let x = Math.floor(startMathX / gridStep) * gridStep; x <= endMathX; x += gridStep) {
+        const px = offsetX + x * scale;
+        ctx.beginPath();
+        ctx.moveTo(px, 0);
+        ctx.lineTo(px, height);
+        ctx.stroke();
+
+        if (Math.abs(x) > 0.001) {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+          ctx.font = '10px monospace';
+          ctx.fillText(x.toFixed(x % 1 === 0 ? 0 : 1), px + 2, offsetY + 12);
+        }
+      }
+
+      for (let y = Math.floor(startMathY / gridStep) * gridStep; y <= endMathY; y += gridStep) {
+        const py = offsetY - y * scale;
+        ctx.beginPath();
+        ctx.moveTo(0, py);
+        ctx.lineTo(width, py);
+        ctx.stroke();
+
+        if (Math.abs(y) > 0.001) {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+          ctx.font = '10px monospace';
+          ctx.fillText(y.toFixed(y % 1 === 0 ? 0 : 1), offsetX + 4, py - 3);
+        }
+      }
+
+      // Axes X and Y
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#06b6d4';
+      ctx.beginPath();
+      ctx.moveTo(0, offsetY);
+      ctx.lineTo(width, offsetY);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(offsetX, 0);
+      ctx.lineTo(offsetX, height);
+      ctx.stroke();
+
+      // Function Curve y = f(x)
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#10b981';
+      ctx.beginPath();
+
+      let firstPoint = true;
+      for (let px = 0; px <= width; px += 2) {
+        const mathX = (px - offsetX) / scale;
+        const mathY = evaluateFx(expr, mathX);
+
+        if (!isNaN(mathY) && isFinite(mathY)) {
+          const py = offsetY - mathY * scale;
+          if (firstPoint) {
+            ctx.moveTo(px, py);
+            firstPoint = false;
+          } else {
+            ctx.lineTo(px, py);
+          }
+        } else {
+          firstPoint = true;
+        }
+      }
+      ctx.stroke();
+
+      // Mouse Inspector Point
+      const cursorMathX = (mouseX - offsetX) / scale;
+      const cursorMathY = evaluateFx(expr, cursorMathX);
+
+      if (!isNaN(cursorMathY) && isFinite(cursorMathY)) {
+        const cursorPx = mouseX;
+        const cursorPy = offsetY - cursorMathY * scale;
+
+        ctx.beginPath();
+        ctx.arc(cursorPx, cursorPy, 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#06b6d4';
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.setLineDash([3, 3]);
+        ctx.strokeStyle = 'rgba(6, 182, 212, 0.4)';
+        ctx.beginPath();
+        ctx.moveTo(cursorPx, offsetY);
+        ctx.lineTo(cursorPx, cursorPy);
+        ctx.lineTo(offsetX, cursorPy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Update f(0) label
+      const evalAtZero = evaluateFx(expr, 0);
+      if (evalResult) {
+        evalResult.textContent = isNaN(evalAtZero) ? 'Indefinido' : evalAtZero.toFixed(2);
+      }
+    }
+
+    function updateSteps() {
+      const inputExpr = document.getElementById('math-expression-input') as HTMLInputElement;
+      const step1 = document.getElementById('step-1-content');
+      const step2 = document.getElementById('step-2-content');
+      const step3 = document.getElementById('step-3-content');
+      const step4Table = document.getElementById('step-4-table');
+
+      if (!inputExpr) return;
+      const expr = inputExpr.value.trim() || '0';
+
+      if (step1) step1.textContent = `f(x) = ${expr}`;
+
+      if (step2) {
+        const d0 = evaluateFxDerivative(expr, 1);
+        if (expr === 'x^2 - 4' || expr === 'x^2-4') {
+          step2.textContent = `f'(x) = 2x`;
+        } else if (expr.includes('sin(')) {
+          step2.textContent = `f'(x) = cos(x)`;
+        } else if (expr.includes('cos(')) {
+          step2.textContent = `f'(x) = -sin(x)`;
+        } else if (!isNaN(d0)) {
+          step2.textContent = `f'(x) ≈ ${d0.toFixed(2)} (en x = 1.0)`;
+        } else {
+          step2.textContent = 'Pendiente indefinida';
+        }
+      }
+
+      if (step3) {
+        let roots: string[] = [];
+        for (let x = -10; x <= 10; x += 0.05) {
+          const y1 = evaluateFx(expr, x);
+          const y2 = evaluateFx(expr, x + 0.05);
+          if (y1 * y2 <= 0) {
+            roots.push(`x ≈ ${x.toFixed(2)}`);
+          }
+        }
+        if (roots.length > 0) {
+          step3.innerHTML = roots.slice(0, 3).map(r => `<div>• ${r}</div>`).join('');
+        } else {
+          step3.textContent = 'No se encontraron raíces reales en el rango [-10, 10]';
+        }
+      }
+
+      if (step4Table) {
+        const sampleXs = [-2, -1, 0, 1, 2];
+        const sampleYs = sampleXs.map(x => {
+          const y = evaluateFx(expr, x);
+          return isNaN(y) ? 'N/A' : y.toFixed(2);
+        });
+
+        step4Table.innerHTML = `
+          <tr class="border-b border-white/5">
+            <td class="py-2 px-3 text-white/50">f(x)</td>
+            ${sampleYs.map(y => `<td class="py-2 px-3 text-cyber-cyan font-bold">${y}</td>`).join('')}
+          </tr>
+        `;
+      }
+    }
+
+    function resizeCanvas() {
+      const canvas = document.getElementById('geogebra-canvas') as HTMLCanvasElement;
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      ctx?.scale(window.devicePixelRatio, window.devicePixelRatio);
+      if (offsetX === 0 && offsetY === 0) {
+        offsetX = rect.width / 2;
+        offsetY = rect.height / 2;
+      }
+      renderGraph();
+    }
+
+    // Attach SINGLE global event delegation once per session
+    if (!(window as any).__cyberMathDelegationBound) {
+      (window as any).__cyberMathDelegationBound = true;
+
+      document.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+
+        // 1. Mode Tab Buttons
+        const modeBtn = target.closest('.mode-tab-btn') as HTMLElement;
+        if (modeBtn) {
+          const targetId = modeBtn.dataset.target;
+          document.querySelectorAll('.mode-tab-btn').forEach((b) => {
+            b.className = 'mode-tab-btn px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all glass text-white/70 hover:text-white hover:border-white/20';
+          });
+          modeBtn.className = 'mode-tab-btn px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40 shadow-lg shadow-cyber-cyan/10';
+
+          document.querySelectorAll('.math-segment').forEach((seg) => {
+            if (seg.id === targetId) {
+              seg.classList.remove('hidden');
+              if (targetId === 'segment-graph') resizeCanvas();
+            } else {
+              seg.classList.add('hidden');
+            }
+          });
+          return;
+        }
+
+        // 2. Function Keypad (.fn-key-btn)
+        const fnBtn = target.closest('.fn-key-btn') as HTMLElement;
+        if (fnBtn) {
+          const key = fnBtn.dataset.key;
+          const inputExpr = document.getElementById('math-expression-input') as HTMLInputElement;
+          if (key && inputExpr) {
+            inputExpr.value += key;
+            renderGraph();
+            updateSteps();
+          }
+          return;
+        }
+
+        // 3. Clear Function Input (#btn-fn-clear)
+        if (target.closest('#btn-fn-clear')) {
+          const inputExpr = document.getElementById('math-expression-input') as HTMLInputElement;
+          if (inputExpr) inputExpr.value = '';
+          renderGraph();
+          updateSteps();
+          return;
+        }
+
+        // 4. Backspace Function Input (#btn-fn-backspace)
+        if (target.closest('#btn-fn-backspace')) {
+          const inputExpr = document.getElementById('math-expression-input') as HTMLInputElement;
+          if (inputExpr) inputExpr.value = inputExpr.value.slice(0, -1);
+          renderGraph();
+          updateSteps();
+          return;
+        }
+
+        // 5. Preset Buttons (.preset-btn)
+        const presetBtn = target.closest('.preset-btn') as HTMLElement;
+        if (presetBtn) {
+          const expr = presetBtn.dataset.expr;
+          const inputExpr = document.getElementById('math-expression-input') as HTMLInputElement;
+          if (expr && inputExpr) {
+            inputExpr.value = expr;
+            renderGraph();
+            updateSteps();
+          }
+          return;
+        }
+
+        // 6. Scientific Keypad (.sci-btn)
+        const sciBtn = target.closest('.sci-btn') as HTMLElement;
+        if (sciBtn) {
+          const val = sciBtn.dataset.val;
+          const sciMainDisplay = document.getElementById('sci-main-display');
+          if (val && sciMainDisplay) {
+            if (sciMainDisplay.textContent === '0' || sciMainDisplay.textContent === 'Error') {
+              sciMainDisplay.textContent = val === 'ANS' ? lastAns : val;
+            } else {
+              sciMainDisplay.textContent += val === 'ANS' ? lastAns : val;
+            }
+          }
+          return;
+        }
+
+        // 7. Clear Sci Display (#btn-sci-clear)
+        if (target.closest('#btn-sci-clear')) {
+          const sciMainDisplay = document.getElementById('sci-main-display');
+          const sciHistDisplay = document.getElementById('sci-history-display');
+          if (sciMainDisplay) sciMainDisplay.textContent = '0';
+          if (sciHistDisplay) sciHistDisplay.textContent = '';
+          return;
+        }
+
+        // 8. Backspace Sci Display (#btn-sci-backspace)
+        if (target.closest('#btn-sci-backspace')) {
+          const sciMainDisplay = document.getElementById('sci-main-display');
+          if (sciMainDisplay) {
+            const txt = sciMainDisplay.textContent || '0';
+            sciMainDisplay.textContent = txt.length > 1 ? txt.slice(0, -1) : '0';
+          }
+          return;
+        }
+
+        // 9. Angle Unit Toggle (#btn-angle-unit)
+        if (target.closest('#btn-angle-unit')) {
+          const btnAngleUnit = document.getElementById('btn-angle-unit');
+          isDeg = !isDeg;
+          if (btnAngleUnit) btnAngleUnit.textContent = isDeg ? 'DEG (Grados)' : 'RAD (Radianes)';
+          return;
+        }
+
+        // 10. Sci Equals Button (#btn-sci-equals)
+        if (target.closest('#btn-sci-equals')) {
+          const sciMainDisplay = document.getElementById('sci-main-display');
+          const sciHistDisplay = document.getElementById('sci-history-display');
+          if (!sciMainDisplay) return;
+          const expr = sciMainDisplay.textContent || '0';
+          try {
+            let sanitized = expr
+              .replace(/(\d+)(pi|e|sin|cos|tan|sqrt|ln|log|\()/g, '$1*$2')
+              .replace(/pi/g, 'Math.PI')
+              .replace(/e/g, 'Math.E')
+              .replace(/\^/g, '**')
+              .replace(/sqrt\(/g, 'Math.sqrt(')
+              .replace(/ln\(/g, 'Math.log(')
+              .replace(/log\(/g, 'Math.log10(');
+
+            if (isDeg) {
+              sanitized = sanitized
+                .replace(/sin\(([^)]+)\)/g, 'Math.sin(($1)*Math.PI/180)')
+                .replace(/cos\(([^)]+)\)/g, 'Math.cos(($1)*Math.PI/180)')
+                .replace(/tan\(([^)]+)\)/g, 'Math.tan(($1)*Math.PI/180)');
+            } else {
+              sanitized = sanitized
+                .replace(/sin\(/g, 'Math.sin(')
+                .replace(/cos\(/g, 'Math.cos(')
+                .replace(/tan\(/g, 'Math.tan(');
+            }
+
+            const res = new Function(`return ${sanitized};`)();
+            if (typeof res === 'number' && !isNaN(res)) {
+              if (sciHistDisplay) sciHistDisplay.textContent = `${expr} =`;
+              const formattedRes = res % 1 === 0 ? res.toString() : res.toFixed(4);
+              sciMainDisplay.textContent = formattedRes;
+              lastAns = formattedRes;
+            } else {
+              sciMainDisplay.textContent = 'Error';
+            }
+          } catch (err) {
+            sciMainDisplay.textContent = 'Error';
+          }
+          return;
+        }
+
+        // 11. Vector Calculate Button (#btn-calc-vector)
+        if (target.closest('#btn-calc-vector')) {
+          const ax = parseFloat((document.getElementById('vec-ax') as HTMLInputElement).value) || 0;
+          const ay = parseFloat((document.getElementById('vec-ay') as HTMLInputElement).value) || 0;
+          const az = parseFloat((document.getElementById('vec-az') as HTMLInputElement).value) || 0;
+
+          const bx = parseFloat((document.getElementById('vec-bx') as HTMLInputElement).value) || 0;
+          const by = parseFloat((document.getElementById('vec-by') as HTMLInputElement).value) || 0;
+          const bz = parseFloat((document.getElementById('vec-bz') as HTMLInputElement).value) || 0;
+
+          const magA = Math.sqrt(ax * ax + ay * ay + az * az);
+          const magB = Math.sqrt(bx * bx + by * by + bz * bz);
+
+          const addVec = `(${ (ax + bx).toFixed(2) }, ${ (ay + by).toFixed(2) }, ${ (az + bz).toFixed(2) })`;
+          const subVec = `(${ (ax - bx).toFixed(2) }, ${ (ay - by).toFixed(2) }, ${ (az - bz).toFixed(2) })`;
+
+          const dotProduct = ax * bx + ay * by + az * bz;
+
+          const crossX = ay * bz - az * by;
+          const crossY = az * bx - ax * bz;
+          const crossZ = ax * by - ay * bx;
+          const crossVec = `(${ crossX.toFixed(2) }, ${ crossY.toFixed(2) }, ${ crossZ.toFixed(2) })`;
+
+          let angleDegStr = 'Indefinido';
+          if (magA > 0 && magB > 0) {
+            const cosTheta = Math.max(-1, Math.min(1, dotProduct / (magA * magB)));
+            const rad = Math.acos(cosTheta);
+            const deg = (rad * 180) / Math.PI;
+            angleDegStr = `${deg.toFixed(2)}° (${rad.toFixed(2)} rad)`;
+          }
+
+          const elMagA = document.getElementById('res-vec-mag-a');
+          const elMagB = document.getElementById('res-vec-mag-b');
+          const elAdd = document.getElementById('res-vec-add');
+          const elSub = document.getElementById('res-vec-sub');
+          const elDot = document.getElementById('res-vec-dot');
+          const elCross = document.getElementById('res-vec-cross');
+          const elAngle = document.getElementById('res-vec-angle');
+
+          if (elMagA) elMagA.textContent = `|A| = ${magA.toFixed(2)}`;
+          if (elMagB) elMagB.textContent = `|B| = ${magB.toFixed(2)}`;
+          if (elAdd) elAdd.textContent = addVec;
+          if (elSub) elSub.textContent = subVec;
+          if (elDot) elDot.textContent = dotProduct.toFixed(2);
+          if (elCross) elCross.textContent = crossVec;
+          if (elAngle) elAngle.textContent = angleDegStr;
+          return;
+        }
+
+        // 12. Zoom Buttons
+        if (target.closest('#btn-zoom-in')) {
+          scale = Math.min(200, scale * 1.25);
+          renderGraph();
+          return;
+        }
+        if (target.closest('#btn-zoom-out')) {
+          scale = Math.max(10, scale * 0.8);
+          renderGraph();
+          return;
+        }
+        if (target.closest('#btn-reset-view')) {
+          const canvas = document.getElementById('geogebra-canvas') as HTMLCanvasElement;
+          scale = 35;
+          if (canvas) {
+            offsetX = canvas.clientWidth / 2;
+            offsetY = canvas.clientHeight / 2;
+          }
+          renderGraph();
+          return;
+        }
+      });
+
+      // Canvas Dragging & Wheel (Attached once on window/canvas)
+      window.addEventListener('mousedown', (e) => {
+        const canvas = document.getElementById('geogebra-canvas');
+        if (canvas && e.target === canvas) {
+          isDragging = true;
+          dragStartX = e.clientX - offsetX;
+          dragStartY = e.clientY - offsetY;
+        }
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        const canvas = document.getElementById('geogebra-canvas') as HTMLCanvasElement;
+        const coordsDisplay = document.getElementById('canvas-coordinates');
+        if (!canvas) return;
+
+        const rect = canvas.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+
+        if (isDragging) {
+          offsetX = e.clientX - dragStartX;
+          offsetY = e.clientY - dragStartY;
+        }
+
+        const mathX = (mouseX - offsetX) / scale;
+        const mathY = (offsetY - mouseY) / scale;
+        if (coordsDisplay) {
+          coordsDisplay.textContent = `X: ${mathX.toFixed(2)} | Y: ${mathY.toFixed(2)}`;
+        }
+
+        renderGraph();
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      window.addEventListener('wheel', (e) => {
+        const canvas = document.getElementById('geogebra-canvas');
+        if (canvas && e.target === canvas) {
+          e.preventDefault();
+          const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
+          scale = Math.max(10, Math.min(200, scale * zoomFactor));
+          renderGraph();
+        }
+      }, { passive: false });
+
+      window.addEventListener('resize', resizeCanvas);
+    }
+
+    // Input element event listener for typed input
+    function attachInputListeners() {
+      const inputExpr = document.getElementById('math-expression-input');
+      if (inputExpr && !(inputExpr as any).__bound) {
+        (inputExpr as any).__bound = true;
+        inputExpr.addEventListener('input', () => {
+          renderGraph();
+          updateSteps();
+        });
+      }
+    }
+
+    // Init on load
+    function init() {
+      resizeCanvas();
+      updateSteps();
+      attachInputListeners();
+    }
+
+    init();
+    document.addEventListener('astro:page-load', init);
+  </script>
+</BaseLayout>

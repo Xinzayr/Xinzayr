@@ -2,228 +2,127 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import ToolCard from '../components/ToolCard.astro';
-import { getCollection } from 'astro:content';
 
-// Obtener todas las herramientas
-const allTools = await getCollection('tools');
-
-// Ordenar por fecha de publicación (más recientes primero)
-const tools = allTools.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-// Obtener categorías únicas
-const categories = [...new Set(tools.map(tool => tool.data.category))].sort();
+const tools = [
+  {
+    id: 'cybermath',
+    title: 'CyberMath Studio',
+    description: 'Calculadora científica interactiva, plano cartesiano 2D GeoGebra e inspección de pasos procedurales estilo PhotoMath.',
+    icon: 'M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z',
+    category: 'math',
+    categoryLabel: 'Matemáticas & Ciencia',
+    badge: 'Destacado',
+    href: '/tools/calculator',
+    color: 'cyber-cyan'
+  },
+  {
+    id: 'password-gen',
+    title: 'Generador Criptográfico',
+    description: 'Crea contraseñas robustas y seguras localmente en tu navegador con cifrado de entropía y 100% de privacidad.',
+    icon: 'M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z',
+    category: 'utils',
+    categoryLabel: 'Seguridad Criptográfica',
+    badge: 'Seguridad',
+    href: '/tools/password-generator',
+    color: 'cyber-green'
+  }
+];
 ---
 
-<BaseLayout title="Herramientas - xinzayr" description="Colección de herramientas web útiles y aplicaciones desarrolladas para facilitar tareas cotidianas.">
-	<Header />
+<BaseLayout
+  title="Extras & Herramientas - xinzayr"
+  description="Colección de herramientas web interactivas, calculadora científica gráfica CyberMath y generador criptográfico de contraseñas."
+>
+  <Header />
 
-	<main class="min-h-screen pt-16">
-		<!-- Hero Section -->
-		<section class="py-20">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="text-center mb-12">
-					<h1 class="text-4xl lg:text-5xl font-bold text-white mb-6">
-						Herramientas Útiles
-					</h1>
-					<p class="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-						Una colección de herramientas web que estoy desarrollando para resolver problemas comunes
-						y para uso personal y público.
-					</p>
-				</div>
-			</div>
-		</section>
+  <main class="min-h-screen pt-24 pb-20 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Header Section -->
+      <div class="text-center mb-12">
+        <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan text-xs font-mono mb-4">
+          <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse"></span>
+          <span>SUITE DE EXTRAS & HERRAMIENTAS</span>
+        </div>
 
-		<!-- Navigation Sidebar -->
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="flex flex-col lg:flex-row gap-8 pb-20">
-				<!-- Sidebar -->
-				<aside class="lg:w-64 lg:sticky lg:top-24 lg:h-fit">
-					<nav class="glass rounded-xl p-6">
-						<h2 class="text-white font-semibold mb-4">Categorías</h2>
-						<ul class="space-y-2">
-							<li>
-								<a
-									href="#all"
-									class="nav-link active block px-3 py-2 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-									data-category="all"
-								>
-									Todas las herramientas
-								</a>
-							</li>
-							{categories.map((category) => (
-								<li>
-									<a
-										href={`#${category.toLowerCase().replace(/\s+/g, '-')}`}
-										class="nav-link block px-3 py-2 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-										data-category={category}
-									>
-										{category}
-									</a>
-								</li>
-							))}
-						</ul>
+        <h1 class="text-4xl md:text-6xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 mb-6">
+          Extras & Herramientas
+        </h1>
+        <p class="text-lg md:text-xl text-white/70 max-w-3xl mx-auto font-body leading-relaxed">
+          Explora nuestras herramientas avanzadas de cálculo gráfico, análisis matemático procedural y seguridad criptográfica local.
+        </p>
+      </div>
 
-						<!-- Quick Stats -->
-						<div class="mt-8 p-4 bg-white/5 rounded-lg">
-							<div class="text-center">
-								<div class="text-2xl font-bold text-purple-400">{tools.length}</div>
-								<div class="text-xs text-white/60">Herramientas disponibles</div>
-							</div>
-						</div>
-					</nav>
-				</aside>
+      <!-- Tools Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto" id="tools-grid">
+        {tools.map((tool) => (
+          <a
+            href={tool.href}
+            class="tool-card group block glass-card rounded-2xl p-8 border border-white/10 transition-all duration-300 hover:-translate-y-1 hover:border-cyber-cyan/60 shadow-xl shadow-cyber-cyan/5 relative overflow-hidden flex flex-col justify-between"
+          >
+            <!-- Background Glow Effect on Hover -->
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-cyber-cyan/10 rounded-full blur-3xl group-hover:bg-cyber-cyan/20 transition-all duration-500 pointer-events-none"></div>
 
-				<!-- Main Content -->
-				<main class="flex-1">
-					<!-- Tools Grid -->
-					<section id="tools-section">
-						<!-- Mensaje de herramientas en desarrollo -->
-						<div class="text-center py-12">
-							<div class="glass rounded-xl p-8 max-w-2xl mx-auto">
-								<div class="mb-6">
-									<svg class="w-16 h-16 text-purple-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 7.172V5L8 4z"/>
-									</svg>
-									<h2 class="text-3xl font-bold text-white mb-4">Herramientas en Desarrollo</h2>
-									<p class="text-white/70 text-lg mb-6">
-										Estoy trabajando en una colección de herramientas web útiles que estarán disponibles en otro momento.
-									</p>
-								</div>
+            <div>
+              <div class="flex items-start justify-between mb-6 relative z-10">
+                <div class={`w-14 h-14 rounded-2xl flex items-center justify-center border transition-all ${
+                  tool.color === 'cyber-cyan' 
+                    ? 'bg-cyber-cyan/10 border-cyber-cyan/30 text-cyber-cyan group-hover:bg-cyber-cyan/20' 
+                    : 'bg-cyber-green/10 border-cyber-green/30 text-cyber-green group-hover:bg-cyber-green/20'
+                }`}>
+                  <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={tool.icon}></path>
+                  </svg>
+                </div>
 
-								<!-- Preview de herramientas futuras -->
-								<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-									<div class="p-4 bg-white/5 rounded-lg border border-white/10">
-										<div class="flex items-center space-x-3 mb-2">
-											<div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-												<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
-												</svg>
-											</div>
-											<h3 class="font-semibold text-white">Generador de Contraseñas</h3>
-										</div>
-										<p class="text-white/60 text-sm">Crea contraseñas seguras y personalizables</p>
-									</div>
+                <div class="flex items-center space-x-2">
+                  <span class="text-[10px] font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-white/10 text-white/70 border border-white/5">
+                    {tool.categoryLabel}
+                  </span>
+                  <span class="text-[10px] font-mono uppercase tracking-wider px-3 py-1 rounded-full border bg-cyber-cyan/20 text-cyber-cyan border-cyber-cyan/40">
+                    {tool.badge}
+                  </span>
+                </div>
+              </div>
 
-									<div class="p-4 bg-white/5 rounded-lg border border-white/10">
-										<div class="flex items-center space-x-3 mb-2">
-											<div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
-												<svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
-												</svg>
-											</div>
-											<h3 class="font-semibold text-white">Acortador de URLs</h3>
-										</div>
-										<p class="text-white/60 text-sm">Convierte enlaces largos en URLs cortas</p>
-									</div>
+              <h3 class="text-3xl font-display font-bold text-white mb-3 group-hover:text-cyber-cyan transition-colors relative z-10">
+                {tool.title}
+              </h3>
 
-									<div class="p-4 bg-white/5 rounded-lg border border-white/10">
-										<div class="flex items-center space-x-3 mb-2">
-											<div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
-												<svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM7 3H5a2 2 0 00-2 2v12a4 4 0 004 4h2M9 3h6a2 2 0 012 2v12a4 4 0 01-2 2h-6M9 3v18"/>
-												</svg>
-											</div>
-											<h3 class="font-semibold text-white">Conversor de Archivos</h3>
-										</div>
-										<p class="text-white/60 text-sm">Convierte entre diferentes formatos de archivo</p>
-									</div>
+              <p class="text-white/70 font-body text-base leading-relaxed mb-8 relative z-10">
+                {tool.description}
+              </p>
+            </div>
 
-									<div class="p-4 bg-white/5 rounded-lg border border-white/10">
-										<div class="flex items-center space-x-3 mb-2">
-											<div class="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center">
-												<svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-												</svg>
-											</div>
-											<h3 class="font-semibold text-white">Calculadora Avanzada</h3>
-										</div>
-										<p class="text-white/60 text-sm">Calculadora científica y de programador</p>
-									</div>
-								</div>
+            <div class="flex items-center text-sm font-semibold text-cyber-cyan group-hover:translate-x-1 transition-transform relative z-10 pt-4 border-t border-white/5">
+              <span>Abrir Herramienta</span>
+              <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+              </svg>
+            </div>
+          </a>
+        ))}
+      </div>
 
-								<!-- CTA -->
-								<div class="text-center">
-									<p class="text-white/60 mb-4">
-										¿Tienes alguna idea para una herramienta útil?
-									</p>
-									<a
-										href="/contact"
-										class="inline-flex items-center space-x-2 px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-lg transition-colors"
-									>
-										<span>Sugerir una herramienta</span>
-										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-										</svg>
-									</a>
-								</div>
-							</div>
-						</div>
-					</section>
-				</main>
-			</div>
-		</div>
-	</main>
+      <!-- Suggestion Banner -->
+      <div class="mt-16 glass-card rounded-2xl p-8 border border-white/10 text-center relative overflow-hidden max-w-3xl mx-auto">
+        <h3 class="text-2xl font-display font-bold text-white mb-2">¿Tienes alguna sugerencia de módulo adicional?</h3>
+        <p class="text-white/70 font-body text-sm mb-6 max-w-xl mx-auto">
+          ¿Te gustaría ver alguna otra funcionalidad matemática o utilitaria integrada en el sitio? Cuéntanos tu idea.
+        </p>
+        <a
+          href="/contact"
+          class="btn-primary inline-flex items-center space-x-2 px-8 py-3.5 font-semibold text-white shadow-lg shadow-cyber-cyan/20"
+        >
+          <span>Sugerir Herramienta</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+        </a>
+      </div>
 
-	<Footer />
+    </div>
+  </main>
 
-	<style>
-		.nav-link.active {
-			@apply bg-purple-500/20 text-purple-300;
-		}
-
-		.tool-card {
-			@apply transition-all duration-300;
-		}
-
-		.tool-card.hidden {
-			@apply opacity-0 transform scale-95 pointer-events-none;
-		}
-	</style>
-
-	<script>
-		// Funcionalidad de navegación y filtros
-		document.addEventListener('DOMContentLoaded', function() {
-			const navLinks = document.querySelectorAll('.nav-link') as NodeListOf<HTMLElement>;
-			const toolCards = document.querySelectorAll('.tool-card') as NodeListOf<HTMLElement>;
-			const noTools = document.getElementById('no-tools') as HTMLElement;
-
-			navLinks.forEach((link: HTMLElement) => {
-				link.addEventListener('click', function(e: Event) {
-					e.preventDefault();
-
-					const category = (this as HTMLElement).dataset.category as string;
-
-					// Update active state
-					navLinks.forEach((l: HTMLElement) => l.classList.remove('active'));
-					(this as HTMLElement).classList.add('active');
-
-					// Filter tools
-					filterTools(category);
-				});
-			});
-
-			function filterTools(category: string) {
-				let visibleCount = 0;
-
-				toolCards.forEach((card: HTMLElement) => {
-					const cardCategory = card.dataset.category;
-
-					if (category === 'all' || cardCategory === category) {
-						card.classList.remove('hidden');
-						visibleCount++;
-					} else {
-						card.classList.add('hidden');
-					}
-				});
-
-				// Show/hide no results message
-				if (visibleCount === 0) {
-					noTools.classList.remove('hidden');
-				} else {
-					noTools.classList.add('hidden');
-				}
-			}
-		});
-	</script>
+  <Footer />
 </BaseLayout>

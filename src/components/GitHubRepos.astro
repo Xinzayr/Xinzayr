@@ -1,6 +1,6 @@
 ---
-// Componente para mostrar repositorios de GitHub
-// Conecta con GitHub API usando el token configurado
+import { API_CONFIG } from '../consts';
+
 interface Props {
   variant?: 'featured' | 'grid' | 'list';
   limit?: number;
@@ -9,21 +9,25 @@ interface Props {
 
 const { variant = 'grid', limit = 6, showPrivate = false } = Astro.props;
 
-// Obtener configuración desde variables de entorno
-const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN;
-const GITHUB_USERNAME = import.meta.env.GITHUB_USERNAME || 'xinzayr';
+// Obtener configuración desde variables de entorno o consts
+const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN || API_CONFIG.github.token;
+const GITHUB_USERNAME = import.meta.env.GITHUB_USERNAME || API_CONFIG.github.username || 'xinzayr';
 
 let githubRepos: any[] = [];
 
-// Solo obtener datos si el token está disponible (datos reales únicamente)
-if (GITHUB_TOKEN && GITHUB_USERNAME) {
+// Obtener repositorios de GitHub (funciona con o sin token para repos públicos)
+if (GITHUB_USERNAME) {
   try {
+    const headers: any = {
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'xinzayr-portfolio'
+    };
+    if (GITHUB_TOKEN) {
+      headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`;
+    }
+
     const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=50`, {
-      headers: {
-        'Authorization': `Bearer ${GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'User-Agent': 'xinzayr-portfolio'
-      }
+      headers
     });
 
     if (response.ok) {
@@ -46,11 +50,11 @@ if (GITHUB_TOKEN && GITHUB_USERNAME) {
     }
   } catch (error) {
     console.warn('Error fetching GitHub repositories:', error);
-    // No usar datos de ejemplo - mantener array vacío si hay error
+    // Mantener array vacío si hay error de red
     githubRepos = [];
   }
 } else {
-  console.warn('GitHub token not configured - repositories will not be displayed');
+  console.warn('GitHub username not configured');
 }
 
 const filteredRepos = githubRepos

@@ -1,0 +1,63 @@
+name: Auto Build & Deploy
+
+# Controls when the workflow will run
+on:
+  # Ejecutar todos los días a la medianoche (UTC)
+  schedule:
+    - cron: '0 0 * * *'
+  
+  # Permitir ejecución manual desde la pestaña de Actions
+  workflow_dispatch:
+  
+  # Ejecutar en cada push a main (opcional, si no lo tienes ya en otro archivo)
+  push:
+    branches: [ "main" ]
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci || npm install
+        
+      - name: Build with Astro
+        run: npm run build
+        # Añade aquí tus variables de entorno si las necesitas durante el build
+        # env:
+        #   DISCORD_USER_ID: ${{ secrets.DISCORD_USER_ID }}
+        
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

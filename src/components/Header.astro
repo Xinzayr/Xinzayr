@@ -3,13 +3,16 @@ import HeaderLink from './HeaderLink.astro';
 import DiscordStatus from './DiscordStatus.astro';
 import SpotifyNowPlaying from './SpotifyNowPlaying.astro';
 import { getDeploymentInfo } from '../utils/env-detection';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
 
 const deploymentInfo = getDeploymentInfo();
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 border-b border-gold-400/15">
-  <div class="acrylic-dark backdrop-blur-xl shadow-2xl shadow-black/60">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<header class="fixed top-0 left-0 right-0 z-50 border-b border-white/5">
+  <div class="liquid-glass-nav">
+    <div class="max-w-7xl 2xl:max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-20">
         <!-- Logo/Brand -->
         <div class="flex items-center">
@@ -18,7 +21,7 @@ const deploymentInfo = getDeploymentInfo();
             class="flex items-center space-x-3 hover:opacity-90 transition-all duration-300 group"
           >
             <div
-              class="relative w-10 h-10 rounded-xl border-2 border-gold-400 shadow-lg shadow-gold-400/40 group-hover:shadow-gold-400/60 transition-all duration-300 overflow-hidden"
+              class="relative w-10 h-10 rounded-xl border border-white/10 shadow-lg shadow-cyber-cyan/20 group-hover:shadow-cyber-cyan/40 group-hover:border-cyber-cyan/50 transition-all duration-300 overflow-hidden"
             >
               <img
                 src="https://www.gravatar.com/avatar/977ea9a49bad6103d6cf96df4ace2cdf?s=40&d=identicon"
@@ -27,27 +30,28 @@ const deploymentInfo = getDeploymentInfo();
               />
             </div>
             <div class="flex flex-col">
-              <span class="font-display font-bold text-xl text-white tracking-wide">xinzayr</span>
-              <span class="text-gold-300/80 text-xs font-mono tracking-wider">dev.portfolio</span>
+              <span class="font-display font-bold text-xl text-white/90 tracking-wide">xinzayr</span>
+              <span class="text-cyber-cyan text-xs font-mono tracking-wider">dev.portfolio</span>
             </div>
           </a>
         </div>
 
         <!-- Desktop Navigation -->
         <nav class="hidden lg:flex items-center space-x-1">
-          <HeaderLink href="/">Inicio</HeaderLink>
-          <HeaderLink href="/projects">Proyectos</HeaderLink>
-          <HeaderLink href="/blog">Blog</HeaderLink>
-          <HeaderLink href="/cv">CV</HeaderLink>
-          <HeaderLink href="/contact">Contacto</HeaderLink>
-          <HeaderLink href="/about">Acerca</HeaderLink>
+          <HeaderLink href="/">{t('nav.home')}</HeaderLink>
+          <HeaderLink href="/projects">{t('nav.projects')}</HeaderLink>
+          <HeaderLink href="/blog">{t('nav.blog')}</HeaderLink>
+          <HeaderLink href="/cv">{t('nav.cv')}</HeaderLink>
+          <HeaderLink href="/contact">{t('nav.contact')}</HeaderLink>
+          <HeaderLink href="/about">{t('nav.about')}</HeaderLink>
 
           <!-- Dropdown para Extras -->
           <div class="relative group">
             <button
-              class="px-3 py-2 rounded-lg text-sm font-body-medium text-white/85 hover:text-white cursor-glow border border-transparent hover:border-gold-400/30 transition-all duration-300 flex items-center space-x-1"
+              id="extras-dropdown-button"
+              class="px-3 py-2 rounded-lg text-sm font-body-medium text-white/80 hover:text-white cursor-glow border border-transparent hover:border-cyber-cyan/40 transition-all duration-300 flex items-center space-x-1"
             >
-              <span>Extras</span>
+              <span>{t('nav.extras')}</span>
               <svg
                 class="w-4 h-4 transition-transform duration-300 group-hover:rotate-180"
                 fill="none"
@@ -62,14 +66,29 @@ const deploymentInfo = getDeploymentInfo();
               </svg>
             </button>
             <div
-              class="absolute top-full left-0 mt-2 w-48 acrylic-dark rounded-xl border border-gold-400/20 shadow-2xl shadow-black/60 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50"
+              id="extras-dropdown-menu"
+              class="absolute top-full left-0 mt-2 w-56 glass-card shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50"
             >
-              <div class="p-2">
+              <div class="p-2 space-y-1">
                 <a
                   href="/tools"
-                  class="block px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 text-sm"
+                  class="block px-4 py-2.5 rounded-lg text-white/90 font-semibold hover:text-cyber-cyan hover:bg-white/5 transition-all duration-300 text-sm"
                 >
-                  🔧 Herramientas
+                  Todas las Herramientas
+                </a>
+                <a
+                  href="/tools/calculator"
+                  class="block px-4 py-2 rounded-lg text-white/70 hover:text-cyber-cyan hover:bg-white/5 transition-all duration-300 text-xs flex items-center justify-between"
+                >
+                  <span>📐 CyberMath Studio</span>
+                  <span class="text-[9px] font-mono text-cyber-cyan bg-cyber-cyan/10 px-1.5 py-0.5 rounded">NUEVO</span>
+                </a>
+                <a
+                  href="/tools/password-generator"
+                  class="block px-4 py-2 rounded-lg text-white/70 hover:text-cyber-green hover:bg-white/5 transition-all duration-300 text-xs flex items-center justify-between"
+                >
+                  <span>🔐 Generador Criptográfico</span>
+                  <span class="text-[9px] font-mono text-cyber-green bg-cyber-green/10 px-1.5 py-0.5 rounded">SEGURIDAD</span>
                 </a>
               </div>
             </div>
@@ -81,11 +100,11 @@ const deploymentInfo = getDeploymentInfo();
           <button
             id="mobile-menu-button"
             type="button"
-            class="acrylic-pearl p-3 rounded-xl hover:bg-gold-400/10 transition-all duration-300 border border-gold-400/20 hover:border-gold-400/40 hover:shadow-lg hover:shadow-gold-400/20"
+            class="liquid-glass-btn p-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-cyber-cyan/20"
             aria-label="Abrir menú móvil"
           >
             <svg
-              class="w-6 h-6 text-gold-300"
+              class="w-6 h-6 text-white/80"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -105,47 +124,47 @@ const deploymentInfo = getDeploymentInfo();
   <!-- Mobile Navigation Menu -->
   <div id="mobile-menu" class="lg:hidden fixed inset-x-0 top-20 z-40 hidden">
     <div
-      class="acrylic-dark backdrop-blur-xl border-b border-gold-400/20 shadow-2xl shadow-black/60"
+      class="liquid-glass-nav border-t border-white/5"
     >
       <div class="px-6 py-8 space-y-4">
         <HeaderLink
           href="/"
-          class="block px-5 py-4 rounded-xl text-white hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 hover:shadow-lg"
-          >Inicio</HeaderLink
+          class="block px-5 py-4 rounded-xl text-white/80 hover:text-white hover:bg-white/5 transition-all duration-300 font-body border border-transparent hover:border-cyber-cyan/30"
+          >{t('nav.home')}</HeaderLink
         >
         <HeaderLink
           href="/projects"
-          class="block px-5 py-4 rounded-xl text-white hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 hover:shadow-lg"
-          >Proyectos</HeaderLink
+          class="block px-5 py-4 rounded-xl text-white/80 hover:text-white hover:bg-white/5 transition-all duration-300 font-body border border-transparent hover:border-cyber-cyan/30"
+          >{t('nav.projects')}</HeaderLink
         >
         <HeaderLink
           href="/blog"
-          class="block px-5 py-4 rounded-xl text-white hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 hover:shadow-lg"
-          >Blog</HeaderLink
+          class="block px-5 py-4 rounded-xl text-white/80 hover:text-white hover:bg-white/5 transition-all duration-300 font-body border border-transparent hover:border-cyber-cyan/30"
+          >{t('nav.blog')}</HeaderLink
         >
         <HeaderLink
           href="/cv"
-          class="block px-5 py-4 rounded-xl text-white hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 hover:shadow-lg"
-          >CV</HeaderLink
+          class="block px-5 py-4 rounded-xl text-white/80 hover:text-white hover:bg-white/5 transition-all duration-300 font-body border border-transparent hover:border-cyber-cyan/30"
+          >{t('nav.cv')}</HeaderLink
         >
         <HeaderLink
           href="/contact"
-          class="block px-5 py-4 rounded-xl text-white hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 hover:shadow-lg"
-          >Contacto</HeaderLink
+          class="block px-5 py-4 rounded-xl text-white/80 hover:text-white hover:bg-white/5 transition-all duration-300 font-body border border-transparent hover:border-cyber-cyan/30"
+          >{t('nav.contact')}</HeaderLink
         >
         <HeaderLink
           href="/about"
-          class="block px-5 py-4 rounded-xl text-white hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 hover:shadow-lg"
-          >Acerca</HeaderLink
+          class="block px-5 py-4 rounded-xl text-white/80 hover:text-white hover:bg-white/5 transition-all duration-300 font-body border border-transparent hover:border-white/20"
+          >{t('nav.about')}</HeaderLink
         >
 
         <!-- Extras submenu in mobile -->
-        <div class="border-t border-gold-400/20 pt-4">
-          <div class="text-gold-300 text-sm font-semibold mb-3 px-5">Extras</div>
+        <div class="border-t border-white/5 pt-4">
+          <div class="text-cyber-cyan text-sm font-semibold mb-3 px-5">{t('nav.extras')}</div>
           <HeaderLink
             href="/tools"
-            class="block px-5 py-3 rounded-xl text-white/80 hover:bg-gold-400/10 transition-all duration-300 font-body border border-transparent hover:border-gold-400/30 hover:shadow-lg"
-            >🔧 Herramientas</HeaderLink
+            class="block px-5 py-3 rounded-xl text-white/80 hover:bg-white/5 hover:text-white transition-all duration-300 font-body border border-transparent hover:border-cyber-cyan/30"
+            >{t('nav.tools')}</HeaderLink
           >
         </div>
       </div>
@@ -154,37 +173,45 @@ const deploymentInfo = getDeploymentInfo();
 </header>
 
 <script>
-  // Mobile menu toggle functionality
-  const mobileMenuButton = document.getElementById('mobile-menu-button');
-  const mobileMenu = document.getElementById('mobile-menu');
+  function setupHeaderInteractivity() {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const extrasButton = document.getElementById('extras-dropdown-button');
+    const extrasMenu = document.getElementById('extras-dropdown-menu');
 
-  if (mobileMenuButton && mobileMenu) {
-    mobileMenuButton.addEventListener('click', () => {
-      mobileMenu.classList.toggle('hidden');
-    });
+    if (mobileMenuButton && mobileMenu) {
+      // Clean previous listener
+      const newButton = mobileMenuButton.cloneNode(true);
+      mobileMenuButton.parentNode?.replaceChild(newButton, mobileMenuButton);
+      
+      newButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
 
-    // Close mobile menu when clicking outside
+    if (extrasButton && extrasMenu) {
+      extrasButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        extrasMenu.classList.toggle('invisible');
+        extrasMenu.classList.toggle('opacity-0');
+      });
+    }
+
+    // Close menus when clicking outside
     document.addEventListener('click', (event) => {
-      if (
-        !mobileMenuButton.contains(event.target as Node) &&
-        !mobileMenu.contains(event.target as Node)
-      ) {
+      const target = event.target as Node;
+      if (mobileMenu && mobileMenuButton && !mobileMenu.contains(target) && !mobileMenuButton.contains(target)) {
         mobileMenu.classList.add('hidden');
       }
-    });
-
-    // Close mobile menu when pressing escape
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
-        mobileMenu.classList.add('hidden');
-      }
-    });
-
-    // Close mobile menu when resizing to desktop
-    window.addEventListener('resize', () => {
-      if (window.innerWidth >= 1024) {
-        mobileMenu.classList.add('hidden');
+      if (extrasMenu && extrasButton && !extrasMenu.contains(target) && !extrasButton.contains(target)) {
+        extrasMenu.classList.add('invisible');
+        extrasMenu.classList.add('opacity-0');
       }
     });
   }
+
+  // Execute on initial load and Astro ViewTransitions page-load
+  setupHeaderInteractivity();
+  document.addEventListener('astro:page-load', setupHeaderInteractivity);
 </script>

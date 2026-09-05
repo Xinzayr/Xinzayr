@@ -19,7 +19,7 @@ const formattedDate = new Intl.DateTimeFormat('es-ES', {
 }).format(pubDate);
 ---
 
-<article class="glass rounded-xl overflow-hidden glass-hover transition-all duration-300 group">
+<article class="liquid-glass-card p-0 overflow-hidden transition-all duration-300 group flex flex-col">
 	<!-- Image -->
 	{heroImage && (
 		<div class="relative overflow-hidden bg-white/5 aspect-video">
@@ -41,7 +41,7 @@ const formattedDate = new Intl.DateTimeFormat('es-ES', {
 			<!-- Category & Date -->
 			<div class="flex items-center justify-between text-xs text-white/60">
 				{category && (
-					<span class="px-2 py-1 bg-purple-500/20 text-purple-300 rounded-md font-medium">
+					<span class="px-2 py-1 bg-cyber-purple/20 text-cyber-purple border border-cyber-purple/30 rounded-md font-medium">
 						{category}
 					</span>
 				)}
@@ -51,7 +51,7 @@ const formattedDate = new Intl.DateTimeFormat('es-ES', {
 			</div>
 
 			<!-- Title -->
-			<h3 class="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors line-clamp-2">
+			<h3 class="text-lg font-semibold text-white/90 group-hover:text-cyber-cyan transition-colors line-clamp-2">
 				<a href={href} class="block">
 					{title}
 				</a>
@@ -66,7 +66,7 @@ const formattedDate = new Intl.DateTimeFormat('es-ES', {
 			{tags.length > 0 && (
 				<div class="flex flex-wrap gap-2 pt-2">
 					{tags.slice(0, 3).map((tag) => (
-						<span class="px-2 py-1 text-xs bg-blue-500/20 text-blue-300 rounded-md">
+						<span class="px-2 py-1 text-xs bg-white/5 border border-white/10 text-cyber-cyan rounded-md">
 							#{tag}
 						</span>
 					))}
@@ -79,10 +79,10 @@ const formattedDate = new Intl.DateTimeFormat('es-ES', {
 			)}
 
 			<!-- Read More -->
-			<div class="pt-4 border-t border-white/10">
+			<div class="pt-4 border-t border-white/10 mt-auto">
 				<a
 					href={href}
-					class="inline-flex items-center space-x-2 text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors group"
+					class="inline-flex items-center space-x-2 text-cyber-cyan hover:text-cyber-purple text-sm font-medium transition-colors group"
 				>
 					<span>Leer más</span>
 					<svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

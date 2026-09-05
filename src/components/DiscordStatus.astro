@@ -1,6 +1,6 @@
 ---
 // Componente para mostrar el estado de Discord
-// Conecta con Lanyard API usando el Discord User ID configurado
+// Conecta con Lanyard API en el lado del cliente (Navegador)
 interface Props {
   variant?: 'simple' | 'detailed';
   size?: 'sm' | 'md' | 'lg';
@@ -9,222 +9,161 @@ interface Props {
 const { variant = 'simple', size = 'md' } = Astro.props;
 
 // Obtener Discord User ID desde variables de entorno
-// Prioridad: PUBLIC_ variables (cliente) > variables privadas (servidor) > fallback
 const DISCORD_USER_ID =
   import.meta.env.PUBLIC_DISCORD_USER_ID ||
   import.meta.env.DISCORD_USER_ID ||
   '985292430758793308';
-
-const USE_LANYARD =
-  import.meta.env.PUBLIC_LANYARD_API === 'true' ||
-  import.meta.env.LANYARD_API === 'true' ||
-  true; // Por defecto habilitado
-
-// Solo mostrar logs en desarrollo
-const isDev = import.meta.env.DEV;
-
-// Inicializar sin datos - solo se mostrarán datos reales de la API
-let discordStatus = null;
-
-// Intentar obtener datos reales de Discord si está habilitado
-if (USE_LANYARD && DISCORD_USER_ID) {
-  try {
-    if (isDev) console.log(`🔮 Discord: Fetching status for ${DISCORD_USER_ID}`);
-    const response = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
-
-    if (response.ok) {
-      const data = await response.json();
-      if (isDev) console.log(`✅ Discord: ${data.data?.discord_user?.global_name} (${data.data?.discord_status})`);
-
-      if (data.success && data.data) {
-        const lanyardData = data.data;
-        // Procesar actividades múltiples (Spotify, juegos, etc.)
-        let mainActivity = null;
-        let spotifyActivity = null;
-
-        if (lanyardData.activities && lanyardData.activities.length > 0) {
-          // Buscar Spotify específicamente
-          spotifyActivity = lanyardData.activities.find((activity: any) => activity.name === 'Spotify');
-
-          // Buscar actividad principal (juego, aplicación, etc.)
-          mainActivity = lanyardData.activities.find((activity: any) =>
-            activity.name !== 'Spotify' &&
-            activity.name !== 'Custom Status' &&
-            activity.type !== 4 // Excluir custom status
-          );
-
-          // Si no hay actividad principal, usar la primera disponible
-          if (!mainActivity && lanyardData.activities.length > 0) {
-            mainActivity = lanyardData.activities[0];
-          }
-        }
-
-        discordStatus = {
-          status: lanyardData.discord_status || 'offline',
-          activities: {
-            main: mainActivity ? {
-              name: mainActivity.name || 'Unknown',
-              type: mainActivity.type === 0 ? 'Jugando' :
-                    mainActivity.type === 1 ? 'Streaming' :
-                    mainActivity.type === 2 ? 'Escuchando' :
-                    mainActivity.type === 3 ? 'Viendo' :
-                    mainActivity.type === 5 ? 'Compitiendo' : 'Activo',
-              details: mainActivity.details || '',
-              state: mainActivity.state || '',
-              timestamps: mainActivity.timestamps || {},
-              assets: mainActivity.assets || {}
-            } : null,
-            spotify: spotifyActivity ? {
-              name: spotifyActivity.name,
-              details: spotifyActivity.details || '', // Nombre de la canción
-              state: spotifyActivity.state || '',     // Artista
-              assets: spotifyActivity.assets || {},
-              timestamps: spotifyActivity.timestamps || {}
-            } : null
-          },
-          user: {
-            username: lanyardData.discord_user?.username || 'xinzayr',
-            discriminator: lanyardData.discord_user?.discriminator || '0000',
-            avatar: lanyardData.discord_user?.avatar || null,
-            id: lanyardData.discord_user?.id || DISCORD_USER_ID
-          }
-        };
-      }
-    } else {
-      console.warn('Lanyard API response not OK:', response.status, response.statusText);
-    }
-  } catch (error) {
-    console.warn('Error fetching Discord status from Lanyard:', error);
-    // Mantener datos de ejemplo en caso de error
-  }
-} else {
-  console.log('Discord status disabled or no User ID provided:', {
-    useLanyard: USE_LANYARD,
-    userId: DISCORD_USER_ID
-  });
-}
-
-const statusColors: Record<string, string> = {
-  online: 'bg-green-400',
-  idle: 'bg-yellow-400',
-  dnd: 'bg-red-400',
-  offline: 'bg-gray-400'
-};const sizeClasses = {
-  sm: 'w-2 h-2',
-  md: 'w-3 h-3',
-  lg: 'w-4 h-4'
-};
 ---
 
-{discordStatus ? (
-  <>
-    {variant === 'simple' ? (
-      <!-- Vista simple para el header/navbar -->
-      <div class="flex items-center space-x-2">
-        <div class={`${sizeClasses[size]} ${statusColors[discordStatus.status] || statusColors.offline} rounded-full animate-pulse`}></div>
-        <span class="text-sm text-white/80">Discord</span>
+<discord-status data-userid={DISCORD_USER_ID} data-variant={variant} data-size={size} class="h-full block">
+  {variant === 'simple' ? (
+    <div class="flex items-center space-x-2 min-w-[80px]">
+      <div class={`status-dot bg-gray-400 rounded-full animate-pulse ${size === 'sm' ? 'w-2 h-2' : size === 'lg' ? 'w-4 h-4' : 'w-3 h-3'}`}></div>
+      <span class="status-text text-sm text-white/50">Discord...</span>
+    </div>
+  ) : (
+    <div class="glass-card rounded-xl p-4 h-full min-h-[140px] flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center space-x-2">
+          <div class="w-2 h-2 bg-cyber-cyan rounded-full animate-pulse"></div>
+          <span class="text-cyber-cyan font-semibold text-xs tracking-wider uppercase">Discord</span>
+        </div>
+        <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-white/60 font-mono">Conectando...</span>
       </div>
-    ) : (
-      <!-- Vista detallada para el footer -->
-      <div class="glass rounded-lg p-4 max-w-sm">
-        <div class="flex items-center space-x-3 mb-3">
-          <div class="relative">
-            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
-              <span class="text-white font-bold text-sm">X</span>
+      <div class="flex items-center space-x-3 my-auto">
+        <div class="w-10 h-10 bg-white/10 rounded-xl animate-pulse flex-shrink-0"></div>
+        <div class="space-y-1.5 flex-1 min-w-0">
+          <div class="w-24 h-3 bg-white/10 rounded animate-pulse"></div>
+          <div class="w-16 h-2.5 bg-white/10 rounded animate-pulse"></div>
+        </div>
+      </div>
+      <div class="pt-2 border-t border-white/5 mt-2">
+        <span class="text-white/40 text-xs">Cargando estado...</span>
+      </div>
+    </div>
+  )}
+</discord-status>
+
+<script>
+  class DiscordStatus extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    async connectedCallback() {
+      const userId = this.dataset.userid;
+      const variant = this.dataset.variant;
+      const size = this.dataset.size || 'md';
+      
+      const sizeClasses = {
+        sm: 'w-2 h-2',
+        md: 'w-3 h-3',
+        lg: 'w-4 h-4'
+      };
+
+      const statusColors = {
+        online: 'bg-cyber-green',
+        idle: 'bg-amber-400',
+        dnd: 'bg-rose-500',
+        offline: 'bg-gray-400'
+      };
+
+      const statusLabels = {
+        online: 'En línea',
+        idle: 'Ausente',
+        dnd: 'No molestar',
+        offline: 'Desconectado'
+      };
+
+      try {
+        const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
+        if (!response.ok) throw new Error('Network response error');
+        const data = await response.json();
+        
+        if (data.success && data.data) {
+          const lanyardData = data.data;
+          
+          let mainActivity = null;
+
+          if (lanyardData.activities && lanyardData.activities.length > 0) {
+            mainActivity = lanyardData.activities.find((a: any) => 
+              a.name !== 'Spotify' && a.name !== 'Custom Status' && a.type !== 4
+            ) || lanyardData.activities.find((a: any) => a.name !== 'Spotify') || null;
+          }
+
+          const status = lanyardData.discord_status || 'offline';
+          const username = lanyardData.discord_user?.username || 'xinzayr';
+
+          if (variant === 'simple') {
+            this.innerHTML = `
+              <div class="flex items-center space-x-2">
+                <div class="${sizeClasses[size as keyof typeof sizeClasses]} ${statusColors[status as keyof typeof statusColors]} rounded-full animate-pulse"></div>
+                <span class="text-sm text-white/80">Discord</span>
+              </div>
+            `;
+          } else {
+            let activityDetail = 'Sin actividad pública';
+            if (mainActivity) {
+              const typeStr = mainActivity.type === 0 ? 'Jugando a' :
+                              mainActivity.type === 1 ? 'Transmitiendo' :
+                              mainActivity.type === 2 ? 'Escuchando' :
+                              mainActivity.type === 3 ? 'Viendo' : 'Activo en';
+              activityDetail = `${typeStr} <span class="text-white/80 font-medium">${mainActivity.name}</span>`;
+            }
+
+            this.innerHTML = `
+              <div class="glass-card rounded-xl p-4 h-full min-h-[140px] flex flex-col justify-between border border-white/10 hover:border-cyber-cyan/30 transition-all duration-300">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-2 h-2 ${statusColors[status as keyof typeof statusColors]} rounded-full animate-pulse"></div>
+                    <span class="text-cyber-cyan font-semibold text-xs tracking-wider uppercase">Discord</span>
+                  </div>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-white/70 font-mono">${statusLabels[status as keyof typeof statusLabels]}</span>
+                </div>
+
+                <div class="flex items-center space-x-3 my-2">
+                  <div class="relative flex-shrink-0">
+                    <div class="w-10 h-10 bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyber-cyan/30 rounded-xl flex items-center justify-center text-cyber-cyan font-bold text-sm shadow-md">
+                      ${username.charAt(0).toUpperCase()}
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-white font-semibold text-sm truncate" title="${username}">
+                      ${username}
+                    </div>
+                    <div class="text-white/60 text-xs truncate">
+                      ${lanyardData.activities?.find((a: any) => a.type === 4)?.state || 'Discord Status'}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pt-2 border-t border-white/5 text-xs text-white/60 truncate">
+                  ${activityDetail}
+                </div>
+              </div>
+            `;
+          }
+        }
+      } catch (err) {
+        if (variant === 'simple') {
+          this.innerHTML = `
+            <div class="flex items-center space-x-2">
+              <div class="${sizeClasses[size as keyof typeof sizeClasses]} bg-gray-400 rounded-full"></div>
+              <span class="text-sm text-white/50">Discord (Offline)</span>
             </div>
-            <div class={`absolute -bottom-1 -right-1 ${sizeClasses.md} ${statusColors[discordStatus.status] || statusColors.offline} rounded-full border-2 border-black`}></div>
-          </div>
-          <div>
-            <div class="text-white font-medium text-sm">{discordStatus.user.username}</div>
-            <div class="text-white/60 text-xs capitalize">{discordStatus.status}</div>
-          </div>
-        </div>
+          `;
+        }
+      }
+    }
+  }
 
-        {(discordStatus.activities.main || discordStatus.activities.spotify) && (
-          <div class="space-y-3">
-            {/* Actividad principal (juego, aplicación, etc.) */}
-            {discordStatus.activities.main && (
-              <div class="space-y-1">
-                <div class="text-white/80 text-xs font-medium flex items-center space-x-2">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h10a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/>
-                  </svg>
-                  <span>{discordStatus.activities.main.type} {discordStatus.activities.main.name}</span>
-                </div>
-                {discordStatus.activities.main.details && (
-                  <div class="text-white/60 text-xs ml-5">{discordStatus.activities.main.details}</div>
-                )}
-                {discordStatus.activities.main.state && (
-                  <div class="text-white/50 text-xs ml-5">{discordStatus.activities.main.state}</div>
-                )}
-              </div>
-            )}
-
-            {/* Spotify */}
-            {discordStatus.activities.spotify && (
-              <div class="space-y-1">
-                <div class="text-white/80 text-xs font-medium flex items-center space-x-2">
-                  <svg class="w-3 h-3 text-green-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.48.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.32 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
-                  </svg>
-                  <span>Escuchando Spotify</span>
-                </div>
-                {discordStatus.activities.spotify.details && (
-                  <div class="text-white/60 text-xs ml-5 font-medium">🎵 {discordStatus.activities.spotify.details}</div>
-                )}
-                {discordStatus.activities.spotify.state && (
-                  <div class="text-white/50 text-xs ml-5">👨‍🎤 {discordStatus.activities.spotify.state}</div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    )}
-  </>
-) : (
-  <!-- Mostrar cuando no hay datos configurados -->
-  <>
-    {variant === 'simple' ? (
-      <div class="flex items-center space-x-2">
-        <div class={`${sizeClasses[size]} bg-gray-400 rounded-full`}></div>
-        <span class="text-sm text-white/50">Discord no configurado</span>
-      </div>
-    ) : (
-      <div class="glass rounded-lg p-4 max-w-sm">
-        <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 bg-gradient-to-br from-gray-500 to-gray-600 rounded-full flex items-center justify-center">
-            <span class="text-white font-bold text-sm">?</span>
-          </div>
-          <div>
-            <div class="text-white font-medium text-sm">Discord Status</div>
-            <div class="text-white/60 text-xs">No configurado</div>
-          </div>
-        </div>
-        <div class="mt-2 text-white/50 text-xs">
-          {!USE_LANYARD ? 'Discord deshabilitado en configuración' :
-           !DISCORD_USER_ID ? 'Falta DISCORD_USER_ID en variables de entorno' :
-           'Conectando con Discord...'}
-        </div>
-        <div class="mt-1 text-white/40 text-xs">
-          Variables: PUBLIC_DISCORD_USER_ID, PUBLIC_LANYARD_API
-        </div>
-      </div>
-    )}
-  </>
-)}
+  customElements.define('discord-status', DiscordStatus);
+</script>
 
 <style>
   @keyframes pulse {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
-
-  .animate-pulse {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
+  .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 </style>

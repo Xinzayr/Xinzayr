@@ -1,0 +1,368 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection, render } from 'astro:content';
+import { API_CONFIG } from '../../consts';
+import { marked } from 'marked';
+
+// ... (rest of imports & getStaticPaths) ...
+
+
+export async function getStaticPaths() {
+  const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN || API_CONFIG.github.token;
+  const GITHUB_USERNAME = import.meta.env.GITHUB_USERNAME || API_CONFIG.github.username || 'xinzayr';
+
+  // Función auxiliar para obtener el README de un repositorio
+  async function fetchReadmeContent(username: string, repoName: string, token?: string): Promise<string | null> {
+    try {
+      const headers: any = {
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'xinzayr-portfolio'
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const res = await fetch(`https://api.github.com/repos/${username}/${repoName}/readme`, { headers });
+      if (!res.ok) return null;
+
+      const data = await res.json();
+      if (data.content && data.encoding === 'base64') {
+        const decoded = Buffer.from(data.content, 'base64').toString('utf-8');
+        if (decoded.trim().length > 0) return decoded;
+      }
+
+      if (data.download_url) {
+        const rawRes = await fetch(data.download_url);
+        if (rawRes.ok) {
+          return await rawRes.text();
+        }
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // 1. Obtener proyectos locales del Content Collection
+  const localProjects = await getCollection('projects');
+  
+  // 2. Obtener repositorios de GitHub
+  let githubRepos: any[] = [];
+  if (GITHUB_USERNAME) {
+    try {
+      const headers: any = {
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'xinzayr-portfolio'
+      };
+      if (GITHUB_TOKEN) {
+        headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`;
+      }
+      const res = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`, { headers });
+      if (res.ok) {
+        githubRepos = await res.json();
+      }
+    } catch (e) {
+      console.warn('Error fetching repos for static paths:', e);
+    }
+  }
+
+  const paths: any[] = [];
+  const processedIds = new Set<string>();
+
+  // A. Registrar rutas para proyectos locales
+  for (const project of localProjects) {
+    const matchingRepo = githubRepos.find(
+      (r) => r.name.toLowerCase() === project.id.toLowerCase() ||
+             r.name.toLowerCase().replace(/[-_]/g, '') === project.id.toLowerCase().replace(/[-_]/g, '')
+    );
+
+    paths.push({
+      params: { id: project.id },
+      props: {
+        isLocal: true,
+        project,
+        repo: matchingRepo || null,
+        title: project.data.title,
+        description: project.data.description,
+        githubUrl: project.data.githubUrl || (matchingRepo ? matchingRepo.html_url : ''),
+        demoUrl: project.data.demoUrl || (matchingRepo ? matchingRepo.homepage : ''),
+        stack: project.data.stack || [],
+        stars: matchingRepo ? matchingRepo.stargazers_count : 0,
+        forks: matchingRepo ? matchingRepo.forks_count : 0,
+        updatedAt: matchingRepo ? matchingRepo.updated_at : project.data.pubDate
+      }
+    });
+    processedIds.add(project.id.toLowerCase());
+    if (matchingRepo) {
+      processedIds.add(matchingRepo.name.toLowerCase());
+    }
+  }
+
+  // B. Registrar rutas para repos de GitHub sin proyecto local dedicado
+  for (const repo of githubRepos) {
+    if (repo.archived) continue;
+    if (processedIds.has(repo.name.toLowerCase())) continue;
+
+    paths.push({
+      params: { id: repo.name },
+      props: {
+        isLocal: false,
+        project: null,
+        repo,
+        title: repo.name,
+        description: repo.description || 'Repositorio de GitHub',
+        githubUrl: repo.html_url,
+        demoUrl: repo.homepage || '',
+        stack: repo.topics && repo.topics.length > 0 ? repo.topics : (repo.language ? [repo.language] : []),
+        stars: repo.stargazers_count,
+        forks: repo.forks_count,
+        updatedAt: repo.updated_at
+      }
+    });
+    processedIds.add(repo.name.toLowerCase());
+  }
+
+  return paths;
+}
+
+const {
+  isLocal,
+  project,
+  repo,
+  title,
+  description,
+  githubUrl,
+  demoUrl,
+  stack,
+  stars,
+  forks,
+  updatedAt
+} = Astro.props;
+
+const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN || API_CONFIG.github.token;
+const GITHUB_USERNAME = import.meta.env.GITHUB_USERNAME || API_CONFIG.github.username || 'xinzayr';
+
+// Función auxiliar para obtener el README de un repositorio
+async function fetchReadmeContent(username: string, repoName: string, token?: string): Promise<string | null> {
+  try {
+    const headers: any = {
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'xinzayr-portfolio'
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const res = await fetch(`https://api.github.com/repos/${username}/${repoName}/readme`, { headers });
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    if (data.content && data.encoding === 'base64') {
+      const decoded = Buffer.from(data.content, 'base64').toString('utf-8');
+      if (decoded.trim().length > 0) return decoded;
+    }
+
+    if (data.download_url) {
+      const rawRes = await fetch(data.download_url);
+      if (rawRes.ok) {
+        return await rawRes.text();
+      }
+    }
+    return null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// Renderizar Markdown
+let ContentComponent: any = null;
+let renderedHtml: string | null = null;
+let readmeContent: string | null = null;
+let hasReadme = false;
+
+if (isLocal && project) {
+  const { Content } = await render(project);
+  ContentComponent = Content;
+  hasReadme = true; // Proyectos locales siempre tienen contenido
+} 
+
+// Intentar cargar README si hay un repo asociado (incluso para locales si queremos combinar, pero usualmente si es local mostramos el ContentComponent. Si no es local, buscamos el README)
+if (!isLocal && repo) {
+  readmeContent = await fetchReadmeContent(GITHUB_USERNAME, repo.name, GITHUB_TOKEN);
+  if (readmeContent) {
+    renderedHtml = await marked.parse(readmeContent);
+    hasReadme = true;
+  }
+}
+---
+
+<BaseLayout title={`Documentación: ${title} - xinzayr`} description={description}>
+  <Header />
+
+  <main class="min-h-screen pt-24 pb-16">
+    <div class="max-w-5xl 2xl:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Botón Volver -->
+      <div class="mb-8">
+        <a
+          href="/projects"
+          class="inline-flex items-center space-x-2 text-white/70 hover:text-blue-400 text-sm font-medium transition-colors glass px-4 py-2 rounded-lg"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          <span>Volver a Proyectos</span>
+        </a>
+      </div>
+
+      <!-- Card Header del Proyecto -->
+      <div class="glass rounded-2xl p-8 mb-8 border border-white/10 relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="space-y-3 flex-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="px-3 py-1 bg-blue-500/20 text-blue-300 text-xs font-semibold rounded-full border border-blue-500/30">
+                {repo?.language || (isLocal ? 'Proyecto Local' : 'Documentación')}
+              </span>
+              {hasReadme ? (
+                <span class="px-3 py-1 bg-green-500/20 text-green-300 text-xs font-semibold rounded-full border border-green-500/30 flex items-center gap-1.5">
+                  <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                  Documentación disponible (README.md)
+                </span>
+              ) : (
+                <span class="px-3 py-1 bg-yellow-500/20 text-yellow-300 text-xs font-semibold rounded-full border border-yellow-500/30">
+                  Sin README oficial
+                </span>
+              )}
+            </div>
+
+            <h1 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+              {title}
+            </h1>
+
+            <p class="text-lg text-white/70 leading-relaxed">
+              {description}
+            </p>
+
+            <!-- Stack Tech Badges -->
+            {stack && stack.length > 0 && (
+              <div class="flex flex-wrap gap-2 pt-2">
+                {stack.map((tech: string) => (
+                  <span class="px-2.5 py-1 bg-white/5 border border-white/10 text-white/80 text-xs rounded-md">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <!-- Acciones & Stats -->
+          <div class="flex flex-col sm:flex-row md:flex-col gap-3 min-w-[200px]">
+            {githubUrl && (
+              <a
+                href={githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center space-x-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium transition-all duration-200 border border-white/10"
+              >
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.30 3.297-1.30.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                <span>Ver en GitHub</span>
+              </a>
+            )}
+
+            {demoUrl && (
+              <a
+                href={demoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center space-x-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium transition-all duration-200 shadow-lg shadow-blue-500/25"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                </svg>
+                <span>Demo en Vivo</span>
+              </a>
+            )}
+
+            {stars !== undefined && stars > 0 && (
+              <div class="flex items-center justify-center space-x-3 text-xs text-white/60 pt-1">
+                <span>⭐ {stars} estrellas</span>
+                {forks !== undefined && <span>🍴 {forks} forks</span>}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido de Documentación -->
+      <div class="glass rounded-2xl p-6 sm:p-10 border border-white/10">
+        <div class="flex items-center justify-between pb-6 mb-8 border-b border-white/10">
+          <div class="flex items-center space-x-3">
+            <div class="p-2 bg-blue-500/10 rounded-lg text-blue-400">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.832 18.477 19.246 18 17.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+              </svg>
+            </div>
+            <h2 class="text-xl font-bold text-white">Documentación del Proyecto</h2>
+          </div>
+
+          <span class="text-xs text-white/40">
+            {isLocal ? 'Documentación interna' : 'Cargado desde GitHub README.md'}
+          </span>
+        </div>
+
+        {ContentComponent ? (
+          <article class="prose prose-invert max-w-none prose-headings:text-white prose-a:text-blue-400 prose-img:rounded-xl prose-pre:bg-black/50 prose-pre:border prose-pre:border-white/10">
+            <ContentComponent />
+          </article>
+        ) : hasReadme && renderedHtml ? (
+          <article
+            class="prose prose-invert max-w-none prose-headings:text-white prose-a:text-blue-400 prose-img:rounded-xl prose-pre:bg-black/50 prose-pre:border prose-pre:border-white/10"
+            set:html={renderedHtml}
+          />
+        ) : (
+          <div class="text-center py-12 space-y-4">
+            <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto text-white/30">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-medium text-white/80">Este repositorio no cuenta con un archivo README.md aún</h3>
+            <p class="text-sm text-white/60 max-w-md mx-auto">
+              Puedes explorar el código fuente directamente en el repositorio de GitHub.
+            </p>
+            {githubUrl && (
+              <div class="pt-2">
+                <a
+                  href={githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center space-x-2 text-sm text-blue-400 hover:text-blue-300 font-medium"
+                >
+                  <span>Ir al código fuente en GitHub</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                  </svg>
+                </a>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+</style>

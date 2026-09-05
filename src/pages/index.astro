@@ -8,6 +8,10 @@ import DiscordStatus from '../components/DiscordStatus.astro';
 import BlogCard from '../components/BlogCard.astro';
 import BloggerPosts from '../components/BloggerPosts.astro';
 import { getCollection } from 'astro:content';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 // Obtener contenido local como fallback
 const allBlogPosts = await getCollection('blog');
@@ -24,105 +28,99 @@ const latestBlogPosts = allBlogPosts
 	<main class="min-h-screen pt-16">
 		<!-- Hero Section -->
 		<section class="relative overflow-hidden">
-			<!-- Fondo con gradiente animado -->
-			<div class="absolute inset-0 bg-gradient-opal animate-gradient bg-[400%_400%]"></div>
-			<div class="absolute inset-0 bg-gradient-to-r from-black-pure/80 via-transparent to-black-opal/60"></div>
+			<!-- Fondo con gradiente animado oscuro -->
+			<div class="absolute inset-0 bg-gradient-dark"></div>
+			<div class="absolute inset-0 bg-gradient-cyber-subtle opacity-50 blur-3xl"></div>
 
 			<!-- Partículas flotantes -->
-			<div class="absolute inset-0 overflow-hidden pointer-events-none">
-				<div class="absolute top-20 left-10 w-1 h-1 bg-gold-400 rounded-full animate-pulse"></div>
-				<div class="absolute top-40 right-20 w-2 h-2 bg-neon-blue rounded-full animate-ping"></div>
-				<div class="absolute bottom-20 left-1/3 w-1 h-1 bg-pastel-purple rounded-full animate-pulse"></div>
+			<div class="absolute inset-0 overflow-hidden pointer-events-none opacity-50">
+				<div class="absolute top-20 left-10 w-1 h-1 bg-cyber-cyan rounded-full animate-pulse"></div>
+				<div class="absolute top-40 right-20 w-2 h-2 bg-cyber-purple rounded-full animate-ping"></div>
+				<div class="absolute bottom-20 left-1/3 w-1 h-1 bg-cyber-blue rounded-full animate-pulse-slow"></div>
 			</div>
 
-			<div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-				<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+			<div class="relative max-w-7xl 2xl:max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 lg:py-28">
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 					<!-- Content -->
-					<div class="space-y-8">
-						<div class="space-y-6">
-							<h1 class="text-4xl lg:text-7xl font-display font-bold leading-tight">
-								<span class="text-white">Hola, soy</span>
+					<div class="space-y-6 sm:space-y-8 flex flex-col justify-center items-center lg:items-start text-center lg:text-left">
+						<div class="space-y-4 sm:space-y-6">
+							<h1 class="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-display font-bold leading-tight">
+								<span class="text-white/90">{t('hero.greeting')}</span>
 								<br>
-								<span class="bg-gradient-to-r from-gold-400 via-gold-300 to-pearl-400 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
+								<span class="bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
 									xinzayr
 								</span>
 							</h1>
-							<p class="text-xl lg:text-2xl text-white/90 leading-relaxed font-body">
-								<span class="text-pastel-blue font-medium">Desarrollador Junior</span> apasionado por aprender y crear proyectos.
+							<p class="text-lg sm:text-xl lg:text-2xl text-white/80 leading-relaxed font-body">
+								<span class="text-cyber-cyan font-medium">{t('hero.role')}</span> {t('hero.description1')}
 								<br>
-								<span class="text-pearl-300">Estudiante</span> con hambre de conocimiento, explorando nuevas ideas.
+								<span class="text-cyber-cyan font-medium">Estudiante</span> {t('hero.description2')}
 							</p>
 						</div>
 
 						<!-- CTA Buttons -->
-						<div class="flex flex-col sm:flex-row gap-6">
+						<div class="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full sm:w-auto justify-center lg:justify-start">
 							<a
 								href="/projects"
-								class="acrylic-gold acrylic-hover px-8 py-4 font-serif font-semibold text-lg text-white rounded-2xl
-								       shadow-lg shadow-gold-500/20 hover:shadow-gold-400/40 transition-all duration-300
-								       border border-gold-400/30 hover:border-gold-300/50"
+								class="btn-primary px-6 sm:px-8 py-3.5 sm:py-4 font-body font-semibold text-base sm:text-lg text-white text-center shadow-lg shadow-cyan-500/20"
 							>
-								✨ Ver mis proyectos
+								{t('hero.cta.projects')}
 							</a>
 							<a
 								href="/contact"
-								class="acrylic-pearl acrylic-hover px-8 py-4 font-body font-medium text-lg text-white rounded-2xl
-								       border border-pearl-300/20 hover:border-pearl-200/40 transition-all duration-300"
+								class="glass-pill px-6 sm:px-8 py-3.5 sm:py-4 font-body font-medium text-base sm:text-lg text-white/90 text-center hover:text-white"
 							>
-								💬 Conectar conmigo
+								{t('hero.cta.contact')}
 							</a>
 						</div>
 
 						<!-- Status Indicators -->
-						<div class="flex flex-wrap gap-4 pt-6">
+						<div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-4 sm:pt-6">
 							<DiscordStatus variant="simple" size="md" />
-							<div class="acrylic flex items-center space-x-3 px-4 py-3 rounded-xl border border-neon-blue/20">
-								<div class="w-3 h-3 bg-neon-blue rounded-full animate-pulse shadow-lg shadow-neon-blue/50"></div>
-								<span class="text-sm text-white/90 font-body">Usualmente activo en GitHub</span>
+							<div class="glass-pill flex items-center space-x-3 px-4 py-3">
+								<div class="w-2 h-2 bg-cyber-green rounded-full animate-pulse shadow-lg shadow-cyber-green/50"></div>
+								<span class="text-sm text-white/80 font-body">{t('hero.github_active')}</span>
 							</div>
 						</div>
 					</div>
 
 					<!-- Avatar/Visual -->
-					<div class="relative">
-						<div class="absolute inset-0 bg-gradient-to-r from-gold-400/20 to-pearl-400/20 rounded-full blur-3xl animate-pulse"></div>
+					<div class="relative mt-8 lg:mt-0 flex justify-center">
+						<div class="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
 						<ProfileAvatar username="xinzayr" size="lg" showGradient={true} showFloatingElements={true} />
 					</div>
 				</div>
 			</div>
 		</section>
 
-		<!-- GitHub Repositories Section -->
-		<section class="py-24 relative">
+		<section class="py-12 sm:py-20 lg:py-24 relative">
 			<!-- Fondo sutil -->
-			<div class="absolute inset-0 bg-gradient-to-b from-black-opal/30 to-black-pure/50"></div>
+			<div class="absolute inset-0 bg-black-deep/50"></div>
 
-			<div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="text-center mb-16">
-					<h2 class="text-4xl lg:text-5xl font-display font-bold text-white mb-6">
-						Mis Proyectos en
-						<span class="bg-gradient-to-r from-neon-purple to-neon-blue bg-clip-text text-transparent">
-							GitHub
+			<div class="relative max-w-7xl 2xl:max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-12 sm:mb-16">
+					<h2 class="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white/90 mb-4 sm:mb-6">
+						{t('section.github.title1')}
+						<span class="bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+							{t('section.github.title2')}
 						</span>
 					</h2>
-					<p class="text-white/80 text-xl max-w-3xl mx-auto font-body leading-relaxed">
-						Proyectos que he estado desarrollando para aprender y practicar mis habilidades
+					<p class="text-white/80 text-lg sm:text-xl max-w-3xl mx-auto font-body leading-relaxed">
+						{t('section.github.desc')}
 					</p>
 				</div>
 
-				<div class="acrylic-dark rounded-3xl p-8 lg:p-12 border border-pearl-200/10">
+				<div class="glass-card p-6 sm:p-8 lg:p-12">
 					<GitHubRepos variant="featured" limit={6} />
 				</div>
 
-				<div class="text-center mt-12">
+				<div class="text-center mt-8 sm:mt-12">
 					<a
 						href="/projects"
-						class="inline-flex items-center space-x-3 acrylic-pearl px-6 py-4 rounded-xl font-body font-medium
-						       transition-all duration-300 hover:transform hover:scale-105 text-lg
-						       border border-pearl-300/20 hover:border-pearl-200/40"
+						class="glass-pill inline-flex items-center space-x-3 px-6 py-4 font-body font-medium hover:text-cyber-cyan"
 					>
-						<span class="text-white">Ver todos los proyectos</span>
-						<svg class="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<span class="text-white">{t('section.github.cta')}</span>
+						<svg class="w-6 h-6 text-cyber-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
 						</svg>
 					</a>
@@ -130,28 +128,24 @@ const latestBlogPosts = allBlogPosts
 			</div>
 		</section>
 
-		<!-- Latest Blog Posts Section -->
-		<section class="py-24 relative">
-			<!-- Fondo con gradiente perla -->
-			<div class="absolute inset-0 bg-gradient-pearl opacity-20"></div>
-			<div class="absolute inset-0 backdrop-blur-3xl"></div>
+		<section class="py-12 sm:py-20 lg:py-24 relative">
+			<div class="absolute inset-0 bg-gradient-dark"></div>
 
-			<div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="text-center mb-16">
-					<h2 class="text-4xl lg:text-5xl font-display font-bold mb-6">
-						<span class="text-white">Últimas Entradas del</span>
+			<div class="relative max-w-7xl 2xl:max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-12 sm:mb-16">
+					<h2 class="text-3xl sm:text-4xl lg:text-5xl font-display font-bold mb-4 sm:mb-6">
+						<span class="text-white/90">{t('section.blog.title1')}</span>
 						<br>
-						<span class="bg-gradient-to-r from-pastel-pink to-pastel-purple bg-clip-text text-transparent">
-							Blog
+						<span class="bg-gradient-cyber bg-clip-text text-transparent">
+							{t('section.blog.title2')}
 						</span>
 					</h2>
-					<p class="text-white/80 text-xl max-w-3xl mx-auto font-body leading-relaxed">
-						Comparto mis ideas y reflexiones, sincronizado automáticamente desde mi blog personal
+					<p class="text-white/80 text-lg sm:text-xl max-w-3xl mx-auto font-body leading-relaxed">
+						{t('section.blog.desc')}
 					</p>
 				</div>
 
-				<div class="acrylic-pearl rounded-3xl p-8 lg:p-12 border border-gold-400/20
-				           shadow-2xl shadow-gold-400/10 hover:shadow-gold-400/20 transition-all duration-500">
+				<div class="liquid-glass-card p-6 sm:p-8 lg:p-12">
 					<!-- Posts del Blog de Blogger -->
 					<BloggerPosts variant="grid" maxPosts={3} showFeatured={false} />
 				</div>
@@ -159,13 +153,10 @@ const latestBlogPosts = allBlogPosts
 				<div class="text-center mt-12">
 					<a
 						href="/blog"
-						class="inline-flex items-center space-x-3 acrylic-gold px-8 py-4 rounded-xl font-serif font-semibold text-lg
-						       transition-all duration-300 hover:transform hover:scale-105
-						       border border-gold-400/30 hover:border-gold-300/50
-						       shadow-lg shadow-gold-500/20 hover:shadow-gold-400/40"
+						class="liquid-glass-btn inline-flex items-center space-x-3 px-8 py-4 font-serif font-semibold text-lg hover:text-cyber-pink"
 					>
-						<span class="text-white">Ver todas las entradas</span>
-						<svg class="w-6 h-6 text-gold-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<span class="text-white">{t('section.blog.cta')}</span>
+						<svg class="w-6 h-6 text-cyber-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
 						</svg>
 					</a>
@@ -173,41 +164,39 @@ const latestBlogPosts = allBlogPosts
 			</div>
 		</section>
 
-		<!-- Tech Stack Section -->
 		<section class="py-24 relative">
 			<!-- Fondo con partículas -->
-			<div class="absolute inset-0 bg-gradient-to-br from-black-opal to-black-pure"></div>
+			<div class="absolute inset-0 bg-gradient-to-br from-black-deep to-black-pure"></div>
 			<div class="absolute inset-0 overflow-hidden pointer-events-none">
-				<div class="absolute top-1/4 left-1/4 w-32 h-32 bg-neon-purple/10 rounded-full blur-3xl animate-pulse"></div>
-				<div class="absolute bottom-1/3 right-1/4 w-40 h-40 bg-neon-blue/10 rounded-full blur-3xl animate-pulse"></div>
+				<div class="absolute top-1/4 left-1/4 w-32 h-32 bg-cyber-purple/10 rounded-full blur-3xl animate-pulse"></div>
+				<div class="absolute bottom-1/3 right-1/4 w-40 h-40 bg-cyber-blue/10 rounded-full blur-3xl animate-pulse"></div>
 			</div>
 
 			<div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="text-center mb-16">
 					<h2 class="text-4xl lg:text-5xl font-display font-bold mb-6">
-						<span class="text-white">Tecnologías que estoy</span>
+						<span class="text-white/90">{t('section.tech.title1')}</span>
 						<br>
-						<span class="bg-gradient-neon bg-clip-text text-transparent animate-gradient bg-[400%_400%]">
-							aprendiendo
+						<span class="bg-gradient-cyber bg-clip-text text-transparent animate-gradient bg-[400%_400%]">
+							{t('section.tech.title2')}
 						</span>
 					</h2>
 					<p class="text-white/80 text-xl max-w-3xl mx-auto font-body leading-relaxed">
-						Lenguajes y frameworks que estoy estudiando y usando en mis proyectos
+						{t('section.tech.desc')}
 					</p>
 				</div>
 
 				<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
 					{[
-						{ name: 'Astro', icon: '🚀', color: 'neon-orange' },
-                        { name: 'Node.js', icon: '🟢', color: 'neon-green' },
-                        { name: 'JavaScript', icon: '🟡', color: 'neon-yellow' },
-						{ name: 'TypeScript', icon: '🔷', color: 'neon-blue' },
-						{ name: 'Rust', icon: '🦀', color: 'neon-orange' },
-						{ name: 'Python', icon: '🐍', color: 'neon-green' },
+						{ name: 'Astro', icon: '🚀', color: 'cyber-cyan' },
+                        { name: 'Node.js', icon: '🟢', color: 'cyber-green' },
+                        { name: 'JavaScript', icon: '🟡', color: 'cyber-cyan' },
+						{ name: 'TypeScript', icon: '🔷', color: 'cyber-blue' },
+						{ name: 'Rust', icon: '🦀', color: 'cyber-pink' },
+						{ name: 'Python', icon: '🐍', color: 'cyber-green' },
 					].map((tech) => (
-						<div class={`acrylic-dark acrylic-hover rounded-2xl p-6 text-center border border-${tech.color}/20
-						            hover:border-${tech.color}/40 group relative overflow-hidden`}>
-							<!-- Efecto de brillo hover -->
+						<div class={`liquid-glass-card p-6 text-center group relative overflow-hidden`}>
+							<!-- Efecto de brillo hover sutil -->
 							<div class={`absolute inset-0 bg-gradient-to-br from-${tech.color}/5 to-transparent opacity-0
 							            group-hover:opacity-100 transition-opacity duration-300`}></div>
 
@@ -221,25 +210,25 @@ const latestBlogPosts = allBlogPosts
 
 				<!-- Sección adicional de habilidades -->
 				<div class="mt-16 text-center">
-					<div class="acrylic-pearl rounded-2xl p-8 border border-pearl-300/20 max-w-4xl mx-auto">
-						<h3 class="text-2xl font-serif font-semibold text-white mb-4">
-							🎯 Enfoque actual de aprendizaje
+					<div class="liquid-glass-card p-8 max-w-4xl mx-auto">
+						<h3 class="text-2xl font-serif font-semibold text-white/90 mb-4">
+							{t('section.tech.focus')}
 						</h3>
 						<div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
 							<div class="space-y-2">
-								<div class="text-3xl">🔧</div>
-								<div class="text-white font-body font-medium">Desarrollo Web</div>
-								<div class="text-white/70 text-sm">Frontend & Backend</div>
+								<div class="text-3xl text-cyber-cyan">🔧</div>
+								<div class="text-white/90 font-body font-medium">{t('focus.web.title')}</div>
+								<div class="text-white/60 text-sm">{t('focus.web.desc')}</div>
 							</div>
 							<div class="space-y-2">
-								<div class="text-3xl">🤖</div>
-								<div class="text-white font-body font-medium">Automatización</div>
-								<div class="text-white/70 text-sm">Scripts & Bots</div>
+								<div class="text-3xl text-cyber-purple">🤖</div>
+								<div class="text-white/90 font-body font-medium">{t('focus.auto.title')}</div>
+								<div class="text-white/60 text-sm">{t('focus.auto.desc')}</div>
 							</div>
 							<div class="space-y-2">
-								<div class="text-3xl">📊</div>
-								<div class="text-white font-body font-medium">Análisis</div>
-								<div class="text-white/70 text-sm">Datos & Tendencias</div>
+								<div class="text-3xl text-cyber-pink">📊</div>
+								<div class="text-white/90 font-body font-medium">{t('focus.data.title')}</div>
+								<div class="text-white/60 text-sm">{t('focus.data.desc')}</div>
 							</div>
 						</div>
 					</div>
