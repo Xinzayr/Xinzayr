@@ -35,7 +35,7 @@ for (const post of posts) {
 <!-- Liquid Glass Floating Hover Card -->
 <div
 	id="blog-hover-preview"
-	class="fixed z-[99999] pointer-events-none opacity-0 scale-95 transition-all duration-200 ease-out max-w-sm w-80 glass border border-white/20 rounded-xl p-4 shadow-2xl backdrop-blur-xl bg-slate-950/90 text-white overflow-hidden hidden"
+	class="fixed z-[99999] pointer-events-none opacity-0 scale-95 transition-all duration-150 ease-out max-w-sm w-80 glass border border-white/20 rounded-xl p-4 shadow-2xl bg-slate-950/95 text-white overflow-hidden hidden"
 >
 	<div id="preview-image-container" class="mb-3 hidden">
 		<img id="preview-image" src="" alt="Cover" class="w-full h-32 object-cover rounded-lg border border-white/10" />
@@ -128,6 +128,10 @@ for (const post of posts) {
 	}
 
 	function setupHoverPreview() {
+		// En pantallas táctiles (móviles/tablets) desactivar el listener de hover para 0 overhead en scroll
+		const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0);
+		if (isTouchDevice) return;
+
 		const hoverCard = document.getElementById('blog-hover-preview');
 		if (!hoverCard) return;
 
@@ -199,16 +203,23 @@ for (const post of posts) {
 			showCard(target, data, e);
 		});
 
+		let isMoving = false;
 		document.addEventListener('mousemove', (e) => {
 			if (!currentHoverTarget || !hoverCard || hoverCard.classList.contains('hidden')) return;
 
-			const target = e.target as HTMLElement | null;
-			const isOverLink = target ? target.closest('a[href*="/blog/"], [data-wikilink], [data-post-preview], .wikilink') === currentHoverTarget : false;
+			if (!isMoving) {
+				isMoving = true;
+				requestAnimationFrame(() => {
+					const target = e.target as HTMLElement | null;
+					const isOverLink = target ? target.closest('a[href*="/blog/"], [data-wikilink], [data-post-preview], .wikilink') === currentHoverTarget : false;
 
-			if (isOverLink) {
-				positionCard(hoverCard, e);
-			} else {
-				hideCard();
+					if (isOverLink) {
+						positionCard(hoverCard, e);
+					} else {
+						hideCard();
+					}
+					isMoving = false;
+				});
 			}
 		});
 
