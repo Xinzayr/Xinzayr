@@ -8,6 +8,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "security-check": "node security-check.js",
+    "spotify-setup": "node scripts/get-spotify-token.js",
     "prebuild": "npm run security-check"
   },
   "dependencies": {

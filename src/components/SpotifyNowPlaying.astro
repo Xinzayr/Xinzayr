@@ -1,5 +1,5 @@
 ---
-// Componente para mostrar la música actual de Spotify mediante Lanyard API
+// Componente para mostrar la música actual de Spotify mediante Lanyard API con Fallback a Spotify Web API
 interface Props {
   variant?: 'simple' | 'detailed';
   showWhenNotPlaying?: boolean;
@@ -71,138 +71,178 @@ const DISCORD_USER_ID =
       const showAlways = this.dataset.showAlways === 'true';
 
       try {
-        const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
-        if (!response.ok) throw new Error('Network response error');
-        const data = await response.json();
+        // 1. Intentar primero con Lanyard API (Presencia de Discord)
+        const lanyardRes = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
+        let spotifyData: any = null;
+
+        if (lanyardRes.ok) {
+          const lData = await lanyardRes.json();
+          if (lData.success && lData.data && lData.data.spotify) {
+            const s = lData.data.spotify;
+            spotifyData = {
+              isPlaying: true,
+              title: s.song,
+              artist: s.artist,
+              album: s.album,
+              albumImageUrl: s.album_art_url,
+              songUrl: `https://open.spotify.com/track/${s.track_id}`,
+              start: s.timestamps.start,
+              end: s.timestamps.end,
+              durationMs: s.timestamps.end - s.timestamps.start,
+              source: 'lanyard'
+            };
+          }
+        }
+
+        // 2. Si Lanyard no detecta canción activa, intentar endpoint directo de Spotify API (/api/spotify.json)
+        if (!spotifyData) {
+          try {
+            const directRes = await fetch('/api/spotify.json');
+            if (directRes.ok) {
+              const dData = await directRes.json();
+              if (dData.title) {
+                spotifyData = {
+                  isPlaying: dData.isPlaying,
+                  title: dData.title,
+                  artist: dData.artist,
+                  album: dData.album,
+                  albumImageUrl: dData.albumImageUrl,
+                  songUrl: dData.songUrl,
+                  progressMs: dData.progressMs || 0,
+                  durationMs: dData.durationMs || 100000,
+                  source: 'direct'
+                };
+              }
+            }
+          } catch (e) {}
+        }
         
         if (this.timer) {
           clearInterval(this.timer);
           this.timer = null;
         }
 
-        if (data.success && data.data) {
-          const spotify = data.data.spotify;
-          
-          if (spotify) {
-            // Playing track data
-            const track = {
-              name: spotify.song,
-              artist: spotify.artist,
-              album: spotify.album,
-              image: spotify.album_art_url,
-              external_url: `https://open.spotify.com/track/${spotify.track_id}`,
-              start: spotify.timestamps.start,
-              end: spotify.timestamps.end,
-              duration: spotify.timestamps.end - spotify.timestamps.start
-            };
+        if (spotifyData) {
+          const track = spotifyData;
 
-            const renderPlaying = () => {
+          const renderPlaying = () => {
+            let progressMs = 0;
+            let progressPercent = 0;
+
+            if (track.source === 'lanyard' && track.start) {
               const now = new Date().getTime();
-              const progressMs = Math.max(0, now - track.start);
-              const progressPercent = Math.min(100, (progressMs / track.duration) * 100);
-
-              if (variant === 'simple') {
-                this.innerHTML = `
-                  <div class="flex items-center space-x-2">
-                    <div class="w-2 h-2 bg-cyber-green rounded-full animate-pulse"></div>
-                    <span class="text-sm text-white/80 font-medium truncate">${track.name} - ${track.artist}</span>
-                  </div>
-                `;
-              } else {
-                this.innerHTML = `
-                  <div class="glass-card rounded-xl p-4 h-full min-h-[140px] flex flex-col justify-between border border-white/10 hover:border-cyber-green/30 transition-all duration-300">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center space-x-2">
-                        <div class="w-2 h-2 bg-cyber-green rounded-full animate-pulse"></div>
-                        <span class="text-cyber-green font-semibold text-xs tracking-wider uppercase">Spotify</span>
-                      </div>
-                      <a href="${track.external_url}" target="_blank" rel="noopener noreferrer" class="text-[10px] px-2 py-0.5 rounded-full bg-cyber-green/20 text-cyber-green hover:bg-cyber-green/30 transition-colors font-mono flex items-center space-x-1">
-                        <span>En vivo</span>
-                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                        </svg>
-                      </a>
-                    </div>
-
-                    <div class="flex items-center space-x-3 my-2">
-                      <div class="relative flex-shrink-0">
-                        <img
-                          src="${track.image}"
-                          alt="${track.album}"
-                          class="w-10 h-10 rounded-xl object-cover border border-cyber-green/30 shadow-md"
-                          loading="lazy"
-                        />
-                      </div>
-                      <div class="flex-1 min-w-0">
-                        <div class="text-white font-semibold text-sm truncate" title="${track.name}">
-                          ${track.name}
-                        </div>
-                        <div class="text-white/60 text-xs truncate" title="${track.artist}">
-                          ${track.artist}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="pt-2 border-t border-white/5 flex items-center space-x-2">
-                      <div class="flex-1 bg-white/10 rounded-full h-1">
-                        <div
-                          class="bg-cyber-green h-1 rounded-full transition-all duration-1000 ease-linear"
-                          style="width: ${progressPercent}%"
-                        ></div>
-                      </div>
-                      <span class="text-white/40 text-[10px] font-mono w-7 text-right">
-                        ${this.formatDuration(progressMs)}
-                      </span>
-                    </div>
-                  </div>
-                `;
-              }
-            };
-
-            renderPlaying();
-            if (variant === 'detailed') {
-              this.timer = window.setInterval(renderPlaying, 1000);
+              progressMs = Math.max(0, now - track.start);
+              progressPercent = Math.min(100, (progressMs / track.durationMs) * 100);
+            } else if (track.progressMs && track.durationMs) {
+              progressMs = track.progressMs;
+              progressPercent = Math.min(100, (progressMs / track.durationMs) * 100);
             }
-          } else {
-            // Not playing
+
             if (variant === 'simple') {
               this.innerHTML = `
                 <div class="flex items-center space-x-2">
-                  <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
-                  <span class="text-sm text-white/50">Spotify (Pausa)</span>
+                  <div class="w-2 h-2 ${track.isPlaying ? 'bg-cyber-green animate-pulse' : 'bg-gray-400'} rounded-full"></div>
+                  <span class="text-sm text-white/80 font-medium truncate">${track.title} - ${track.artist}</span>
                 </div>
               `;
-            } else if (showAlways) {
+            } else {
               this.innerHTML = `
                 <div class="glass-card rounded-xl p-4 h-full min-h-[140px] flex flex-col justify-between border border-white/10 hover:border-cyber-green/30 transition-all duration-300">
                   <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-2">
-                      <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                      <div class="w-2 h-2 ${track.isPlaying ? 'bg-cyber-green animate-pulse' : 'bg-gray-400'} rounded-full"></div>
                       <span class="text-cyber-green font-semibold text-xs tracking-wider uppercase">Spotify</span>
                     </div>
-                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-white/50 font-mono">Inactivo</span>
+                    ${track.songUrl ? `
+                      <a href="${track.songUrl}" target="_blank" rel="noopener noreferrer" class="text-[10px] px-2 py-0.5 rounded-full ${track.isPlaying ? 'bg-cyber-green/20 text-cyber-green hover:bg-cyber-green/30' : 'bg-white/10 text-white/60'} transition-colors font-mono flex items-center space-x-1">
+                        <span>${track.isPlaying ? 'En vivo' : 'Última'}</span>
+                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                        </svg>
+                      </a>
+                    ` : ''}
                   </div>
 
                   <div class="flex items-center space-x-3 my-2">
-                    <div class="w-10 h-10 bg-cyber-green/10 border border-cyber-green/20 rounded-xl flex items-center justify-center text-cyber-green flex-shrink-0">
-                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
-                      </svg>
-                    </div>
+                    ${track.albumImageUrl ? `
+                      <div class="relative flex-shrink-0">
+                        <img
+                          src="${track.albumImageUrl}"
+                          alt="${track.album || 'Album'}"
+                          class="w-10 h-10 rounded-xl object-cover border border-cyber-green/30 shadow-md"
+                          loading="lazy"
+                        />
+                      </div>
+                    ` : ''}
                     <div class="flex-1 min-w-0">
-                      <div class="text-white/80 font-semibold text-sm truncate">Sin música activa</div>
-                      <div class="text-white/50 text-xs truncate">Spotify Offline</div>
+                      <div class="text-white font-semibold text-sm truncate" title="${track.title}">
+                        ${track.title}
+                      </div>
+                      <div class="text-white/60 text-xs truncate" title="${track.artist}">
+                        ${track.artist}
+                      </div>
                     </div>
                   </div>
 
-                  <div class="pt-2 border-t border-white/5 text-xs text-white/40 truncate font-mono">
-                    Pausa o sin reproducción
+                  <div class="pt-2 border-t border-white/5 flex items-center space-x-2">
+                    <div class="flex-1 bg-white/10 rounded-full h-1">
+                      <div
+                        class="bg-cyber-green h-1 rounded-full transition-all duration-1000 ease-linear"
+                        style="width: ${progressPercent > 0 ? progressPercent : 100}%"
+                      ></div>
+                    </div>
+                    <span class="text-white/40 text-[10px] font-mono w-7 text-right">
+                      ${this.formatDuration(progressMs)}
+                    </span>
                   </div>
                 </div>
               `;
-            } else {
-              this.innerHTML = '';
             }
+          };
+
+          renderPlaying();
+          if (variant === 'detailed' && track.source === 'lanyard') {
+            this.timer = window.setInterval(renderPlaying, 1000);
+          }
+        } else {
+          // Sin música
+          if (variant === 'simple') {
+            this.innerHTML = `
+              <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                <span class="text-sm text-white/50">Spotify (Inactivo)</span>
+              </div>
+            `;
+          } else if (showAlways) {
+            this.innerHTML = `
+              <div class="glass-card rounded-xl p-4 h-full min-h-[140px] flex flex-col justify-between border border-white/10 hover:border-cyber-green/30 transition-all duration-300">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                    <span class="text-cyber-green font-semibold text-xs tracking-wider uppercase">Spotify</span>
+                  </div>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-white/50 font-mono">Inactivo</span>
+                </div>
+
+                <div class="flex items-center space-x-3 my-2">
+                  <div class="w-10 h-10 bg-cyber-green/10 border border-cyber-green/20 rounded-xl flex items-center justify-center text-cyber-green flex-shrink-0">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+                    </svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-white/80 font-semibold text-sm truncate">Sin música activa</div>
+                    <div class="text-white/50 text-xs truncate">Spotify Offline</div>
+                  </div>
+                </div>
+
+                <div class="pt-2 border-t border-white/5 text-xs text-white/40 truncate font-mono">
+                  Pausa o sin reproducción
+                </div>
+              </div>
+            `;
+          } else {
+            this.innerHTML = '';
           }
         }
       } catch (err) {

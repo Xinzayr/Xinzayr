@@ -73,26 +73,43 @@ if (GITHUB_USERNAME) {
         0,
       );
 
-      // Obtener información de lenguajes
-      const languageCount: Record<string, number> = {};
-      const languages = new Set();
+      // Obtener información real de lenguajes y distribución por bytes
+      const languageBytesMap: Record<string, number> = {};
+      const langFetches = activePublicRepos.slice(0, 20).map(async (repo: any) => {
+        try {
+          const lRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${repo.name}/languages`, { headers });
+          if (lRes.ok) {
+            const langsData = await lRes.json();
+            return { langs: langsData, fallbackLang: repo.language };
+          }
+        } catch (e) {}
+        return { langs: null, fallbackLang: repo.language };
+      });
 
-      activePublicRepos.forEach((repo: any) => {
-        if (repo.language) {
-          languages.add(repo.language);
-          languageCount[repo.language] = (languageCount[repo.language] || 0) + 1;
+      const langResults = await Promise.allSettled(langFetches);
+
+      langResults.forEach((result) => {
+        if (result.status === 'fulfilled' && result.value) {
+          const { langs, fallbackLang } = result.value;
+          if (langs && Object.keys(langs).length > 0) {
+            Object.entries(langs).forEach(([lang, bytes]) => {
+              const b = Number(bytes) || 0;
+              languageBytesMap[lang] = (languageBytesMap[lang] || 0) + b;
+            });
+          } else if (fallbackLang) {
+            languageBytesMap[fallbackLang] = (languageBytesMap[fallbackLang] || 0) + 50000;
+          }
         }
       });
 
-      githubStats.totalLanguages = languages.size;
-      githubStats.languageDistribution = languageCount;
-      githubStats.loaded = true;
-
-      // Encontrar el lenguaje más usado
-      const sortedLanguages = Object.entries(languageCount).sort(
+      const sortedLanguages = Object.entries(languageBytesMap).sort(
         ([, a], [, b]) => (b as number) - (a as number),
       );
+
+      githubStats.totalLanguages = Object.keys(languageBytesMap).length;
+      githubStats.languageDistribution = languageBytesMap;
       githubStats.topLanguage = sortedLanguages.length > 0 ? sortedLanguages[0][0] : '';
+      githubStats.loaded = true;
 
       // Obtener la fecha del último repositorio actualizado
       if (activePublicRepos.length > 0) {
@@ -139,16 +156,14 @@ if (GITHUB_USERNAME) {
             </div>
             <div class="text-white/70 text-sm">Repositorios públicos</div>
           </div>
-          <div class="glass rounded-lg p-6 text-center">
-            <div class="text-3xl font-bold text-purple-400 mb-2">
+          <div class="glass rounded-lg p-6 text-center border border-purple-500/20 hover:border-purple-500/40 transition-all">
+            <div id="stat-total-languages" class="text-3xl font-bold text-purple-400 mb-2 font-mono">
               {githubStats.loaded ? githubStats.totalLanguages : '...'}
             </div>
             <div class="text-white/70 text-sm">Lenguajes de programación</div>
-            {
-              githubStats.topLanguage && (
-                <div class="text-xs text-purple-300 mt-1">Principal: {githubStats.topLanguage}</div>
-              )
-            }
+            <div id="stat-top-language" class="text-xs text-purple-300 mt-1 font-mono">
+              {githubStats.topLanguage ? `Principal: ${githubStats.topLanguage}` : 'Analizando...'}
+            </div>
           </div>
           <div class="glass rounded-lg p-6 text-center">
             <div class="text-3xl font-bold text-yellow-400 mb-2">

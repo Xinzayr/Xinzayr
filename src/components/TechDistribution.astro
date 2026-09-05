@@ -155,10 +155,18 @@ if (username) {
     console.warn('Error computing tech distribution:', error);
   }
 }
+
+const totalLanguagesCount = techDistribution.length;
+const topLanguageName = techDistribution[0]?.name || '';
 ---
 
 {isLoaded && techDistribution.length > 0 ? (
-  <div class="glass-card rounded-2xl p-6 sm:p-8 border border-white/10 relative overflow-hidden transition-all duration-300">
+  <div
+    id="tech-distribution-container"
+    data-total-languages={totalLanguagesCount}
+    data-top-language={topLanguageName}
+    class="glass-card rounded-2xl p-6 sm:p-8 border border-white/10 relative overflow-hidden transition-all duration-300"
+  >
     <!-- Ambient Glow -->
     <div class="absolute -top-12 -right-12 w-48 h-48 bg-cyber-cyan/10 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -258,6 +266,29 @@ if (username) {
     <p class="text-white/60 text-sm font-mono">Cargando distribución de tecnologías desde GitHub...</p>
   </div>
 )}
+
+<script>
+  function syncTechCounters() {
+    const container = document.getElementById('tech-distribution-container');
+    if (!container) return;
+
+    const totalLangs = container.getAttribute('data-total-languages');
+    const topLang = container.getAttribute('data-top-language');
+
+    const totalEl = document.getElementById('stat-total-languages');
+    const topEl = document.getElementById('stat-top-language');
+
+    if (totalEl && totalLangs) {
+      totalEl.textContent = totalLangs;
+    }
+    if (topEl && topLang) {
+      topEl.textContent = `Principal: ${topLang}`;
+    }
+  }
+
+  syncTechCounters();
+  document.addEventListener('astro:page-load', syncTechCounters);
+</script>
 
 <style>
   .glass {
