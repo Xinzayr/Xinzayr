@@ -6,6 +6,7 @@ import GitHubRepos from '../components/GitHubRepos.astro';
 import DynamicProjectCards from '../components/DynamicProjectCards.astro';
 import GitHubRepoCards from '../components/GitHubRepoCards.astro';
 import GitHubContributionGraph from '../components/GitHubContributionGraph.astro';
+import TechDistribution from '../components/TechDistribution.astro';
 import { getCollection } from 'astro:content';
 import { API_CONFIG } from '../consts';
 
@@ -163,35 +164,10 @@ if (GITHUB_USERNAME) {
           </div>
         </div>
 
-        <!-- Distribución de lenguajes -->
-        {
-          githubStats.languageDistribution &&
-            Object.keys(githubStats.languageDistribution).length > 0 && (
-              <div class="max-w-2xl mx-auto mb-12 sm:mb-16">
-                <h3 class="text-xl font-bold text-white mb-6 text-center">
-                  Distribución de tecnologías
-                </h3>
-                <div class="glass rounded-lg p-6">
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {Object.entries(githubStats.languageDistribution).map(([language, count]) => (
-                      <div class="flex items-center justify-between">
-                        <span class="text-white/80 text-sm">{language}</span>
-                        <div class="flex items-center space-x-2">
-                          <div class="w-16 h-2 bg-white/10 rounded-full overflow-hidden">
-                            <div
-                              class="h-full bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
-                              style={`width: ${((count as number) / githubStats.publicRepos) * 100}%`}
-                            />
-                          </div>
-                          <span class="text-white/60 text-xs">{count} repos</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )
-        }
+        <!-- Distribución real de tecnologías -->
+        <div class="max-w-4xl mx-auto mb-12 sm:mb-16">
+          <TechDistribution username={GITHUB_USERNAME} variant="full" />
+        </div>
       </div>
     </section>
 

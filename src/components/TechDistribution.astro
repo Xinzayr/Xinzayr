@@ -1,0 +1,268 @@
+---
+// Componente para analizar la distribución real de tecnologías/lenguajes desde GitHub API
+import { API_CONFIG } from '../consts';
+
+interface Props {
+  username?: string;
+  limitRepos?: number;
+  variant?: 'full' | 'compact';
+}
+
+const {
+  username = import.meta.env.GITHUB_USERNAME || API_CONFIG.github.username || 'xinzayr',
+  limitRepos = 20,
+  variant = 'full'
+} = Astro.props;
+
+const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN || API_CONFIG.github.token;
+
+const LANGUAGE_COLORS: Record<string, string> = {
+  'Astro': '#ff5d01',
+  'TypeScript': '#3178c6',
+  'JavaScript': '#f1e05a',
+  'Python': '#3572A5',
+  'CSS': '#563d7c',
+  'HTML': '#e34c26',
+  'C++': '#f34b7d',
+  'C#': '#178600',
+  'C': '#555555',
+  'Shell': '#89e051',
+  'PowerShell': '#012456',
+  'Rust': '#dea584',
+  'Dart': '#00B4AB',
+  'Go': '#00ADD8',
+  'Java': '#b07219',
+  'PHP': '#4F5D95',
+  'Ruby': '#701516',
+  'Swift': '#F05138',
+  'Kotlin': '#A97BFF',
+  'Vue': '#41b883',
+  'Svelte': '#ff3e00',
+  'Dockerfile': '#384d54',
+  'SCSS': '#c6538c',
+  'Less': '#1d365d',
+  'Solidity': '#AA6746',
+  'Markdown': '#083fa1',
+  'JSON': '#292929',
+  'TeX': '#3D6117',
+  'Lua': '#000080'
+};
+
+const DEFAULT_COLOR = '#8b5cf6';
+
+function formatBytes(bytes: number): string {
+  if (bytes >= 1048576) {
+    return (bytes / 1048576).toFixed(1) + ' MB';
+  } else if (bytes >= 1024) {
+    return (bytes / 1024).toFixed(1) + ' KB';
+  }
+  return bytes + ' B';
+}
+
+interface LanguageStat {
+  name: string;
+  bytes: number;
+  percentage: number;
+  formattedSize: string;
+  repoCount: number;
+  color: string;
+}
+
+let techDistribution: LanguageStat[] = [];
+let totalBytesAnalyzed = 0;
+let totalReposAnalyzed = 0;
+let isLoaded = false;
+
+if (username) {
+  try {
+    const headers: any = {
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'xinzayr-portfolio'
+    };
+    if (GITHUB_TOKEN) {
+      headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`;
+    }
+
+    // 1. Fetch public repos
+    const reposRes = await fetch(
+      `https://api.github.com/users/${username}/repos?type=public&per_page=100&sort=updated`,
+      { headers }
+    );
+
+    if (reposRes.ok) {
+      const repos = await reposRes.json();
+      const activeRepos = repos.filter((r: any) => !r.private && !r.archived).slice(0, limitRepos);
+      totalReposAnalyzed = activeRepos.length;
+
+      const languageBytesMap: Record<string, number> = {};
+      const languageRepoMap: Record<string, number> = {};
+
+      // 2. Fetch language breakdown for top repos in parallel
+      const langFetches = activeRepos.map(async (repo: any) => {
+        try {
+          const lRes = await fetch(`https://api.github.com/repos/${username}/${repo.name}/languages`, { headers });
+          if (lRes.ok) {
+            const langsData = await lRes.json();
+            return { repo: repo.name, langs: langsData, fallbackLang: repo.language };
+          }
+        } catch (e) {
+          // ignore error
+        }
+        return { repo: repo.name, langs: null, fallbackLang: repo.language };
+      });
+
+      const langResults = await Promise.allSettled(langFetches);
+
+      langResults.forEach((result) => {
+        if (result.status === 'fulfilled' && result.value) {
+          const { langs, fallbackLang } = result.value;
+          if (langs && Object.keys(langs).length > 0) {
+            Object.entries(langs).forEach(([lang, bytes]) => {
+              const b = Number(bytes) || 0;
+              languageBytesMap[lang] = (languageBytesMap[lang] || 0) + b;
+              languageRepoMap[lang] = (languageRepoMap[lang] || 0) + 1;
+            });
+          } else if (fallbackLang) {
+            // Fallback estimation (50KB per repo)
+            languageBytesMap[fallbackLang] = (languageBytesMap[fallbackLang] || 0) + 50000;
+            languageRepoMap[fallbackLang] = (languageRepoMap[fallbackLang] || 0) + 1;
+          }
+        }
+      });
+
+      // Calculate total bytes
+      totalBytesAnalyzed = Object.values(languageBytesMap).reduce((sum, b) => sum + b, 0);
+
+      if (totalBytesAnalyzed > 0) {
+        techDistribution = Object.entries(languageBytesMap)
+          .map(([name, bytes]) => {
+            const pct = (bytes / totalBytesAnalyzed) * 100;
+            return {
+              name,
+              bytes,
+              percentage: Math.round(pct * 10) / 10,
+              formattedSize: formatBytes(bytes),
+              repoCount: languageRepoMap[name] || 1,
+              color: LANGUAGE_COLORS[name] || DEFAULT_COLOR
+            };
+          })
+          .sort((a, b) => b.bytes - a.bytes);
+
+        isLoaded = true;
+      }
+    }
+  } catch (error) {
+    console.warn('Error computing tech distribution:', error);
+  }
+}
+---
+
+{isLoaded && techDistribution.length > 0 ? (
+  <div class="glass-card rounded-2xl p-6 sm:p-8 border border-white/10 relative overflow-hidden transition-all duration-300">
+    <!-- Ambient Glow -->
+    <div class="absolute -top-12 -right-12 w-48 h-48 bg-cyber-cyan/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+      <div>
+        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+          <svg class="w-5 h-5 text-cyber-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+          </svg>
+          <span>Distribución de Tecnologías</span>
+        </h3>
+        <p class="text-white/60 text-xs mt-1">
+          Análisis de código fuente real desde repositorios públicos de GitHub
+        </p>
+      </div>
+
+      <div class="flex items-center space-x-3 text-xs font-mono">
+        <span class="px-3 py-1 rounded-full bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/20">
+          {formatBytes(totalBytesAnalyzed)} analizados
+        </span>
+        <span class="px-3 py-1 rounded-full bg-white/5 text-white/70 border border-white/10">
+          {totalReposAnalyzed} repositorios
+        </span>
+      </div>
+    </div>
+
+    <!-- Multi-segmented GitHub-style Progress Bar -->
+    <div class="mb-8">
+      <div class="w-full h-3.5 bg-black/40 rounded-full overflow-hidden flex border border-white/10 p-0.5 space-x-0.5 shadow-inner">
+        {techDistribution.map((tech) => (
+          <div
+            class="h-full rounded-full transition-all duration-500 hover:brightness-125 relative group"
+            style={`width: ${tech.percentage}%; background-color: ${tech.color};`}
+            title={`${tech.name}: ${tech.percentage}% (${tech.formattedSize})`}
+          ></div>
+        ))}
+      </div>
+
+      <!-- Leyenda compacta bajo la barra -->
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-xs text-white/70 font-mono">
+        {techDistribution.slice(0, 6).map((tech) => (
+          <div class="flex items-center space-x-1.5">
+            <span class="w-2.5 h-2.5 rounded-full inline-block" style={`background-color: ${tech.color}`}></span>
+            <span class="text-white/90 font-medium">{tech.name}</span>
+            <span class="text-white/50">{tech.percentage}%</span>
+          </div>
+        ))}
+        {techDistribution.length > 6 && (
+          <span class="text-white/40">+{techDistribution.length - 6} más</span>
+        )}
+      </div>
+    </div>
+
+    <!-- Technology Breakdown Grid -->
+    <div class={`grid grid-cols-1 ${variant === 'full' ? 'sm:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-2'} gap-4`}>
+      {techDistribution.map((tech) => (
+        <div class="glass p-4 rounded-xl border border-white/5 hover:border-white/20 transition-all duration-300 group">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center space-x-2 min-w-0">
+              <span
+                class="w-3 h-3 rounded-full flex-shrink-0 shadow-sm transition-transform group-hover:scale-125"
+                style={`background-color: ${tech.color}; box-shadow: 0 0 8px ${tech.color}66;`}
+              ></span>
+              <span class="text-white font-semibold text-sm truncate" title={tech.name}>
+                {tech.name}
+              </span>
+            </div>
+            <span class="text-xs font-mono font-bold text-cyber-cyan bg-cyber-cyan/10 px-2 py-0.5 rounded-full border border-cyber-cyan/20">
+              {tech.percentage}%
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-white/60 mb-2 font-mono">
+            <span>{tech.formattedSize}</span>
+            <span>{tech.repoCount} {tech.repoCount === 1 ? 'repo' : 'repos'}</span>
+          </div>
+
+          <!-- Individual Tech Progress Line -->
+          <div class="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+            <div
+              class="h-full rounded-full transition-all duration-1000 ease-out"
+              style={`width: ${tech.percentage}%; background-color: ${tech.color};`}
+            ></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+) : (
+  <div class="glass-card rounded-xl p-6 text-center border border-white/10">
+    <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-3 text-white/40">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+      </svg>
+    </div>
+    <p class="text-white/60 text-sm font-mono">Cargando distribución de tecnologías desde GitHub...</p>
+  </div>
+)}
+
+<style>
+  .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+</style>

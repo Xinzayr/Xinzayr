@@ -1,6 +1,7 @@
 ---
 // Componente para mostrar estadísticas reales de GitHub
 import { API_CONFIG } from '../consts';
+import TechDistribution from './TechDistribution.astro';
 
 interface Props {
   variant?: 'compact' | 'detailed';
@@ -133,34 +134,8 @@ function formatDate(date: Date): string {
           </div>
         </div>
 
-        <!-- Lenguajes más utilizados -->
-        <div class="glass rounded-lg p-6">
-          <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
-            <svg class="w-5 h-5 text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-            </svg>
-            Lenguajes Más Utilizados
-          </h3>
-          <div class="space-y-3">
-            {githubStats.topLanguages.map((langData: any, index: number) => {
-              const [language, count] = langData;
-              return (
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-3">
-                    <div class={`w-3 h-3 rounded-full ${
-                      index === 0 ? 'bg-blue-400' :
-                      index === 1 ? 'bg-green-400' :
-                      index === 2 ? 'bg-yellow-400' :
-                      index === 3 ? 'bg-purple-400' : 'bg-gray-400'
-                    }`}></div>
-                    <span class="text-white/80 text-sm">{language}</span>
-                  </div>
-                  <span class="text-white/60 text-sm">{count} repos</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        <!-- Lenguajes más utilizados con análisis real de código -->
+        <TechDistribution username={GITHUB_USERNAME} variant="compact" />
 
         <!-- Información adicional -->
         <div class="glass rounded-lg p-6">
