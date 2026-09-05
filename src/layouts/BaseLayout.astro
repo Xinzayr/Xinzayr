@@ -43,7 +43,25 @@ const { title, description = "El Portafolio de Xinzayr - Desarrollador Junior", 
 		<meta property="twitter:description" content={description} />
 		{image && <meta property="twitter:image" content={image} />}
 
-		<!-- Fonts (Loaded locally via npm) -->
+		<!-- Microsoft Clarity Analytics -->
+		<script>
+			import Clarity from '@microsoft/clarity';
+
+			function initClarity() {
+				const clarityId = import.meta.env.PUBLIC_CLARITY_ID || 'qx1t86p55p';
+				if (clarityId && typeof window !== 'undefined' && !(window as any).__clarityInitialized) {
+					(window as any).__clarityInitialized = true;
+					try {
+						Clarity.init(clarityId);
+					} catch (e) {
+						console.warn('Clarity init warning:', e);
+					}
+				}
+			}
+
+			initClarity();
+			document.addEventListener('astro:page-load', initClarity);
+		</script>
 	</head>
 	<body class="min-h-screen bg-black text-white font-sans antialiased overflow-x-hidden">
 		<slot />

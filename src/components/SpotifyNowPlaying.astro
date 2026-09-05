@@ -1,6 +1,5 @@
 ---
-// Componente para mostrar la música actual de Spotify
-// Usa Lanyard API en el lado del cliente (Navegador)
+// Componente para mostrar la música actual de Spotify mediante Lanyard API
 interface Props {
   variant?: 'simple' | 'detailed';
   showWhenNotPlaying?: boolean;
@@ -8,7 +7,6 @@ interface Props {
 
 const { variant = 'simple', showWhenNotPlaying = false } = Astro.props;
 
-// Obtener Discord User ID desde variables de entorno
 const DISCORD_USER_ID =
   import.meta.env.PUBLIC_DISCORD_USER_ID ||
   import.meta.env.DISCORD_USER_ID ||
@@ -28,23 +26,23 @@ const DISCORD_USER_ID =
     </div>
   ) : (
     showWhenNotPlaying ? (
-      <div class="glass-card rounded-xl p-4 h-full min-h-[140px] flex flex-col justify-between">
-        <div class="flex items-center justify-between mb-3">
+      <div class="glass-card rounded-xl p-4 h-full min-h-[140px] flex flex-col justify-between border border-white/10 hover:border-cyber-green/30 transition-all duration-300">
+        <div class="flex items-center justify-between">
           <div class="flex items-center space-x-2">
             <div class="w-2 h-2 bg-cyber-green rounded-full animate-pulse"></div>
             <span class="text-cyber-green font-semibold text-xs tracking-wider uppercase">Spotify</span>
           </div>
           <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-white/60 font-mono">Comprobando...</span>
         </div>
-        <div class="flex items-center space-x-3 my-auto">
+        <div class="flex items-center space-x-3 my-2">
           <div class="w-10 h-10 bg-white/10 rounded-xl animate-pulse flex-shrink-0"></div>
           <div class="space-y-1.5 flex-1 min-w-0">
             <div class="w-24 h-3 bg-white/10 rounded animate-pulse"></div>
             <div class="w-16 h-2.5 bg-white/10 rounded animate-pulse"></div>
           </div>
         </div>
-        <div class="pt-2 border-t border-white/5 mt-2">
-          <span class="text-white/40 text-xs">Obteniendo reproducción...</span>
+        <div class="pt-2 border-t border-white/5">
+          <span class="text-white/40 text-xs font-mono">Obteniendo reproducción...</span>
         </div>
       </div>
     ) : null
@@ -54,18 +52,20 @@ const DISCORD_USER_ID =
 <script>
   class SpotifyStatus extends HTMLElement {
     private timer: number | null = null;
+    private pollInterval: number | null = null;
 
     constructor() {
       super();
     }
 
     formatDuration(ms: number) {
+      if (isNaN(ms) || ms < 0) return '0:00';
       const minutes = Math.floor(ms / 60000);
       const seconds = Math.floor((ms % 60000) / 1000);
       return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
 
-    async connectedCallback() {
+    async fetchSpotifyData() {
       const userId = this.dataset.userid;
       const variant = this.dataset.variant;
       const showAlways = this.dataset.showAlways === 'true';
@@ -75,11 +75,16 @@ const DISCORD_USER_ID =
         if (!response.ok) throw new Error('Network response error');
         const data = await response.json();
         
+        if (this.timer) {
+          clearInterval(this.timer);
+          this.timer = null;
+        }
+
         if (data.success && data.data) {
           const spotify = data.data.spotify;
           
           if (spotify) {
-            // Reproduciendo
+            // Playing track data
             const track = {
               name: spotify.song,
               artist: spotify.artist,
@@ -100,7 +105,7 @@ const DISCORD_USER_ID =
                 this.innerHTML = `
                   <div class="flex items-center space-x-2">
                     <div class="w-2 h-2 bg-cyber-green rounded-full animate-pulse"></div>
-                    <span class="text-sm text-white/80">Escuchando música</span>
+                    <span class="text-sm text-white/80 font-medium truncate">${track.name} - ${track.artist}</span>
                   </div>
                 `;
               } else {
@@ -124,7 +129,7 @@ const DISCORD_USER_ID =
                         <img
                           src="${track.image}"
                           alt="${track.album}"
-                          class="w-10 h-10 rounded-xl object-cover border border-white/10 shadow-md"
+                          class="w-10 h-10 rounded-xl object-cover border border-cyber-green/30 shadow-md"
                           loading="lazy"
                         />
                       </div>
@@ -159,12 +164,12 @@ const DISCORD_USER_ID =
               this.timer = window.setInterval(renderPlaying, 1000);
             }
           } else {
-            // No reproduciendo
+            // Not playing
             if (variant === 'simple') {
               this.innerHTML = `
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
-                  <span class="text-sm text-white/50">Spotify</span>
+                  <span class="text-sm text-white/50">Spotify (Pausa)</span>
                 </div>
               `;
             } else if (showAlways) {
@@ -179,7 +184,7 @@ const DISCORD_USER_ID =
                   </div>
 
                   <div class="flex items-center space-x-3 my-2">
-                    <div class="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-white/40 flex-shrink-0">
+                    <div class="w-10 h-10 bg-cyber-green/10 border border-cyber-green/20 rounded-xl flex items-center justify-center text-cyber-green flex-shrink-0">
                       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
                       </svg>
@@ -190,8 +195,8 @@ const DISCORD_USER_ID =
                     </div>
                   </div>
 
-                  <div class="pt-2 border-t border-white/5 text-xs text-white/40 truncate">
-                    No reproduciendo actualmente
+                  <div class="pt-2 border-t border-white/5 text-xs text-white/40 truncate font-mono">
+                    Pausa o sin reproducción
                   </div>
                 </div>
               `;
@@ -212,10 +217,14 @@ const DISCORD_USER_ID =
       }
     }
 
+    connectedCallback() {
+      this.fetchSpotifyData();
+      this.pollInterval = window.setInterval(() => this.fetchSpotifyData(), 10000);
+    }
+
     disconnectedCallback() {
-      if (this.timer) {
-        clearInterval(this.timer);
-      }
+      if (this.timer) clearInterval(this.timer);
+      if (this.pollInterval) clearInterval(this.pollInterval);
     }
   }
 

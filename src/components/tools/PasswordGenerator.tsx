@@ -216,7 +216,7 @@ export default function PasswordGenerator() {
     <div className="w-full max-w-3xl mx-auto space-y-6">
       
       {/* Mode Switcher Tabs */}
-      <div class="flex items-center justify-center space-x-3 mb-2">
+      <div className="flex items-center justify-center space-x-3 mb-2">
         <button
           onClick={() => setMode('password')}
           className={`px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all ${
