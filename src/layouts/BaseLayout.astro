@@ -54,7 +54,7 @@ const CLARITY_ID = import.meta.env.PUBLIC_CLARITY_ID || 'ydmf5lut6r';
 		})(window,document,'script','dataLayer','GTM-K4VLLPDW');</script>
 		<!-- End Google Tag Manager -->
 
-		<!-- Google tag (gtag.js) -->
+		<!-- Google tag (gtag.js) GA4 -->
 		<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-ZE49GZ9LKE"></script>
 		<script is:inline>
 		  window.dataLayer = window.dataLayer || [];
@@ -71,6 +71,36 @@ const CLARITY_ID = import.meta.env.PUBLIC_CLARITY_ID || 'ydmf5lut6r';
 				t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
 				y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 			})(window, document, "clarity", "script", "ydmf5lut6r");
+		</script>
+
+		<!-- Telemetry SPA Navigation Tracker for Astro ViewTransitions -->
+		<script is:inline>
+			document.addEventListener('astro:page-load', () => {
+				const pagePath = window.location.pathname + window.location.search;
+				const pageTitle = document.title;
+
+				// 1. Actualizar GA4 en navegación SPA
+				if (typeof window.gtag === 'function') {
+					window.gtag('config', 'G-ZE49GZ9LKE', {
+						page_path: pagePath,
+						page_title: pageTitle
+					});
+				}
+
+				// 2. Enviar evento de página a Google Tag Manager
+				if (Array.isArray(window.dataLayer)) {
+					window.dataLayer.push({
+						event: 'page_view',
+						page_path: pagePath,
+						page_title: pageTitle
+					});
+				}
+
+				// 3. Notificar cambio de página a Microsoft Clarity
+				if (typeof window.clarity === 'function') {
+					window.clarity('set', 'page', pagePath);
+				}
+			});
 		</script>
 	</head>
 	<body class="min-h-screen bg-black text-white font-sans antialiased overflow-x-hidden">
