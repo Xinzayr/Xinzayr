@@ -1,5 +1,5 @@
 ---
-// Componente de Pop-Up en la parte inferior para notificar sobre Microsoft Clarity
+// Componente de Pop-Up para aviso y consentimiento de Telemetría (Google Tag Manager, GA4 y Microsoft Clarity)
 ---
 
 <div
@@ -7,12 +7,12 @@
   class="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md z-50 transform transition-all duration-500 translate-y-24 opacity-0 pointer-events-none"
   aria-live="polite"
 >
-  <div class="glass-popup rounded-2xl p-5 border border-cyan-500/30 shadow-2xl backdrop-blur-2xl bg-black/85 relative overflow-hidden">
+  <div class="glass-popup rounded-2xl p-5 border border-cyan-500/30 shadow-2xl backdrop-blur-2xl bg-black/90 relative overflow-hidden">
     <!-- Ambient Glow -->
     <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-500/15 rounded-full blur-2xl pointer-events-none"></div>
 
     <div class="flex items-start space-x-3.5">
-      <!-- Icono de Microsoft Clarity / Analytics -->
+      <!-- Icono de Analytics y Telemetría -->
       <div class="p-2.5 bg-cyan-500/10 rounded-xl text-cyan-400 border border-cyan-500/20 flex-shrink-0 mt-0.5">
         <svg class="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
@@ -22,7 +22,7 @@
       <div class="space-y-1.5 flex-1 min-w-0">
         <div class="flex items-center justify-between">
           <h4 class="text-sm font-bold text-white tracking-wide flex items-center gap-1.5">
-            <span>Microsoft Clarity Analytics</span>
+            <span>Telemetría y Privacidad Digital</span>
             <span class="w-2 h-2 bg-cyan-400 rounded-full animate-ping"></span>
           </h4>
 
@@ -38,7 +38,7 @@
         </div>
 
         <p class="text-xs text-white/80 leading-relaxed">
-          Utilizamos <strong class="text-cyan-300 font-semibold">Microsoft Clarity</strong> para analizar de forma anónima cómo interactúas con el portafolio y así poder optimizar y mejorar la experiencia de usuario continuamente.
+          Utilizamos <strong class="text-cyan-300 font-semibold">Google Tag Manager</strong>, <strong class="text-cyan-300 font-semibold">Google Analytics (GA4)</strong> y <strong class="text-cyan-300 font-semibold">Microsoft Clarity</strong> para medir de forma anónima la interacción y personalizar la experiencia del usuario (cumpliendo con la normativa del EEE).
         </p>
 
         <div class="pt-2 flex items-center justify-end space-x-2">
@@ -46,7 +46,7 @@
             id="clarity-accept-btn"
             class="px-4 py-1.5 text-xs font-semibold text-black bg-gradient-to-r from-cyan-400 to-blue-400 hover:from-cyan-300 hover:to-blue-300 rounded-lg shadow-md shadow-cyan-500/20 transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
           >
-            Entendido
+            Aceptar todo el consentimiento
           </button>
         </div>
       </div>
@@ -55,6 +55,35 @@
 </div>
 
 <script>
+  function applyConsentUpdate() {
+    // 1. Consent Mode v2 de Google (Cumplimiento para EEE / EEA: GA4, GTM y Medición de Anuncios)
+    if (typeof window.gtag === 'function') {
+      window.gtag('consent', 'update', {
+        'ad_storage': 'granted',
+        'ad_user_data': 'granted',
+        'ad_personalization': 'granted',
+        'analytics_storage': 'granted',
+        'functionality_storage': 'granted',
+        'security_storage': 'granted',
+        'personalization_storage': 'granted'
+      });
+    }
+
+    // Evento de capa de datos para disparadores de GTM que requieren consentimiento
+    if (Array.isArray(window.dataLayer)) {
+      window.dataLayer.push({
+        event: 'consent_update',
+        analytics_consent: 'granted',
+        ad_consent: 'granted'
+      });
+    }
+
+    // 2. Consentimiento para Microsoft Clarity
+    if (typeof window.clarity === 'function') {
+      window.clarity('consent');
+    }
+  }
+
   function setupClarityNotice() {
     const popup = document.getElementById('clarity-notice-popup');
     const acceptBtn = document.getElementById('clarity-accept-btn');
@@ -62,28 +91,34 @@
 
     if (!popup) return;
 
-    // Verificar si el usuario ya descartó la notificación
+    // Verificar si el usuario ya aceptó previamente el consentimiento
     const isDismissed = localStorage.getItem('clarity_notice_dismissed');
 
-    if (!isDismissed) {
-      // Mostrar el popup con un pequeño retraso suave
+    if (isDismissed) {
+      applyConsentUpdate();
+    } else {
+      // Mostrar el popup suavemente
       setTimeout(() => {
         popup.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
         popup.classList.add('translate-y-0', 'opacity-100');
-      }, 1200);
+      }, 1000);
     }
 
-    const dismissNotice = () => {
+    const dismissNotice = (grant = true) => {
       popup.classList.remove('translate-y-0', 'opacity-100');
       popup.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
       localStorage.setItem('clarity_notice_dismissed', 'true');
+
+      if (grant) {
+        applyConsentUpdate();
+      }
     };
 
     if (acceptBtn) {
-      acceptBtn.onclick = dismissNotice;
+      acceptBtn.onclick = () => dismissNotice(true);
     }
     if (closeBtn) {
-      closeBtn.onclick = dismissNotice;
+      closeBtn.onclick = () => dismissNotice(false);
     }
   }
 

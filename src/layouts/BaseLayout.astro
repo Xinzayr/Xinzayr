@@ -46,6 +46,23 @@ const CLARITY_ID = import.meta.env.PUBLIC_CLARITY_ID || 'ydmf5lut6r';
 		<meta property="twitter:description" content={description} />
 		{image && <meta property="twitter:image" content={image} />}
 
+		<!-- Google Consent Mode v2 (Estado Predeterminado) -->
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){window.dataLayer.push(arguments);}
+
+			// Definir consentimiento predeterminado para Google Tag / GTM / GA4
+			gtag('consent', 'default', {
+				'ad_storage': 'denied',
+				'ad_user_data': 'denied',
+				'ad_personalization': 'denied',
+				'analytics_storage': 'granted',
+				'functionality_storage': 'granted',
+				'security_storage': 'granted',
+				'wait_for_update': 500
+			});
+		</script>
+
 		<!-- Google Tag Manager -->
 		<script is:inline>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
