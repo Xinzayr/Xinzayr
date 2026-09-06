@@ -18,7 +18,12 @@ export default defineConfig({
 	},
 	integrations: [
 		mdx(),
-		sitemap(),
+		sitemap({
+			filter: (page) => !page.includes('/_plantilla') && !page.includes('/503') && !page.includes('/contact-success'),
+			changefreq: 'weekly',
+			priority: 0.8,
+			lastmod: new Date(),
+		}),
 		tailwind({
 			applyBaseStyles: false,
 		}),
