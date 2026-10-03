@@ -9,11 +9,9 @@ export const EXTERNAL_RESOURCES = {
 	GITHUB_MEDIA_BASE: 'https://raw.githubusercontent.com/xinzayr/xinzayr/main',
 	GRAVATAR_BASE: 'https://gravatar.com',
 	GITHUB_API: 'https://api.github.com',
-	GITHUB_USERNAME: import.meta.env?.GITHUB_USERNAME || process.env.GITHUB_USERNAME || 'xinzayr',
+	GITHUB_USERNAME: import.meta.env?.GITHUB_USERNAME || 'xinzayr',
 	GITHUB_PROFILE: 'https://github.com/xinzayr',
-	DISCORD_USER_ID: import.meta.env?.DISCORD_USER_ID || process.env.DISCORD_USER_ID || '',
-	SPOTIFY_CLIENT_ID: import.meta.env?.SPOTIFY_CLIENT_ID || process.env.SPOTIFY_CLIENT_ID || '',
-	GITHUB_TOKEN: import.meta.env?.GITHUB_TOKEN || process.env.GITHUB_TOKEN || '',
+	DISCORD_USER_ID: import.meta.env?.DISCORD_USER_ID || '',
 
 	// Redes sociales
 	TWITTER: 'https://x.com/xinzayr',

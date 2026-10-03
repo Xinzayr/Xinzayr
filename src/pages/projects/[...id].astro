@@ -86,7 +86,7 @@ export async function getStaticPaths() {
         repo: matchingRepo || null,
         title: project.data.title,
         description: project.data.description,
-        githubUrl: project.data.githubUrl || (matchingRepo ? matchingRepo.html_url : ''),
+        githubUrl: project.data.repositoryUrl || (matchingRepo ? matchingRepo.html_url : ''),
         demoUrl: project.data.demoUrl || (matchingRepo ? matchingRepo.homepage : ''),
         stack: project.data.stack || [],
         stars: matchingRepo ? matchingRepo.stargazers_count : 0,

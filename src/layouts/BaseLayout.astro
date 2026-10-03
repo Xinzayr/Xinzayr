@@ -3,7 +3,6 @@ import '@fontsource-variable/inter';
 import '@fontsource/jetbrains-mono';
 import '../styles/global.css';
 import { ViewTransitions } from 'astro:transitions';
-import ParticleBackground from '../components/ParticleBackground.astro';
 import ClarityNotice from '../components/ClarityNotice.astro';
 import ScrollToTop from '../components/ScrollToTop.astro';
 
@@ -93,20 +92,21 @@ const CLARITY_ID = import.meta.env.PUBLIC_CLARITY_ID || 'ydmf5lut6r';
 		<!-- Telemetry SPA Navigation Tracker for Astro ViewTransitions -->
 		<script is:inline>
 			document.addEventListener('astro:page-load', () => {
-				const pagePath = window.location.pathname + window.location.search;
+				const win = window;
+				const pagePath = win.location.pathname + win.location.search;
 				const pageTitle = document.title;
 
 				// 1. Actualizar GA4 en navegación SPA
-				if (typeof window.gtag === 'function') {
-					window.gtag('config', 'G-ZE49GZ9LKE', {
+				if (typeof win.gtag === 'function') {
+					win.gtag('config', 'G-ZE49GZ9LKE', {
 						page_path: pagePath,
 						page_title: pageTitle
 					});
 				}
 
 				// 2. Enviar evento de página a Google Tag Manager
-				if (Array.isArray(window.dataLayer)) {
-					window.dataLayer.push({
+				if (Array.isArray(win.dataLayer)) {
+					win.dataLayer.push({
 						event: 'page_view',
 						page_path: pagePath,
 						page_title: pageTitle
@@ -114,8 +114,8 @@ const CLARITY_ID = import.meta.env.PUBLIC_CLARITY_ID || 'ydmf5lut6r';
 				}
 
 				// 3. Notificar cambio de página a Microsoft Clarity
-				if (typeof window.clarity === 'function') {
-					window.clarity('set', 'page', pagePath);
+				if (typeof win.clarity === 'function') {
+					win.clarity('set', 'page', pagePath);
 				}
 			});
 		</script>
@@ -134,10 +134,7 @@ const CLARITY_ID = import.meta.env.PUBLIC_CLARITY_ID || 'ydmf5lut6r';
 		<!-- Botón Flotante para Volver Arriba -->
 		<ScrollToTop />
 
-		<!-- Background gradient -->
-		<div class="fixed inset-0 -z-10 bg-gradient-to-br from-black via-gray-900 to-black"></div>
-
-		<!-- Fondo de partículas futurista -->
-		<ParticleBackground />
+		<!-- Background container for the main background.jpg -->
+		<div class="fixed inset-0 -z-10 bg-[url('/background.jpg')] bg-cover bg-center bg-no-repeat bg-fixed"></div>
 	</body>
 </html>

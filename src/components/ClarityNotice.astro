@@ -56,9 +56,11 @@
 
 <script>
   function applyConsentUpdate() {
+    const win = window as any;
+
     // 1. Consent Mode v2 de Google (Cumplimiento para EEE / EEA: GA4, GTM y Medición de Anuncios)
-    if (typeof window.gtag === 'function') {
-      window.gtag('consent', 'update', {
+    if (typeof win.gtag === 'function') {
+      win.gtag('consent', 'update', {
         'ad_storage': 'granted',
         'ad_user_data': 'granted',
         'ad_personalization': 'granted',
@@ -70,8 +72,8 @@
     }
 
     // Evento de capa de datos para disparadores de GTM que requieren consentimiento
-    if (Array.isArray(window.dataLayer)) {
-      window.dataLayer.push({
+    if (Array.isArray(win.dataLayer)) {
+      win.dataLayer.push({
         event: 'consent_update',
         analytics_consent: 'granted',
         ad_consent: 'granted'
@@ -79,8 +81,8 @@
     }
 
     // 2. Consentimiento para Microsoft Clarity
-    if (typeof window.clarity === 'function') {
-      window.clarity('consent');
+    if (typeof win.clarity === 'function') {
+      win.clarity('consent');
     }
   }
 
