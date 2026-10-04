@@ -7,10 +7,9 @@ interface Props {
 
 const { variant = 'simple', showWhenNotPlaying = false } = Astro.props;
 
-const DISCORD_USER_ID =
-  import.meta.env.PUBLIC_DISCORD_USER_ID ||
-  import.meta.env.DISCORD_USER_ID ||
-  '985292430758793308';
+const DISCORD_USER_ID = import.meta.env.PUBLIC_DISCORD_USER_ID || import.meta.env.DISCORD_USER_ID || '985292430758793308';
+// Credenciales de Spotify movidas a variables de entorno del servidor (astro.config.mjs / .env)
+// El endpoint /api/spotify.json maneja la autenticación de forma segura sin exponer secrets al cliente.
 ---
 
 <spotify-status

@@ -9,6 +9,7 @@
 
 import { readFileSync, existsSync } from 'fs';
 import { execSync } from 'child_process';
+import { globSync } from 'glob';
 
 console.log('🔒 Ejecutando verificación de seguridad...\n');
 
@@ -65,6 +66,39 @@ try {
 } catch (error) {
   // Si grep no encuentra nada, retorna error - eso es bueno en este caso
   checks.push({ name: 'Archivos sensibles', status: '✅', message: 'No hay archivos sensibles en el repositorio' });
+}
+
+// Verificar secretos hardcodeados en código fuente
+try {
+  const sourceFiles = globSync('src/**/*.{astro,ts,js,tsx,jsx}', { ignore: ['**/node_modules/**'] });
+  const secretPatterns = [
+    { pattern: /ghp_[a-zA-Z0-9]{36}/g, name: 'GitHub Personal Access Token' },
+    { pattern: /gho_[a-zA-Z0-9]{36}/g, name: 'GitHub OAuth Token' },
+    { pattern: /ghu_[a-zA-Z0-9]{36}/g, name: 'GitHub User Token' },
+    { pattern: /ghs_[a-zA-Z0-9]{36}/g, name: 'GitHub Server Token' },
+    { pattern: /ghr_[a-zA-Z0-9]{36}/g, name: 'GitHub Refresh Token' },
+    { pattern: /sk_live_[a-zA-Z0-9]{24,}/g, name: 'Stripe Secret Key' },
+    { pattern: /AIza[a-zA-Z0-9_-]{35}/g, name: 'Google API Key' },
+    { pattern: /ya29\.[a-zA-Z0-9_-]+/g, name: 'Google OAuth Token' },
+  ];
+
+  let foundSecrets = false;
+  for (const file of sourceFiles) {
+    const content = readFileSync(file, 'utf8');
+    for (const { pattern, name } of secretPatterns) {
+      const matches = content.match(pattern);
+      if (matches) {
+        checks.push({ name: `Secreto hardcodeado: ${name}`, status: '❌', message: `Detectado en ${file}: ${matches[0].substring(0, 20)}...` });
+        foundSecrets = true;
+      }
+    }
+  }
+
+  if (!foundSecrets) {
+    checks.push({ name: 'Secretos en código', status: '✅', message: 'No se detectaron secretos hardcodeados en src/' });
+  }
+} catch (error) {
+  checks.push({ name: 'Secretos en código', status: '⚠️', message: 'Error escaneando secretos: ' + error.message });
 }
 
 // Verificar documentación de seguridad

@@ -36,8 +36,8 @@ let isFallback = false;
 // 1. Intentar obtener datos mediante GitHub GraphQL API
 if (GITHUB_TOKEN && username) {
   try {
-    const query = `query {
-      user(login: "${username}") {
+    const query = `query($login: String!) {
+      user(login: $login) {
         contributionsCollection {
           contributionCalendar {
             totalContributions
@@ -61,7 +61,7 @@ if (GITHUB_TOKEN && username) {
         'Content-Type': 'application/json',
         'User-Agent': 'xinzayr-portfolio'
       },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ query, variables: { login: username } })
     });
 
     if (response.ok) {

@@ -17,21 +17,13 @@ const deploymentInfo = {
 const currentYear = new Date().getFullYear();
 ---
 
-<footer
-  class="border-t border-white/5 bg-black-deep/90 backdrop-blur-2xl relative"
->
-  <!-- Efecto de brillo sutil en el fondo -->
-  <div class="absolute inset-0 bg-gradient-to-t from-cyber-cyan/5 to-transparent pointer-events-none">
-  </div>
-
+<footer class="border-t border-white/5 relative">
   <div class="relative w-full max-w-7xl 2xl:max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <!-- Header Section: Brand & Navigation -->
     <div class="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-8 mb-10 text-center lg:text-left">
       <!-- Brand Identity -->
       <div class="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4">
-        <div
-          class="w-12 h-12 rounded-xl border border-white/10 shadow-xl shadow-cyber-cyan/20 overflow-hidden flex-shrink-0"
-        >
+        <div class="w-12 h-12 rounded-xl border border-white/10 shadow-xl overflow-hidden flex-shrink-0">
           <img
             src="https://www.gravatar.com/avatar/977ea9a49bad6103d6cf96df4ace2cdf?s=48&d=identicon"
             alt="xinzayr profile"
@@ -40,7 +32,7 @@ const currentYear = new Date().getFullYear();
         </div>
         <div>
           <h2 class="font-display font-bold text-xl text-white/90 tracking-wide">xinzayr</h2>
-          <p class="text-cyber-cyan text-sm font-mono">{t('hero.role')}</p>
+          <p class="text-[var(--pastel-blue)] text-sm font-mono">{t('hero.role')}</p>
           <p class="text-white/70 text-xs mt-1 max-w-md mx-auto lg:mx-0">
             {t('footer.vision')}
           </p>
@@ -51,25 +43,25 @@ const currentYear = new Date().getFullYear();
       <nav class="flex flex-wrap justify-center gap-3" aria-label="Footer navigation">
         <a
           href="/projects"
-          class="glass-pill cursor-glow inline-flex items-center px-4 py-2 text-white/80 hover:text-white border border-white/10 hover:border-cyber-cyan/50 text-sm"
+          class="btn-glass btn-glass-secondary px-4 py-2 text-sm"
         >
           <span>{t('nav.projects')}</span>
         </a>
         <a
           href="/blog"
-          class="glass-pill cursor-glow inline-flex items-center px-4 py-2 text-white/80 hover:text-white border border-white/10 hover:border-cyber-cyan/50 text-sm"
+          class="btn-glass btn-glass-secondary px-4 py-2 text-sm"
         >
           <span>{t('nav.blog')}</span>
         </a>
         <a
           href="/contact"
-          class="glass-pill cursor-glow inline-flex items-center px-4 py-2 text-white/80 hover:text-white border border-white/10 hover:border-cyber-cyan/50 text-sm"
+          class="btn-glass btn-glass-secondary px-4 py-2 text-sm"
         >
           <span>{t('nav.contact')}</span>
         </a>
         <a
           href="/cv"
-          class="glass-pill cursor-glow inline-flex items-center px-4 py-2 text-white/80 hover:text-white border border-white/10 hover:border-cyber-cyan/50 text-sm"
+          class="btn-glass btn-glass-secondary px-4 py-2 text-sm"
         >
           <span>{t('nav.cv')}</span>
         </a>
@@ -81,7 +73,7 @@ const currentYear = new Date().getFullYear();
       <!-- Real-time Status -->
       <div class="md:col-span-2 lg:col-span-1">
         <h3 class="text-white font-semibold text-sm mb-4 flex items-center justify-center lg:justify-start">
-          <span class="w-2 h-2 bg-cyber-green rounded-full mr-2 animate-pulse"></span>
+          <span class="status-dot status-online mr-2"></span>
           {t('footer.status')}
         </h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
@@ -101,7 +93,7 @@ const currentYear = new Date().getFullYear();
               href={EXTERNAL_RESOURCES.GITHUB_PROFILE}
               target="_blank"
               rel="noopener noreferrer"
-              class="glass-pill cursor-glow p-3 hover:border-cyber-cyan/50 text-white/80 hover:text-white"
+              class="btn-glass btn-glass-secondary p-3"
               aria-label="GitHub"
             >
               <svg
@@ -118,7 +110,7 @@ const currentYear = new Date().getFullYear();
               href="https://linkedin.com/in/xinzayr"
               target="_blank"
               rel="noopener noreferrer"
-              class="glass-pill cursor-glow p-3 hover:border-cyber-cyan/50 text-white/80 hover:text-white"
+              class="btn-glass btn-glass-secondary p-3"
               aria-label="LinkedIn"
             >
               <svg
@@ -136,13 +128,13 @@ const currentYear = new Date().getFullYear();
 
         <!-- Support Links -->
         <div>
-          <h4 class="text-cyber-cyan font-medium text-sm mb-3">{t('footer.support')}</h4>
+          <h4 class="text-[var(--pastel-blue)] font-medium text-sm mb-3">{t('footer.support')}</h4>
           <div class="space-y-2">
             <a
               href={EXTERNAL_RESOURCES.GITHUB_SPONSORS}
               target="_blank"
               rel="noopener noreferrer"
-              class="cursor-glow flex items-center justify-center lg:justify-start space-x-2 text-white/80 hover:text-cyber-cyan transition-all duration-300 text-sm"
+              class="cursor-glow flex items-center justify-center lg:justify-start space-x-2 text-white/80 hover:text-[var(--pastel-blue)] transition-all duration-300 text-sm"
             >
               <span>GitHub Sponsors</span>
             </a>
@@ -150,7 +142,7 @@ const currentYear = new Date().getFullYear();
               href="https://ko-fi.com/xinzayr"
               target="_blank"
               rel="noopener noreferrer"
-              class="cursor-glow flex items-center justify-center lg:justify-start space-x-2 text-white/80 hover:text-cyber-cyan transition-all duration-300 text-sm"
+              class="cursor-glow flex items-center justify-center lg:justify-start space-x-2 text-white/80 hover:text-[var(--pastel-rose)] transition-all duration-300 text-sm"
             >
               <span>Ko-fi</span>
             </a>
@@ -160,11 +152,11 @@ const currentYear = new Date().getFullYear();
 
       <!-- Environment & Tools -->
       <div class="flex flex-col justify-between">
-        <div class="glass-pill p-3 mb-4">
+        <div class="glass-thin p-3 mb-4">
           <div class="flex items-center justify-center lg:justify-start space-x-2 text-sm">
-            <div class="w-2 h-2 rounded-full bg-cyber-green animate-pulse"></div>
+            <div class="status-dot status-online"></div>
             <span class="text-white/80"
-              >{t('footer.hosted')} <span class="font-semibold text-cyber-cyan"
+              >{t('footer.hosted')} <span class="font-semibold text-[var(--pastel-blue)]"
                 >{deploymentInfo.displayName}</span
               ></span
             >
@@ -175,19 +167,13 @@ const currentYear = new Date().getFullYear();
         <div>
           <h4 class="text-white font-medium text-sm mb-3 text-center lg:text-left">{t('footer.timezone')}</h4>
           <div class="space-y-2">
-            <div
-              class="flex items-center justify-between px-3 py-2 rounded-lg glass border border-white/10"
-            >
-              <span class="text-cyber-cyan font-mono text-xs">Florida</span>
+            <div class="flex items-center justify-between px-3 py-2 rounded-lg glass-thin border border-white/10">
+              <span class="text-[var(--pastel-blue)] font-mono text-xs">Florida</span>
               <span id="florida-compact" class="text-white font-mono text-sm font-bold">--:--</span>
             </div>
-            <div
-              class="flex items-center justify-between px-3 py-2 rounded-lg glass border border-white/10"
-            >
-              <span class="text-cyber-green font-mono text-xs">Ecuador</span>
-              <span id="guayaquil-compact" class="text-white font-mono text-sm font-bold"
-                >--:--</span
-              >
+            <div class="flex items-center justify-between px-3 py-2 rounded-lg glass-thin border border-white/10">
+              <span class="text-[var(--pastel-mint)] font-mono text-xs">Ecuador</span>
+              <span id="guayaquil-compact" class="text-white font-mono text-sm font-bold">--:--</span>
             </div>
           </div>
         </div>
@@ -195,29 +181,22 @@ const currentYear = new Date().getFullYear();
     </div>
 
     <!-- Copyright & Legal -->
-    <div
-      class="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-white/10 text-center sm:text-left"
-    >
+    <div class="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-white/10 text-center sm:text-left">
       <div class="mb-4 sm:mb-0">
         <p class="text-white/80 text-sm">
           © {currentYear}
-          <span class="text-cyber-cyan font-semibold">xinzayr</span>
+          <span class="text-[var(--pastel-blue)] font-semibold">xinzayr</span>
         </p>
         <p class="text-white/60 text-xs mt-1">
-          {t('footer.developed_with')} <span class="text-cyber-cyan">Astro</span> & <span
-            class="text-cyber-cyan font-medium">TailwindCSS</span
+          {t('footer.developed_with')} <span class="text-[var(--pastel-blue)]">Astro</span> & <span
+            class="text-[var(--pastel-purple)] font-medium">TailwindCSS</span
           >
         </p>
       </div>
 
       <div class="flex items-center space-x-4 text-xs">
-        <a href="/rss.xml" class="cursor-glow text-white/60 hover:text-cyber-cyan transition-colors"
-          >RSS</a
-        >
-        <a
-          href="/sitemap-index.xml"
-          class="cursor-glow text-white/60 hover:text-cyber-cyan transition-colors">Sitemap</a
-        >
+        <a href="/rss.xml" class="cursor-glow text-white/60 hover:text-[var(--pastel-blue)] transition-colors">RSS</a>
+        <a href="/sitemap-index.xml" class="cursor-glow text-white/60 hover:text-[var(--pastel-blue)] transition-colors">Sitemap</a>
       </div>
     </div>
   </div>

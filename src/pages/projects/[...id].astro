@@ -5,6 +5,12 @@ import Footer from '../../components/Footer.astro';
 import { getCollection, render } from 'astro:content';
 import { API_CONFIG } from '../../consts';
 import { marked } from 'marked';
+import DOMPurify from 'dompurify';
+import { JSDOM } from 'jsdom';
+
+// Configurar DOMPurify para el lado del servidor
+const window = new JSDOM('').window;
+const purify = DOMPurify(window);
 
 // ... (rest of imports & getStaticPaths) ...
 
@@ -192,7 +198,16 @@ if (isLocal && project) {
 if (!isLocal && repo) {
   readmeContent = await fetchReadmeContent(GITHUB_USERNAME, repo.name, GITHUB_TOKEN);
   if (readmeContent) {
-    renderedHtml = await marked.parse(readmeContent);
+    const rawHtml = await marked.parse(readmeContent);
+    // Sanitizar HTML para prevenir XSS
+    renderedHtml = purify.sanitize(rawHtml, {
+      ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'em', 'u', 's', 'code', 'pre', 'blockquote', 'ul', 'ol', 'li', 'a', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'hr', 'br', 'div', 'span'],
+      ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id', 'target', 'rel'],
+      ALLOW_DATA_ATTR: false,
+      RETURN_DOM: false,
+      RETURN_DOM_FRAGMENT: false,
+      RETURN_TRUSTED_TYPE: false,
+    });
     hasReadme = true;
   }
 }

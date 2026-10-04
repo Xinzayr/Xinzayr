@@ -33,17 +33,17 @@ const latestBlogPosts = allBlogPosts
 					<!-- Content -->
 					<div class="space-y-6 sm:space-y-8 flex flex-col justify-center items-center lg:items-start text-center lg:text-left">
 						<div class="space-y-4 sm:space-y-6">
-							<h1 class="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-display font-bold leading-tight">
+							<h1 class="font-display font-bold leading-tight text-[clamp(2.25rem,6vw,4rem)]">
 								<span class="text-white/90">{t('hero.greeting')}</span>
 								<br>
-								<span class="bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
+								<span class="bg-gradient-to-r from-[var(--pastel-blue)] via-[var(--pastel-mint)] to-[var(--pastel-purple)] bg-clip-text text-transparent">
 									xinzayr
 								</span>
 							</h1>
 							<p class="text-lg sm:text-xl lg:text-2xl text-white/80 leading-relaxed font-body">
-								<span class="text-cyber-cyan font-medium">{t('hero.role')}</span> {t('hero.description1')}
+								<span class="text-[var(--pastel-blue)] font-medium">{t('hero.role')}</span> {t('hero.description1')}
 								<br>
-								<span class="text-cyber-cyan font-medium">Estudiante</span> {t('hero.description2')}
+								<span class="text-[var(--pastel-mint)] font-medium">Estudiante</span> {t('hero.description2')}
 							</p>
 						</div>
 
@@ -51,13 +51,13 @@ const latestBlogPosts = allBlogPosts
 						<div class="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full sm:w-auto justify-center lg:justify-start">
 							<a
 								href="/projects"
-								class="btn-primary px-6 sm:px-8 py-3.5 sm:py-4 font-body font-semibold text-base sm:text-lg text-white text-center shadow-lg shadow-cyan-500/20"
+								class="btn-glass btn-glass-primary px-6 sm:px-8 py-3.5 sm:py-4 font-body font-semibold text-base sm:text-lg text-center"
 							>
 								{t('hero.cta.projects')}
 							</a>
 							<a
 								href="/contact"
-								class="glass-pill px-6 sm:px-8 py-3.5 sm:py-4 font-body font-medium text-base sm:text-lg text-white/90 text-center hover:text-white"
+								class="btn-glass btn-glass-secondary px-6 sm:px-8 py-3.5 sm:py-4 font-body font-medium text-base sm:text-lg text-center"
 							>
 								{t('hero.cta.contact')}
 							</a>
@@ -66,16 +66,16 @@ const latestBlogPosts = allBlogPosts
 						<!-- Status Indicators -->
 						<div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-4 sm:pt-6">
 							<DiscordStatus variant="simple" size="md" />
-							<div class="glass-pill flex items-center space-x-3 px-4 py-3">
-								<div class="w-2 h-2 bg-cyber-green rounded-full animate-pulse shadow-lg shadow-cyber-green/50"></div>
-								<span class="text-sm text-white/80 font-body">{t('hero.github_active')}</span>
+							<div class="glass-ultra-thin flex items-center space-x-3 px-4 py-3">
+								<div class="status-dot status-online"></div>
+								<span class="font-sm text-white/80">{t('hero.github_active')}</span>
 							</div>
 						</div>
 					</div>
 
 					<!-- Avatar/Visual -->
 					<div class="relative mt-8 lg:mt-0 flex justify-center">
-						<div class="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
+						<div class="absolute inset-0 bg-gradient-to-r from-[var(--pastel-blue-20)] to-[var(--pastel-mint-20)] rounded-full blur-3xl animate-float"></div>
 						<ProfileAvatar username="xinzayr" size="lg" showGradient={true} showFloatingElements={true} />
 					</div>
 				</div>
@@ -85,9 +85,10 @@ const latestBlogPosts = allBlogPosts
 		<section class="py-12 sm:py-20 lg:py-24 relative">
 			<div class="relative max-w-7xl 2xl:max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="text-center mb-12 sm:mb-16">
-					<h2 class="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white/90 mb-4 sm:mb-6">
+					<h2 class="font-h1 mb-4 sm:mb-6">
 						{t('section.github.title1')}
-						<span class="bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+						<br>
+						<span class="bg-gradient-to-r from-[var(--pastel-blue)] to-[var(--pastel-mint)] bg-clip-text text-transparent">
 							{t('section.github.title2')}
 						</span>
 					</h2>
@@ -103,10 +104,10 @@ const latestBlogPosts = allBlogPosts
 				<div class="text-center mt-8 sm:mt-12">
 					<a
 						href="/projects"
-						class="glass-pill inline-flex items-center space-x-3 px-6 py-4 font-body font-medium hover:text-cyber-cyan"
+						class="btn-glass btn-glass-secondary inline-flex items-center space-x-3 px-6 py-4 font-body font-medium"
 					>
 						<span class="text-white">{t('section.github.cta')}</span>
-						<svg class="w-6 h-6 text-cyber-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg class="w-6 h-6 text-[var(--pastel-blue)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
 						</svg>
 					</a>
@@ -117,10 +118,10 @@ const latestBlogPosts = allBlogPosts
 		<section class="py-12 sm:py-20 lg:py-24 relative">
 			<div class="relative max-w-7xl 2xl:max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="text-center mb-12 sm:mb-16">
-					<h2 class="text-3xl sm:text-4xl lg:text-5xl font-display font-bold mb-4 sm:mb-6">
+					<h2 class="font-h1 mb-4 sm:mb-6">
 						<span class="text-white/90">{t('section.blog.title1')}</span>
 						<br>
-						<span class="bg-gradient-cyber bg-clip-text text-transparent">
+						<span class="bg-gradient-to-r from-[var(--pastel-purple)] to-[var(--pastel-rose)] bg-clip-text text-transparent">
 							{t('section.blog.title2')}
 						</span>
 					</h2>
@@ -129,7 +130,7 @@ const latestBlogPosts = allBlogPosts
 					</p>
 				</div>
 
-				<div class="liquid-glass-card p-6 sm:p-8 lg:p-12">
+				<div class="glass-card p-6 sm:p-8 lg:p-12">
 					<!-- Posts del Blog de Blogger -->
 					<BloggerPosts variant="grid" maxPosts={3} showFeatured={false} />
 				</div>
@@ -137,10 +138,10 @@ const latestBlogPosts = allBlogPosts
 				<div class="text-center mt-12">
 					<a
 						href="/blog"
-						class="liquid-glass-btn inline-flex items-center space-x-3 px-8 py-4 font-serif font-semibold text-lg hover:text-cyber-pink"
+						class="btn-glass btn-glass-secondary inline-flex items-center space-x-3 px-8 py-4 font-body font-semibold text-lg"
 					>
 						<span class="text-white">{t('section.blog.cta')}</span>
-						<svg class="w-6 h-6 text-cyber-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg class="w-6 h-6 text-[var(--pastel-purple)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
 						</svg>
 					</a>
@@ -151,10 +152,10 @@ const latestBlogPosts = allBlogPosts
 		<section class="py-24 relative">
 			<div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="text-center mb-16">
-					<h2 class="text-4xl lg:text-5xl font-display font-bold mb-6">
+					<h2 class="font-h1 mb-6">
 						<span class="text-white/90">{t('section.tech.title1')}</span>
 						<br>
-						<span class="bg-gradient-cyber bg-clip-text text-transparent animate-gradient bg-[400%_400%]">
+						<span class="bg-gradient-to-r from-[var(--pastel-blue)] via-[var(--pastel-purple)] to-[var(--pastel-rose)] bg-clip-text text-transparent animate-float">
 							{t('section.tech.title2')}
 						</span>
 					</h2>
@@ -165,17 +166,16 @@ const latestBlogPosts = allBlogPosts
 
 				<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
 					{[
-						{ name: 'Astro', icon: '🚀', color: 'cyber-cyan' },
-                        { name: 'Node.js', icon: '🟢', color: 'cyber-green' },
-                        { name: 'JavaScript', icon: '🟡', color: 'cyber-cyan' },
-						{ name: 'TypeScript', icon: '🔷', color: 'cyber-blue' },
-						{ name: 'Rust', icon: '🦀', color: 'cyber-pink' },
-						{ name: 'Python', icon: '🐍', color: 'cyber-green' },
+						{ name: 'Astro', icon: '🚀', accent: 'blue' },
+						{ name: 'Node.js', icon: '🟢', accent: 'mint' },
+						{ name: 'JavaScript', icon: '🟡', accent: 'amber' },
+						{ name: 'TypeScript', icon: '🔷', accent: 'blue' },
+						{ name: 'Rust', icon: '🦀', accent: 'rose' },
+						{ name: 'Python', icon: '🐍', accent: 'mint' },
 					].map((tech) => (
-						<div class={`liquid-glass-card p-6 text-center group relative overflow-hidden`}>
+						<div class="glass-card p-6 text-center group relative overflow-hidden hover-[var(--pastel-blue)]">
 							<!-- Efecto de brillo hover sutil -->
-							<div class={`absolute inset-0 bg-gradient-to-br from-${tech.color}/5 to-transparent opacity-0
-							            group-hover:opacity-100 transition-opacity duration-300`}></div>
+							<div class="absolute inset-0 bg-gradient-to-br from-[var(--pastel-blue-20)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
 							<div class="relative z-10">
 								<div class="text-4xl mb-3 animate-float" style="animation-delay: 0.5s;">{tech.icon}</div>
@@ -187,23 +187,23 @@ const latestBlogPosts = allBlogPosts
 
 				<!-- Sección adicional de habilidades -->
 				<div class="mt-16 text-center">
-					<div class="liquid-glass-card p-8 max-w-4xl mx-auto">
-						<h3 class="text-2xl font-serif font-semibold text-white/90 mb-4">
+					<div class="glass-card p-8 max-w-4xl mx-auto">
+						<h3 class="font-h3 text-white/90 mb-4">
 							{t('section.tech.focus')}
 						</h3>
 						<div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
 							<div class="space-y-2">
-								<div class="text-3xl text-cyber-cyan">🔧</div>
+								<div class="text-3xl text-[var(--pastel-blue)]">🔧</div>
 								<div class="text-white/90 font-body font-medium">{t('focus.web.title')}</div>
 								<div class="text-white/60 text-sm">{t('focus.web.desc')}</div>
 							</div>
 							<div class="space-y-2">
-								<div class="text-3xl text-cyber-purple">🤖</div>
+								<div class="text-3xl text-[var(--pastel-purple)]">🤖</div>
 								<div class="text-white/90 font-body font-medium">{t('focus.auto.title')}</div>
 								<div class="text-white/60 text-sm">{t('focus.auto.desc')}</div>
 							</div>
 							<div class="space-y-2">
-								<div class="text-3xl text-cyber-pink">📊</div>
+								<div class="text-3xl text-[var(--pastel-mint)]">📊</div>
 								<div class="text-white/90 font-body font-medium">{t('focus.data.title')}</div>
 								<div class="text-white/60 text-sm">{t('focus.data.desc')}</div>
 							</div>

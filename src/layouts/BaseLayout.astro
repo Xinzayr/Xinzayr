@@ -5,6 +5,7 @@ import '../styles/global.css';
 import { ViewTransitions } from 'astro:transitions';
 import ClarityNotice from '../components/ClarityNotice.astro';
 import ScrollToTop from '../components/ScrollToTop.astro';
+import CookieConsent from '../components/CookieConsent.astro';
 
 export interface Props {
 	title: string;
@@ -45,17 +46,17 @@ const CLARITY_ID = import.meta.env.PUBLIC_CLARITY_ID || 'ydmf5lut6r';
 		<meta property="twitter:description" content={description} />
 		{image && <meta property="twitter:image" content={image} />}
 
-		<!-- Google Consent Mode v2 (Estado Predeterminado) -->
+		<!-- Google Consent Mode v2 (Estado Predeterminado - TODO DENEGADO HASTA CONSENTIMIENTO) -->
 		<script is:inline>
 			window.dataLayer = window.dataLayer || [];
 			function gtag(){window.dataLayer.push(arguments);}
 
-			// Definir consentimiento predeterminado para Google Tag / GTM / GA4
+			// Definir consentimiento predeterminado DENEGADO para Google Tag / GTM / GA4
 			gtag('consent', 'default', {
 				'ad_storage': 'denied',
 				'ad_user_data': 'denied',
 				'ad_personalization': 'denied',
-				'analytics_storage': 'granted',
+				'analytics_storage': 'denied',
 				'functionality_storage': 'granted',
 				'security_storage': 'granted',
 				'wait_for_update': 500
@@ -130,6 +131,9 @@ const CLARITY_ID = import.meta.env.PUBLIC_CLARITY_ID || 'ydmf5lut6r';
 
 		<!-- Pop-up de Aviso Microsoft Clarity -->
 		<ClarityNotice />
+
+		<!-- Banner de consentimiento de cookies (GDPR/ePrivacy) -->
+		<CookieConsent />
 
 		<!-- Botón Flotante para Volver Arriba -->
 		<ScrollToTop />

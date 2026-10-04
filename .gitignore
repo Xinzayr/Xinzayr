@@ -21,6 +21,14 @@ credentials.json
 .secrets
 .credentials
 
+# Patrones de tokens y secrets
+*token*
+*secret*
+*credential*
+*api_key*
+*apikey*
+*password*
+
 # Documentación con datos sensibles
 .specstory/
 PRIVATE_NOTES.md
